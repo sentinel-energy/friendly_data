@@ -16,6 +16,32 @@ ODLS_GROUPS = ["all", "osi", "od", "ckan"]
 
 
 def get_license(lic: str, group: str = "all") -> Dict[str, str]:
+    """Return the license metadata
+
+    Retrieve the license metadata of the requested group from the Open
+    Definition License Service and cache it in a temporary file.  From the
+    retrieved list, find the requested license and return it.
+
+    Parameters
+    ----------
+    lic : str
+        Requested license
+    group : {'all', 'osi', 'od', 'ckan'}
+        License group where to find the license
+
+    Returns
+    -------
+    Dict[str, str]
+        A dictionary with the license metadata
+
+    Raises
+    ------
+    ValueError
+        If the license group is incorrect
+    KeyError
+        If the license cannot be found in the provided group
+
+    """
     cache = HttpCache(ODLS)
     if group not in ODLS_GROUPS:
         raise ValueError(

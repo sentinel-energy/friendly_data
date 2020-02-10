@@ -16,9 +16,9 @@ def http_cache(request):
     try:  # remove cache before next test
         http_cache.remove()
     except FileNotFoundError:
-        # some tests do not create cache, but the safeguard is probably not
+        # some tests do not create a cache; the safeguard is probably not
         # really required because HttpCache.remove() uses glob, which returns
-        # an empty generator when there are no files.
+        # an empty iterator when there are no files.
         pass
 
 
