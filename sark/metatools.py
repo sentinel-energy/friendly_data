@@ -42,11 +42,12 @@ def get_license(lic: str, group: str = "all") -> Dict[str, str]:
         If the license cannot be found in the provided group
 
     """
-    cache = HttpCache(ODLS)
+
     if group not in ODLS_GROUPS:
         raise ValueError(
             f"unknown license group: {group},"
             f" should be one of: {ODLS_GROUPS}"
         )
+    cache = HttpCache(ODLS)
     licenses = json.loads(cache.get(group))
     return licenses[lic]
