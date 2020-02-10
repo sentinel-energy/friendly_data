@@ -14,6 +14,6 @@ def cleanup_cache():  # hack to cleanup cache files
 
 def test_license(cleanup_cache):
     lic = "CC-BY-SA-4.0"
-    assert lic == get_license(lic, group="all")["id"]
+    assert lic == get_license(lic, group="all")["name"]
     with pytest.raises(KeyError):
-        assert lic == get_license(lic, group="osi")["id"]
+        assert lic == get_license(lic, group="osi")["name"]
