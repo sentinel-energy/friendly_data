@@ -4,7 +4,7 @@ import json
 import logging
 from typing import Dict
 
-from .io import HttpCache
+from sark.io import HttpCache
 
 logger = logging.getLogger()
 
