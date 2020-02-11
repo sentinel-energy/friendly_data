@@ -36,7 +36,7 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Type check w/ mypy
       continue-on-error: true
-      run: mypy --pretty .
+      run: mypy --pretty sark
     - name: Test with pytest
       run: |
         pytest
