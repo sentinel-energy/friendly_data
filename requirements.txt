@@ -1,0 +1,14 @@
+datapackage
+flake8
+glom
+goodtables
+mypy
+mypy_extensions
+numexpr
+numpy
+pandas
+pytest
+requests
+tableschema
+tabulator
+xarray
