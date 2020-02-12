@@ -1,4 +1,4 @@
-name: SENTINEL archive
+name: Test SENTINEL archive
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   test:
-
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -28,7 +28,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install -e .
-    - name: Lint with flake8
+    - name: Lint w/ flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
@@ -37,6 +37,6 @@ jobs:
     - name: Type check w/ mypy
       continue-on-error: true
       run: mypy --pretty sark
-    - name: Test with pytest
+    - name: Test w/ pytest
       run: |
         pytest
