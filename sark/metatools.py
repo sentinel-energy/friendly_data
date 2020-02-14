@@ -2,6 +2,7 @@
 
 import json
 import logging
+from operator import contains
 from typing import Dict, Tuple
 
 from sark.io import HttpCache
@@ -86,14 +87,14 @@ def _get_license_interactively(
         return licenses[lic]
 
 
-def check_license(lic_meta: License):
+def check_license(lic: License):
     """Return the license spec from the metadata
 
     Issue a warning if the license is old.  TODO: add other recommendations
 
     Parameters
     ----------
-    lic_meta
+    lic : Dict[str, str], alias License
         License metadata dictionary (as returned by the Open Definition
         License Service)
         Example: CC-BY-SA
@@ -112,10 +113,28 @@ def check_license(lic_meta: License):
         }
 
     """
-    if lic_meta["status"] == "retired":
-        logger.warning("You have picked a license that has been superseded!")
+    # TODO: to add more checks, add to the following lists
+    for check, op, ref in zip(
+        [_license_status, _license_domain],  # check
+        [contains, contains],  # test
+        ["active", "data"],  # reference
+    ):
+        if not op(check(lic), ref):
+            logger.warning(f"inappropriate license: not {ref}")
     return {
-        "name": lic_meta["id"],
-        "path": lic_meta["url"],
-        "title": lic_meta["title"],
+        "name": lic["id"],
+        "path": lic["url"],
+        "title": lic["title"],
     }
+
+
+def _license_status(lic: License) -> str:
+    return lic["status"]
+
+
+def _license_domain(lic: License) -> Tuple[str]:
+    return tuple(
+        lic_t
+        for lic_t in ["content", "data", "software"]
+        if lic[f"domain_{lic_t}"]
+    )
