@@ -1,9 +1,9 @@
 """I/O"""
 
-import time
-import tempfile
-from pathlib import Path
 from hashlib import sha256
+from pathlib import Path
+import tempfile
+import time
 from typing import Tuple
 
 import requests
