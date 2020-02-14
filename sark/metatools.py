@@ -2,7 +2,7 @@
 
 import json
 import logging
-from typing import Dict
+from typing import Dict, Tuple
 
 from sark.io import HttpCache
 
@@ -14,8 +14,11 @@ ODLS = "https://licenses.opendefinition.org/licenses/groups/{}.json"
 # selected for CKAN (https://ckan.org)
 ODLS_GROUPS = ["all", "osi", "od", "ckan"]
 
+# type aliases
+License = Dict[str, str]
 
-def get_license(lic: str, group: str = "all") -> Dict[str, str]:
+
+def get_license(lic: str, group: str = "all") -> License:
     """Return the license metadata
 
     Retrieve the license metadata of the requested group from the Open
@@ -31,7 +34,7 @@ def get_license(lic: str, group: str = "all") -> Dict[str, str]:
 
     Returns
     -------
-    Dict[str, str]
+    Dict[str, str], alias License
         A dictionary with the license metadata
 
     Raises
@@ -58,8 +61,8 @@ def get_license(lic: str, group: str = "all") -> Dict[str, str]:
 
 
 def _get_license_interactively(
-    licenses: Dict[str, Dict[str, str]], group: str
-) -> Dict[str, str]:
+    licenses: Dict[str, License], group: str
+) -> License:
     """Interactively ask for the license name to retrieve
 
     Parameters
@@ -71,7 +74,7 @@ def _get_license_interactively(
 
     Returns
     -------
-    Dict[str, str]
+    Dict[str, str], alias License
         License metadata
     """
     while True:
@@ -83,7 +86,7 @@ def _get_license_interactively(
         return licenses[lic]
 
 
-def check_license(lic_meta: Dict[str, str]):
+def check_license(lic_meta: License):
     """Return the license spec from the metadata
 
     Issue a warning if the license is old.  TODO: add other recommendations
