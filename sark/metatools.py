@@ -87,7 +87,7 @@ def _get_license_interactively(
         return licenses[lic]
 
 
-def check_license(lic: License):
+def check_license(lic: License) -> License:
     """Return the license spec from the metadata
 
     Issue a warning if the license is old.  TODO: add other recommendations
@@ -132,7 +132,7 @@ def _license_status(lic: License) -> str:
     return lic["status"]
 
 
-def _license_domain(lic: License) -> Tuple[str]:
+def _license_domain(lic: License) -> Tuple[str, ...]:
     return tuple(
         lic_t
         for lic_t in ["content", "data", "software"]
