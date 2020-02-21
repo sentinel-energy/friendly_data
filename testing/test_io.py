@@ -1,27 +1,7 @@
-from pathlib import Path
-
 import pytest
 import requests
 
 from sark.metatools import ODLS
-
-BAD_URL = ODLS[:-1]
-BAD_CONN = "https://iamnota.site/{}"
-
-params_all = [
-    ODLS,
-    pytest.param(
-        BAD_URL,
-        marks=pytest.mark.xfail(raises=ValueError, reason="Incorrect url"),
-    ),
-    pytest.param(
-        BAD_CONN,
-        marks=pytest.mark.xfail(
-            raises=requests.ConnectionError,
-            reason="Non-existent domain, similar to no network",
-        ),
-    ),
-]
 
 
 @pytest.mark.parametrize(
@@ -34,7 +14,7 @@ def test_http_cache_file(http_cache):
 
 
 @pytest.mark.parametrize(
-    "http_cache", params_all, indirect=["http_cache"],
+    "http_cache", [ODLS], indirect=["http_cache"],
 )
 def test_http_cache_fetch(http_cache):
     grp = "all"
@@ -44,8 +24,28 @@ def test_http_cache_fetch(http_cache):
     assert not http_cache.cachefile(grp)[0].exists()  # cache not created
 
 
+# incorrect url
 @pytest.mark.parametrize(
-    "http_cache", params_all, indirect=["http_cache"],
+    "http_cache", [ODLS[:-1]], indirect=["http_cache"],
+)
+def test_http_cache_fetch_bad_url(caplog, http_cache):
+    grp = "all"
+    with pytest.raises(ValueError, match=f"error: {ODLS[:-1]} ".format(grp)):
+        http_cache.fetch(http_cache.cachefile(grp)[1])
+
+
+# non-existent domain / no network
+@pytest.mark.parametrize(
+    "http_cache", ["https://iamnota.site/{}"], indirect=["http_cache"],
+)
+def test_http_cache_fetch_no_conn(http_cache):
+    grp = "all"
+    with pytest.raises(requests.ConnectionError):
+        http_cache.fetch(http_cache.cachefile(grp)[1])
+
+
+@pytest.mark.parametrize(
+    "http_cache", [ODLS], indirect=["http_cache"],
 )
 def test_http_cache_get(http_cache):
     grp = "all"
