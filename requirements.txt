@@ -1,3 +1,4 @@
+coverage
 datapackage
 flake8
 glom
@@ -8,6 +9,7 @@ numexpr
 numpy
 pandas
 pytest
+pytest-cov
 requests
 tableschema
 tabulator

@@ -54,7 +54,7 @@ def get_license(lic: str, group: str = "all") -> License:
         )
     cache = HttpCache(ODLS)
     licenses = json.loads(cache.get(group))
-    if lic is None:
+    if lic is None:  # pragma: no cover, only used from cli
         lic_meta = _get_license_interactively(licenses, group)
     else:
         lic_meta = licenses[lic]
@@ -63,7 +63,7 @@ def get_license(lic: str, group: str = "all") -> License:
 
 def _get_license_interactively(
     licenses: Dict[str, License], group: str
-) -> License:
+) -> License:  # pragma: no cover
     """Interactively ask for the license name to retrieve
 
     Parameters
