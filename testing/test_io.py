@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pytest
 import requests
 
@@ -66,3 +68,26 @@ def test_http_cache_many_gets(http_cache):
     assert contents[0] != contents[1]
     assert caches[0] != caches[1]
     assert caches[0].read_bytes() != caches[1].read_bytes()
+
+
+@pytest.mark.parametrize(
+    "http_cache", [ODLS], indirect=["http_cache"],
+)
+def test_http_cache_remove(http_cache):
+    def _cache_file(count: int):
+        caches = tuple(
+            http_cache.cachedir.glob(f"http-{http_cache.url_t_hex}-*")
+        )
+        assert len(caches) == count
+
+    n = len(tuple(map(http_cache.get, ["all", "osi", "od"])))
+    _cache_file(n)
+
+    http_cache.remove("all")  # remove one
+    _cache_file(n - 1)
+
+    http_cache.remove()  # remove the rest
+    _cache_file(0)
+
+    with pytest.raises(FileNotFoundError):
+        http_cache.remove("not-there")
