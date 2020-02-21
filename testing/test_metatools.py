@@ -1,7 +1,6 @@
 import pytest
 
-from sark import get_license
-from sark.metatools import ODLS
+from sark.metatools import ODLS, get_license, check_license
 from sark.io import HttpCache
 
 
