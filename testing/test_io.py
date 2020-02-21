@@ -1,26 +1,10 @@
 import pytest
 import requests
 
-from sark.io import HttpCache
 from sark.metatools import ODLS
 
 BAD_URL = ODLS[:-1]
 BAD_CONN = "https://iamnota.site/{}"
-
-
-@pytest.fixture
-def http_cache(request):
-    # request: special object to parametrize fixtures
-    http_cache = HttpCache(request.param)
-    yield http_cache
-    try:  # remove cache before next test
-        http_cache.remove()
-    except FileNotFoundError:
-        # some tests do not create a cache; the safeguard is probably not
-        # really required because HttpCache.remove() uses glob, which returns
-        # an empty iterator when there are no files.
-        pass
-
 
 params_all = [
     ODLS,
