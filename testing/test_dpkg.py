@@ -19,7 +19,7 @@ def test_source_type_heuristics():
         _source_type(no_file)
 
 
-@pytest.mark.skip(reason="not sure how to test")
+@pytest.mark.skip(reason="not sure how to test schema parsing")
 def test_schema_parsing():
     pass
 
