@@ -28,6 +28,23 @@ _pd_types = {
 
 
 def create_pkg(meta: Dict, resources: Iterable[Union[str, Path, Dict]]):
+    """Create a datapackage from metadata and resources.
+
+    Parameters
+    ----------
+    meta : Dict
+        A dictionary with package metadata.
+    resources : Iterable[Union[str, Path, Dict]]
+        An iterator over different resources.  Resources are just a path to
+        files, either as a string or a Path object.  It can also be a
+        dictionary as represented by the datapackage library.
+
+    Returns
+    -------
+    Package
+        A fully configured datapackage
+
+    """
     # for an interesting discussion on type hints with unions, see:
     # https://stackoverflow.com/q/60235477/289784
     pkg = Package(meta)
@@ -42,12 +59,18 @@ def create_pkg(meta: Dict, resources: Iterable[Union[str, Path, Dict]]):
 
 
 def read_pkg(pkg_json_path: Union[str, Path]):
+    """Read a `datapackage.json` file, and return a datapackage object."""
     with open(pkg_json_path) as pkg_json:
         base_path = f"{Path(pkg_json_path).parent}"
         return Package(json.load(pkg_json), base_path=base_path)
 
 
 def _source_type(source: Union[str, Path]):
+    """From a file path, deduce the file type from the extension
+
+    Note: the extension is checked against the list of supported file types
+
+    """
     # FIXME: use file magic
     source_t = Path(source).suffix.strip(".").lower()
     if source_t not in _source_ts:
@@ -56,6 +79,20 @@ def _source_type(source: Union[str, Path]):
 
 
 def _schema(resource: Resource, type_map: Dict[str, str]) -> Dict[str, str]:
+    """Parse a Resource schema and return types mapped to each column.
+
+    Parameters
+    ----------
+    resource
+        A resource descriptor
+    type_map : Dict[str, str]
+        A dictionary that maps datapackage type names to pandas types.
+
+    Returns
+    -------
+    Dict[str, str]
+
+    """
     return dict(
         glom(
             resource,  # target
