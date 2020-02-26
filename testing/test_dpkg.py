@@ -4,8 +4,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from sark.dpkg import create_pkg, read_pkg, to_df, _schema, _source_type
-from sark.metatools import get_license
+from sark.dpkg import read_pkg, to_df, _schema, _source_type
 
 
 class noop_map:
@@ -24,14 +23,7 @@ def test_schema_parsing():
     pass
 
 
-def test_pkg_creation(datadir):
-    pkg_meta = {
-        "name": "test",
-        "title": "test",
-        "licenses": get_license("CC0-1.0"),
-    }
-    csv_files = datadir.glob("*.csv")
-    pkg = create_pkg(pkg_meta, csv_files)
+def test_pkg_creation(pkg):
     resource, *_ = pkg.resources
     expected = {
         # datapackage.Package.infer(..) infers datetime as string

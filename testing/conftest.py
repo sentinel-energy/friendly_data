@@ -2,7 +2,9 @@ from pathlib import Path
 
 import pytest
 
+from sark.dpkg import create_pkg
 from sark.io import HttpCache
+from sark.metatools import get_license
 
 
 @pytest.fixture
@@ -22,3 +24,13 @@ def http_cache(request):
 @pytest.fixture
 def datadir():
     return Path("testing/data")
+
+
+@pytest.fixture
+def pkg(datadir):
+    pkg_meta = {
+        "name": "test",
+        "title": "test",
+        "licenses": get_license("CC0-1.0"),
+    }
+    return create_pkg(pkg_meta, datadir.glob("*.csv"))
