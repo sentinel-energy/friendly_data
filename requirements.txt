@@ -1,14 +1,14 @@
 coverage[toml]
 datapackage
 flake8
-glom
+glom>=19.10
 goodtables
 mypy
 mypy_extensions
 numexpr
 numpy
-pandas
-pytest
+pandas>=1.0
+pytest>=5
 pytest-cov
 requests
 tableschema
