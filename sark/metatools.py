@@ -3,7 +3,7 @@
 import json
 import logging
 from operator import contains
-from typing import Dict, Tuple
+from typing import Dict, List, Tuple
 
 from sark.io import HttpCache
 
@@ -17,6 +17,21 @@ ODLS_GROUPS = ["all", "osi", "od", "ckan"]
 
 # type aliases
 License = Dict[str, str]
+
+
+def _fetch_license(group: str = "all") -> List[License]:
+    if group not in ODLS_GROUPS:
+        raise ValueError(
+            f"unknown license group: {group},"
+            f" should be one of: {ODLS_GROUPS}"
+        )
+    cache = HttpCache(ODLS)
+    return json.loads(cache.get(group))
+
+
+def list_licenses(group: str = "all") -> List[str]:
+    """Return list of valid licenses"""
+    return list(_fetch_license(group).keys())
 
 
 def get_license(lic: str, group: str = "all") -> License:
@@ -47,13 +62,7 @@ def get_license(lic: str, group: str = "all") -> License:
 
     """
 
-    if group not in ODLS_GROUPS:
-        raise ValueError(
-            f"unknown license group: {group},"
-            f" should be one of: {ODLS_GROUPS}"
-        )
-    cache = HttpCache(ODLS)
-    licenses = json.loads(cache.get(group))
+    licenses = _fetch_license(group)
     if lic is None:  # pragma: no cover, only used from cli
         lic_meta = _get_license_interactively(licenses, group)
     else:

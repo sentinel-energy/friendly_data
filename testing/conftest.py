@@ -4,7 +4,7 @@ import pytest
 
 from sark.dpkg import create_pkg
 from sark.io import HttpCache
-from sark.metatools import get_license
+from sark.metatools import get_license, ODLS
 
 
 @pytest.fixture
@@ -19,6 +19,14 @@ def http_cache(request):
         # really required because HttpCache.remove() uses glob, which returns
         # an empty iterator when there are no files.
         pass
+
+
+@pytest.fixture
+def clean_odls_cache():
+    # hack to cleanup cache files
+    yield
+    http_cache = HttpCache(ODLS)
+    http_cache.remove()
 
 
 @pytest.fixture
