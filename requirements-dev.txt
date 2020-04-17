@@ -1,0 +1,3 @@
+coverage[toml]
+pytest>=5
+pytest-cov
