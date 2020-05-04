@@ -9,9 +9,9 @@
   "profile": "tabular-data-package",
   "resources": [
     {
-      "path": "sample-ok.csv",
+      "path": "sample-ok-1.csv",
       "profile": "tabular-data-resource",
-      "name": "sample-ok",
+      "name": "sample-ok-1",
       "format": "csv",
       "mediatype": "text/csv",
       "encoding": "utf-8",
