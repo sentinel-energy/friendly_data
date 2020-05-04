@@ -1,2 +1,29 @@
 *~
 \#*\#
+
+# byte-compiled files
+__pycache__
+
+# build output
+build
+*.egg-info
+
+.mypy*
+.pytest*
+
+.coverage
+htmlcov
+
+# binary
+*.png
+*.pdf
+
+.vscode*
+
+# cache/dump
+*.json
+*.yaml
+
+# scratch directories
+dsts
+tmp
