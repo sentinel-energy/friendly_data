@@ -147,5 +147,24 @@ def to_df(resource: Resource) -> pd.DataFrame:
     date_cols = [col for col, col_t in schema.items() if "datetime64" in col_t]
     tuple(map(schema.pop, date_cols))
 
-    # TODO: set index_col if 'required' is present
-    return reader(resource.source, dtype=schema, parse_dates=date_cols)
+    # missing values, NOTE: pandas accepts a list of "additional" tokens to be
+    # treated as missing values.
+    na_values = (
+        glom(resource, ("descriptor.schema.missingValues", set))
+        - pd._libs.parsers.STR_NA_VALUES
+    )
+    # FIXME: check if empty set is the same as None
+
+    # FIXME: how to handle constraints? e.g. 'required', 'unique', 'enum', etc
+    # see: https://specs.frictionlessdata.io/table-schema/#constraints
+
+    # set 'primaryKey' as index_col, a list is interpreted as a MultiIndex
+    index_col = glom(resource, ("descriptor.schema.primaryKey"), default=False)
+
+    return reader(
+        resource.source,
+        dtype=schema,
+        na_values=na_values,
+        index_col=index_col,
+        parse_dates=date_cols,
+    )
