@@ -15,7 +15,7 @@ import pandas as pd
 from sark.helpers import import_from
 
 # TODO: compressed files
-_source_ts = ["csv", "xls", "xlsx", "sqlite"]
+_source_ts = ["csv", "xls", "xlsx"]  # "sqlite"
 _pd_types = {
     "boolean": "bool",
     # "date": "datetime64",
@@ -138,7 +138,7 @@ def to_df(resource: Resource) -> pd.DataFrame:
         "csv": "read_csv",
         "xls": "read_excel",
         "xlsx": "read_excel",
-        "sqlite": "read_sql",
+        # "sqlite": "read_sql",
     }
     reader = import_from("pandas", pd_readers[_source_type(resource.source)])
 
