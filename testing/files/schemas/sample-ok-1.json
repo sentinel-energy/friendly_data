@@ -1,77 +1,57 @@
 {
-  "name": "test",
-  "title": "Some title",
-  "license": {
-    "name": "CC0-1.0",
-    "path": "https://creativecommons.org/publicdomain/zero/1.0/",
-    "title": "CC0 1.0"
-  },
-  "profile": "tabular-data-package",
-  "resources": [
-    {
-      "path": "sample-ok-1.csv",
-      "profile": "tabular-data-resource",
-      "name": "sample-ok-1",
-      "format": "csv",
-      "mediatype": "text/csv",
-      "encoding": "utf-8",
-      "schema": {
-        "fields": [
-          {
+    "fields": [
+        {
             "name": "time",
             "type": "datetime",
             "format": "default"
-          },
-          {
+        },
+        {
             "name": "QWE",
             "type": "integer",
             "format": "default"
-          },
-          {
+        },
+        {
             "name": "RTY",
             "type": "boolean",
             "format": "default"
-          },
-          {
+        },
+        {
             "name": "UIO",
             "type": "string",
             "format": "default"
-          },
-          {
+        },
+        {
             "name": "ASD",
             "type": "number",
             "format": "default"
-          },
-          {
+        },
+        {
             "name": "FGH",
             "type": "number",
             "format": "default"
-          },
-          {
+        },
+        {
             "name": "JKL",
             "type": "number",
             "format": "default"
-          },
-          {
+        },
+        {
             "name": "ZXC",
             "type": "number",
             "format": "default"
-          },
-          {
+        },
+        {
             "name": "VBN",
             "type": "number",
             "format": "default"
-          },
-          {
+        },
+        {
             "name": "MPQ",
             "type": "string",
             "format": "default"
-          }
-        ],
-        "missingValues": [
-          ""
-        ]
-      }
-    }
-  ]
+        }
+    ],
+    "missingValues": [
+        ""
+    ]
 }

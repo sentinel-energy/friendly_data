@@ -1,0 +1,30 @@
+{
+    "name": "test",
+    "title": "Some title",
+    "license": {
+	"name": "CC0-1.0",
+	"path": "https://creativecommons.org/publicdomain/zero/1.0/",
+	"title": "CC0 1.0"
+    },
+    "profile": "tabular-data-package",
+    "resources": [
+	{
+	    "path": "data/sample-ok-1.csv",
+	    "profile": "tabular-data-resource",
+	    "name": "sample-ok-1",
+	    "format": "csv",
+	    "mediatype": "text/csv",
+	    "encoding": "utf-8",
+	    "schema": "schemas/sample-ok-1.json"
+	},
+	{
+	    "path": "data/sample-ok-2.csv",
+	    "profile": "tabular-data-resource",
+	    "name": "sample-ok-2",
+	    "format": "csv",
+	    "mediatype": "text/csv",
+	    "encoding": "utf-8",
+	    "schema": "schemas/sample-ok-2.json"
+	}
+    ]
+}

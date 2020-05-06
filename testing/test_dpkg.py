@@ -41,14 +41,14 @@ def test_pkg_creation(pkg):
     assert _schema(resource, noop_map()) == expected
 
 
-def test_pkg_read(datadir):
-    dpkg_json = datadir / "datapackage.json"
+def test_pkg_read(pkgdir):
+    dpkg_json = pkgdir / "datapackage.json"
     pkg = read_pkg(dpkg_json)
     assert all(Path(res.source).exists() for res in pkg.resources)
 
 
-def test_pkg_conversion(datadir):
-    dpkg_json = datadir / "datapackage.json"
+def test_pkg_conversion(pkgdir):
+    dpkg_json = pkgdir / "datapackage.json"
     pkg = read_pkg(dpkg_json)
     resource, *_ = pkg.resources
     df = to_df(resource)

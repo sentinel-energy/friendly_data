@@ -30,12 +30,13 @@ def clean_odls_cache():
 
 
 @pytest.fixture
-def datadir():
-    return Path("testing/data")
+def pkgdir():
+    return Path("testing/files")
 
 
 @pytest.fixture
-def pkg(datadir):
+def pkg(pkgdir):
+    datadir = pkgdir / "data"
     pkg_meta = {
         "name": "test",
         "title": "test",

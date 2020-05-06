@@ -1,0 +1,57 @@
+{
+    "fields": [
+        {
+            "name": "lvl",
+            "type": "integer",
+            "format": "default"
+        },
+        {
+            "name": "TRE",
+            "type": "string",
+            "format": "default"
+        },
+        {
+            "name": "IUY",
+            "type": "string",
+            "format": "default"
+        },
+        {
+            "name": "APO",
+            "type": "string",
+            "format": "default"
+        },
+        {
+            "name": "FDS",
+            "type": "number",
+            "format": "default"
+        },
+        {
+            "name": "JHG",
+            "type": "number",
+            "format": "default"
+        },
+        {
+            "name": "ZLK",
+            "type": "number",
+            "format": "default"
+        },
+        {
+            "name": "VCX",
+            "type": "integer",
+            "format": "default"
+        },
+        {
+            "name": "MNB",
+            "type": "integer",
+            "format": "default"
+        },
+        {
+            "name": "remarks",
+            "type": "string",
+            "format": "default"
+        }
+    ],
+    "missingValues": [
+        ""
+    ]
+}
