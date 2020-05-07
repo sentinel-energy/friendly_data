@@ -2,9 +2,9 @@ from pathlib import Path
 
 import pytest
 
-from sark.dpkg import create_pkg
+from sark.dpkg import read_pkg
 from sark.io import HttpCache
-from sark.metatools import get_license, ODLS
+from sark.metatools import ODLS
 
 
 @pytest.fixture
@@ -36,10 +36,5 @@ def pkgdir():
 
 @pytest.fixture
 def pkg(pkgdir):
-    datadir = pkgdir / "data"
-    pkg_meta = {
-        "name": "test",
-        "title": "test",
-        "licenses": get_license("CC0-1.0"),
-    }
-    return create_pkg(pkg_meta, datadir.glob("*.csv"))
+    dpkg_json = pkgdir / "datapackage.json"
+    return read_pkg(dpkg_json)
