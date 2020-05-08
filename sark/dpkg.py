@@ -21,7 +21,7 @@ _pd_types = {
     # "date": "datetime64",
     # "time": "datetime64",
     "datetime": "datetime64",
-    "integer": "int",
+    "integer": "Int64",
     "number": "float",
     "string": "string",
 }

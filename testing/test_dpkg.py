@@ -72,7 +72,9 @@ def test_pkg_to_df(pkg, tmp_path_factory, subtests):
             df = to_df(resource)
             from_impl = expected_schema(df, type_map={})
             # read from file; strings are read as `object`, remap to `string`
-            raw = expected_schema(resource, type_map={"object": "string"})
+            raw = expected_schema(
+                resource, type_map={"object": "string", "int64": "Int64"}
+            )
             # impl marks columns as timestamps based on the schema.  similarly
             # as per the schema, remap timestamp columns as timestamps
             ts_cols = [
