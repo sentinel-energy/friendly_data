@@ -19,7 +19,7 @@ ODLS_GROUPS = ["all", "osi", "od", "ckan"]
 License = Dict[str, str]
 
 
-def _fetch_license(group: str = "all") -> List[License]:
+def _fetch_license(group: str = "all") -> Dict:
     if group not in ODLS_GROUPS:
         raise ValueError(
             f"unknown license group: {group},"
