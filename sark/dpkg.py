@@ -7,6 +7,7 @@ PS: the coincidential module name is intentional ;)
 import json
 from pathlib import Path
 from typing import Dict, Iterable, Union
+from zipfile import ZipFile
 
 from datapackage import Package, Resource
 from glom import glom
@@ -58,11 +59,44 @@ def create_pkg(meta: Dict, resources: Iterable[Union[str, Path, Dict]]):
     return pkg
 
 
-def read_pkg(pkg_json_path: Union[str, Path]):
-    """Read a `datapackage.json` file, and return a datapackage object."""
-    with open(pkg_json_path) as pkg_json:
-        base_path = f"{Path(pkg_json_path).parent}"
-        return Package(json.load(pkg_json), base_path=base_path)
+def read_pkg(
+    pkg_path: Union[str, Path], extract_dir: Union[str, Path, None] = None
+):
+    """Read a  datapackage
+
+    If `pkg_path` points to a `datapackage.json` file, read it as is.  If it
+    points to a zip archive.  The archive is first extracted before opening it.
+    If `extract_dir` is not provided, the current directory of the zip archive
+    is used.
+
+    Parameters
+    ----------
+    pkg_path : Union[str, Path]
+        Path to the `datapackage.json` file, or a zip archive
+
+    extract_dir : Union[str, Path]
+        Path to which the zip archive is extracted
+
+    Returns
+    -------
+    Package
+
+    """
+    pkg_path = Path(pkg_path)
+    if pkg_path.suffix == ".json":
+        with open(pkg_path) as pkg_json:
+            base_path = f"{Path(pkg_path).parent}"
+            return Package(json.load(pkg_json), base_path=base_path)
+    elif pkg_path.suffix == ".zip":
+        if extract_dir is None:
+            extract_dir = pkg_path.parent
+        with ZipFile(pkg_path) as pkg_zip:
+            pkg_zip.extractall(path=extract_dir)
+            with open(extract_dir / "datapackage.json") as pkg_json:
+                return Package(json.load(pkg_json), base_path=f"{extract_dir}")
+    else:
+        raise ValueError(f"{pkg_path}: expecting a JSON or ZIP file")
+
 
 
 def _source_type(source: Union[str, Path]):

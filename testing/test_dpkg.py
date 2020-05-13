@@ -6,7 +6,14 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from sark.dpkg import create_pkg, to_df, _schema, _source_type
+from sark.dpkg import (
+    create_pkg,
+    read_pkg,
+    to_df,
+    write_pkg,
+    _schema,
+    _source_type,
+)
 from sark.metatools import get_license
 
 
@@ -61,11 +68,33 @@ def test_pkg_creation(pkgdir, subtests):
             assert _schema(resource, noop_map()) == expected_schema(resource)
 
 
-def test_pkg_read(pkg):
+def test_pkg_read(pkgdir):
+    dpkg_json = pkgdir / "datapackage.json"
+    pkg = read_pkg(dpkg_json)
     assert all(Path(res.source).exists() for res in pkg.resources)
 
 
-def test_pkg_to_df(pkg, tmp_path_factory, subtests):
+def test_zippkg_read(pkg, tmp_path_factory, subtests):
+    with tmp_path_factory.mktemp("ziptest-") as tmpdir:
+        zipfile = tmpdir / "testpackage.zip"
+        pkg.save(f"{zipfile}")
+
+        testname = f"{zipfile} -> {zipfile.parent}"
+        with subtests.test(msg="extract zip in current dir", name=testname):
+            pkg = read_pkg(zipfile)
+            assert pkg.valid
+
+        subdir = zipfile.parent / "foo"
+        testname = f"{zipfile} -> {subdir}"
+        with subtests.test(msg="extract zip in different dir", name=testname):
+            pkg2 = read_pkg(zipfile, extract_dir=subdir)
+            assert pkg2.valid
+
+        with subtests.test(msg="unsupported archive", name="tarball"):
+            tarball = tmpdir / "testpackage.tar"
+            with pytest.raises(ValueError, match=f"{tarball}:.+"):
+                read_pkg(tarball)
+
     for resource in pkg.resources:
         with subtests.test(msg="default resource", name=resource.name):
             # test target, don't touch this
