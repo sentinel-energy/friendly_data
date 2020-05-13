@@ -95,6 +95,8 @@ def test_zippkg_read(pkg, tmp_path_factory, subtests):
             with pytest.raises(ValueError, match=f"{tarball}:.+"):
                 read_pkg(tarball)
 
+
+def test_pkg_to_df(pkg, subtests):
     for resource in pkg.resources:
         with subtests.test(msg="default resource", name=resource.name):
             # test target, don't touch this
