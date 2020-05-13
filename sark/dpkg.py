@@ -98,6 +98,19 @@ def read_pkg(
         raise ValueError(f"{pkg_path}: expecting a JSON or ZIP file")
 
 
+def write_pkg(pkg, pkg_path: Union[str, Path]):
+    """Write data package to a zip file
+
+    NOTE: This exists because we want to support saving to other kinds of
+    archives like tar, maybe even HDF5, or NetCDF.
+
+    """
+    pkg_path = Path(pkg_path)
+    if pkg_path.suffix == ".zip":
+        pkg.save(pkg_path)
+    else:
+        raise ValueError(f"{pkg_path}: not a zip file")
+
 
 def _source_type(source: Union[str, Path]):
     """From a file path, deduce the file type from the extension

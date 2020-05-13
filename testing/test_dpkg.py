@@ -1,6 +1,5 @@
 from pathlib import Path
 
-from datapackage import Package
 from glom import Assign, glom
 import numpy as np
 import pandas as pd
@@ -155,13 +154,15 @@ def test_pkg_to_df(pkg, subtests):
         assert df.isna().any(axis=None)
 
 
-@pytest.mark.skip(reason="not implmented")
-def test_pkg_write(pkg, tmp_path_factory):
-    with tmp_path_factory.mktemp("mutate-") as tmpdir:
-        # create new datapackage
-        newpkg = Package(pkg.descriptor, base_path=str(tmpdir))
-        # write CSV files
-        for old, new in zip(pkg.resources, newpkg.resources):
-            dest = Path(new.source)
-            dest.parent.mkdir(parents=True, exist_ok=True)
-            dest.write_text(Path(old.source).read_text())
+def test_pkg_write(pkg, tmp_path_factory, subtests):
+    with tmp_path_factory.mktemp("pkgwrite-") as tmpdir:
+        zipfile = tmpdir / "testpkg.zip"
+
+        with subtests.test(msg="save as zip", name=f"{zipfile}"):
+            write_pkg(pkg, f"{zipfile}")
+            assert zipfile.exists()
+
+        tarfile = tmpdir / "testpkg.tar"
+        with subtests.test(msg="unsupported archive", name=f"{tarfile}"):
+            with pytest.raises(ValueError, match=f"{tarfile}:.+"):
+                write_pkg(pkg, f"{tarfile}")
