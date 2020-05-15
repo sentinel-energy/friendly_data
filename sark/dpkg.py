@@ -90,6 +90,8 @@ def read_pkg(
     elif pkg_path.suffix == ".zip":
         if extract_dir is None:
             extract_dir = pkg_path.parent
+        else:
+            extract_dir = Path(extract_dir)
         with ZipFile(pkg_path) as pkg_zip:
             pkg_zip.extractall(path=extract_dir)
             with open(extract_dir / "datapackage.json") as pkg_json:
