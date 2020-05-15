@@ -1,8 +1,11 @@
 """Helpers"""
 
 from collections import Sequence
+from functools import partial
 from importlib import import_module
 from typing import Iterable
+
+from glom import Check, SKIP
 
 
 def import_from(module: str, name: str):
@@ -16,3 +19,6 @@ def flatten_list(lst: Iterable) -> Iterable:
             yield from flatten_list(el)
         else:
             yield el
+
+
+select = partial(Check, default=SKIP)

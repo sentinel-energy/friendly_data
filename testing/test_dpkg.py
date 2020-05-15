@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from glom import Assign, glom
+from glom import Assign, glom, T
 import numpy as np
 import pandas as pd
 import pytest
@@ -9,10 +9,12 @@ from sark.dpkg import (
     create_pkg,
     read_pkg,
     to_df,
+    update_pkg,
     write_pkg,
     _schema,
     _source_type,
 )
+from sark.helpers import select
 from sark.metatools import get_license
 
 
@@ -93,6 +95,58 @@ def test_zippkg_read(pkg, tmp_path_factory, subtests):
             tarball = tmpdir / "testpackage.tar"
             with pytest.raises(ValueError, match=f"{tarball}:.+"):
                 read_pkg(tarball)
+
+
+def test_pkg_update(pkg, subtests):
+    with subtests.test(msg="schema field update", name="single"):
+        resource_name = "sample-ok-1"
+        update = {
+            "time": {"name": "time", "type": "string", "format": "default"}
+        }
+        assert update_pkg(pkg, resource_name, update)
+        res, *_ = glom(
+            pkg.descriptor,
+            (
+                "resources",
+                [select(T["name"], equal_to=resource_name)],
+                "0.schema.fields",
+                [select(T["name"], equal_to="time")],
+            ),
+        )
+        assert update["time"] == res
+
+    with subtests.test(msg="schema field update", name="multiple"):
+        update = {
+            "time": {"name": "time", "type": "datetime", "format": "default"},
+            "QWE": {"name": "QWE", "type": "string", "format": "default"},
+        }
+        assert update_pkg(pkg, resource_name, update)
+        res = glom(
+            pkg.descriptor,
+            (
+                "resources",
+                [select(T["name"], equal_to=resource_name)],
+                "0.schema.fields",
+                [select(T["name"], one_of=update.keys())],
+            ),
+        )
+        assert list(update.values()) == res
+
+    with subtests.test(msg="schema NA/index update"):
+        resource_name = "sample-ok-2"
+        update = {"primaryKey": ["lvl", "TRE", "IUY"]}
+        assert update_pkg(pkg, resource_name, update, fields=False)
+        res = glom(
+            pkg.descriptor,
+            (
+                "resources",
+                [select(T["name"], equal_to=resource_name)],
+                "0.schema.primaryKey",
+            ),
+        )
+        assert update["primaryKey"] == res
+
+    # FIXME: test assertions inside update_pkg
 
 
 def test_pkg_to_df(pkg, subtests):

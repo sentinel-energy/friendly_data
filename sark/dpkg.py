@@ -98,6 +98,52 @@ def read_pkg(
         raise ValueError(f"{pkg_path}: expecting a JSON or ZIP file")
 
 
+def update_pkg(pkg, resource, schema_update: Dict, fields: bool = True):
+    """Update package resource schema
+
+    Parameters
+    ----------
+    pkg
+        Package object
+
+    resource
+        Resource name
+
+    schema_update : Dict
+
+        Updated fields in the schema, if `field` is `False`, can be used to
+        update `missingValues`, or `primaryKey`.  When updating the schema, it
+        looks like this ('foo'/'bar' are names of the fields being updated):
+          {
+            "foo": {"name": "foo", "type": "datetime", "format": "default"},
+            "bar": {"name": "bar", "type": "integer", "format": "default"}
+          }
+
+    fields : bool (default: True)
+        If the schema update is a field, or not
+
+    Returns
+    -------
+    bool
+        Return the `Package.valid` flag; `True` if the update was valid.
+
+    """
+    desc = pkg.descriptor
+    res, *_ = [res for res in desc["resources"] if res["name"] == resource]
+    if fields:
+        for field in res["schema"]["fields"]:
+            if field["name"] in schema_update:
+                field.update(schema_update[field["name"]])
+    else:
+        # FIXME: do the following checks properly
+        assert "fields" not in schema_update, "cannot add fields to schema"
+        # prevents from adding additional keys
+        assert set(schema_update) - {"primaryKey", "missingValues"} == set()
+        res["schema"].update(schema_update)
+    pkg.commit()
+    return pkg.valid
+
+
 def write_pkg(pkg, pkg_path: Union[str, Path]):
     """Write data package to a zip file
 
