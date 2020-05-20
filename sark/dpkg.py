@@ -208,7 +208,7 @@ def _schema(resource: Resource, type_map: Dict[str, str]) -> Dict[str, str]:
     )
 
 
-def to_df(resource: Resource) -> pd.DataFrame:
+def to_df(resource: Resource, noexcept: bool = False) -> pd.DataFrame:
     """"Reads a data package resource as a `pandas.DataFrame`
 
     FIXME: only considers 'name' and 'type' in the schema, other options like
@@ -218,24 +218,41 @@ def to_df(resource: Resource) -> pd.DataFrame:
     ----------
     resource : `datapackage.Resource`
         A data package resource object
+    noexcept : bool (default: False)
+        Whether to suppress an exception
 
     Returns
     -------
-    `pandas.DataFrame`
+    pandas.DataFrame
 
     Raises
     ------
-    `ValueError`
+    ValueError
+        If the resource is not local
         If the source type the resource is pointing to isn't supported
 
     """
+    if not resource.local:
+        if noexcept:
+            return None
+        else:
+            raise ValueError(f"{resource.source}: not a local resource")
+
     pd_readers = {
         "csv": "read_csv",
         "xls": "read_excel",
         "xlsx": "read_excel",
         # "sqlite": "read_sql",
     }
-    reader = import_from("pandas", pd_readers[_source_type(resource.source)])
+    try:
+        reader = import_from(
+            "pandas", pd_readers[_source_type(resource.source)]
+        )
+    except ValueError:
+        if noexcept:
+            return None
+        else:
+            raise
 
     # parse dates
     schema = _schema(resource, _pd_types)
