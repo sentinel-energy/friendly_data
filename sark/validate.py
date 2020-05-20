@@ -11,6 +11,23 @@ from goodtables import validate
 
 
 def check_pkg(pkg_desc: Dict, _filter: Callable = lambda res: True) -> Dict:
+    """Validate all resources in a datapackage
+
+    Parameters
+    ----------
+    pkg_desc : Dict
+        The datapackage descriptor dictionary
+    _filter : Callable
+        A predicate function that maybe passed to filter out data resources.
+        The function is called with the data resource descriptor dictionary as
+        argument, if it returns `False` the resource is skipped
+
+    Returns
+    -------
+    Dict
+        A dictionary with a summary of the validation checks.
+
+    """
     validation_spec = (
         "resources",
         [
