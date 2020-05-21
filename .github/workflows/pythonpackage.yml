@@ -17,22 +17,22 @@ jobs:
 
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install flake8
-    - name: Lint w/ flake8 - syntax error or undefined names
-      run: |
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-    - name: Lint w/ flake8 - all
-      continue-on-error: true
-      run: |
-        flake8 . --count --max-complexity=10 --max-line-length=127 --statistics
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8
+      - name: Lint w/ flake8 - syntax error or undefined names
+        run: |
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+      - name: Lint w/ flake8 - all
+        continue-on-error: true
+        run: |
+          flake8 . --count --max-complexity=10 --max-line-length=127 --statistics
 
   test:
     if: "!contains(github.event.head_commit.message, 'skip ci')"
@@ -45,25 +45,25 @@ jobs:
 
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install -r requirements-dev.txt
-        pip install -e .
-    - name: Test w/ pytest
-      run: |
-        pytest
-    - name: Code coverage
-      uses: codecov/codecov-action@v1.0.5
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        flags: unittests
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+          pip install -e .
+      - name: Test w/ pytest
+        run: |
+          pytest
+      - name: Code coverage
+        uses: codecov/codecov-action@v1.0.5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: unittests
 
   style:
     if: "!contains(github.event.head_commit.message, 'skip ci')"
@@ -75,18 +75,18 @@ jobs:
 
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install black toml
-    - name: Format source w/ black
-      # fail when file(s) would be formatted
-      run: black --check .
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install black toml
+      - name: Format source w/ black
+        # fail when file(s) would be formatted
+        run: black --check .
 
   type-hints:
     if: "!contains(github.event.head_commit.message, 'skip ci')"
@@ -99,14 +99,14 @@ jobs:
     runs-on: ${{ matrix.os }}
     continue-on-error: true
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install mypy{,_extensions}
-    - name: Type check w/ mypy
-      run: mypy --pretty
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install mypy{,_extensions}
+      - name: Type check w/ mypy
+        run: mypy --pretty
