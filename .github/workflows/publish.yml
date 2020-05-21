@@ -19,13 +19,21 @@ jobs:
           python-version: 3.8
       - name: Install dependencies
         run: |
+          apt-get install -y \
+            texlive-latex-recommended \
+            texlive-fonts-recommended \
+            texlive-latex-extra \
+            latexmk
           python -m pip install --upgrade pip
           pip install -r requirements-docs.txt
       - name: Build docs
         run: |
           make -C doc html
+          make -C doc latexpdf
+          cp doc/_build/latex/sentinel-data-format.pdf doc/_build/html/
       - name: Publish pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: doc/_build/html
+          force-orphan: true
