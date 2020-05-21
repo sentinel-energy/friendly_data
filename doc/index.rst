@@ -21,6 +21,9 @@ API documentation
 
    api/api
 
+..
+   Download the API docs as a :download:`PDF<_build/latex/sentinel-archive-api-docs.pdf>`.
+
 Indices and tables
 ------------------
 

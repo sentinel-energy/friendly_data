@@ -78,5 +78,12 @@ latex_documents = [
         "",
         "SENTINEL collaboration",
         "howto",
-    )
+    ),
+    # (
+    #     "api/api",
+    #     "sentinel-archive-api-docs.tex",
+    #     "SENTINEL archive API docs",
+    #     "",
+    #     "manual",
+    # ),
 ]
