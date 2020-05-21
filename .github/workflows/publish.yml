@@ -28,9 +28,8 @@ jobs:
           pip install -r requirements-docs.txt
       - name: Build docs
         run: |
-          make -C doc html
           make -C doc latexpdf
-          cp doc/_build/latex/sentinel-data-format.pdf doc/_build/html/
+          make -C doc html
       - name: Publish pages
         uses: peaceiris/actions-gh-pages@v3
         with:

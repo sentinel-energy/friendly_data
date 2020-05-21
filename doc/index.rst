@@ -11,6 +11,8 @@ Welcome to SENTINEL archive's documentation!
 
 .. include:: hands-on.rst
 
+Download the hands-on overview as a :download:`PDF<_build/latex/sentinel-data-format.pdf>`.
+
 API documentation
 -----------------
 
