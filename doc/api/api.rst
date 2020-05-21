@@ -1,5 +1,8 @@
 .. contents::
 
+Technical documentation of functions and classes provided by the
+different ``sark`` modules.
+
 Metadata tools
 --------------
 
@@ -20,5 +23,6 @@ Internal interfaces
 
 .. automodule:: sark.io
 
+----
 
 .. automodule:: sark.helpers
