@@ -207,6 +207,21 @@ def test_pkg_to_df(pkg, subtests):
         df = to_df(resource)
         assert df.isna().any(axis=None)
 
+    resource = pkg.resources[0]
+    update = {
+        "path": resource.descriptor["path"].replace("csv", "txt"),
+        "mediatype": resource.descriptor["mediatype"].replace("csv", "plain"),
+    }
+    resource.descriptor.update(update)
+    resource.commit()
+    with subtests.test(msg="unsupported resource type", name=resource.name):
+        # default behaviour
+        with pytest.raises(ValueError, match="unsupported source.+"):
+            df = to_df(resource)
+
+        # suppress exceptions
+        assert to_df(resource, noexcept=True) is None
+
 
 def test_pkg_write(pkg, tmp_path_factory, subtests):
     with tmp_path_factory.mktemp("pkgwrite-") as tmpdir:

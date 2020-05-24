@@ -232,7 +232,7 @@ def to_df(resource: Resource, noexcept: bool = False) -> pd.DataFrame:
         If the source type the resource is pointing to isn't supported
 
     """
-    if not resource.local:
+    if not resource.local:  # pragma: no cover, not implemented
         if noexcept:
             return None
         else:
