@@ -93,7 +93,7 @@ def test_zippkg_read(pkg, tmp_path_factory, subtests):
 
         with subtests.test(msg="unsupported archive", name="tarball"):
             tarball = tmpdir / "testpackage.tar"
-            with pytest.raises(ValueError, match=f"{tarball}:.+"):
+            with pytest.raises(ValueError, match=f".*{tarball.name}:.+"):
                 read_pkg(tarball)
 
 
@@ -218,5 +218,5 @@ def test_pkg_write(pkg, tmp_path_factory, subtests):
 
         tarfile = tmpdir / "testpkg.tar"
         with subtests.test(msg="unsupported archive", name=f"{tarfile}"):
-            with pytest.raises(ValueError, match=f"{tarfile}:.+"):
+            with pytest.raises(ValueError, match=f".*{tarfile.name}:.+"):
                 write_pkg(pkg, f"{tarfile}")
