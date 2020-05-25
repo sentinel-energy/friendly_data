@@ -2,9 +2,11 @@ name: Unit tests
 
 on:
   push:
-    branches:
-      - master
+    paths-ignore:
+      - "doc/**"
   pull_request:
+    paths-ignore:
+      - "doc/**"
 
 jobs:
   lint:
