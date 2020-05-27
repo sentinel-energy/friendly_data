@@ -72,11 +72,11 @@ def check_schema(
 
     Returns
     -------
-    Tuple[bool, Union[Set, Set[str]], Union[Dict, Dict[str, Tuple[str, str]]]]
+    result : Tuple[bool, Union[Set, Set[str]], Union[Dict, Dict[str, Tuple[str, str]]]]
         Result tuple:
+
         - Boolean flag indicating if it passed the checks or not
         - If checks failed, set of missing columns from minimal set
-
         - If checks failed, set of columns with mismatching types.  It is a
           dictionary with the column name as key, and the reference type and
           the actual type in a tuple as value. ::
