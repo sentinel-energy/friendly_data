@@ -22,4 +22,24 @@ def flatten_list(lst: Iterable) -> Iterable:
 
 
 select = partial(Check, default=SKIP)
+select.__doc__ = f"""
+Wrap `glom.Check` object with the default action set to `glom.SKIP`.
+
+This is very useful to select items inside nested data structures.  A few
+example uses:
+
+>>> from glom import glom
+>>> cols = [
+...     {"name": "abc", "type": "integer"},
+...     {"name": "def", "type": "string"},
+... ]
+>>> select(cols, [select("name", equal_to="abc")])
+[{"name": "abc", "type": "integer"}]
+
+Full documentation of `glom.Check` is below:
+
+{Check.__doc__}
+"""
+
 consume = partial(deque, maxlen=0)
+consume.__doc__ = "Consume or exhaust an iterator"
