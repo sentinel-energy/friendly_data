@@ -1,6 +1,6 @@
 """Helpers"""
 
-from collections import Sequence
+from collections import deque, Sequence
 from functools import partial
 from importlib import import_module
 from typing import Iterable
@@ -22,3 +22,4 @@ def flatten_list(lst: Iterable) -> Iterable:
 
 
 select = partial(Check, default=SKIP)
+consume = partial(deque, maxlen=0)
