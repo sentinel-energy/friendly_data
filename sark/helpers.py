@@ -30,11 +30,11 @@ example uses:
 
 >>> from glom import glom
 >>> cols = [
-...     {"name": "abc", "type": "integer"},
-...     {"name": "def", "type": "string"},
+...     {{"name": "abc", "type": "integer"}},
+...     {{"name": "def", "type": "string"}},
 ... ]
 >>> select(cols, [select("name", equal_to="abc")])
-[{"name": "abc", "type": "integer"}]
+[{{"name": "abc", "type": "integer"}}]
 
 Full documentation of `glom.Check` is below:
 
