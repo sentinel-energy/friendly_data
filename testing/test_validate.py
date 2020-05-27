@@ -1,12 +1,14 @@
 from collections import defaultdict
+from copy import deepcopy
+import json
 
 from glom import glom, Iter
 import pytest
 
 from sark.dpkg import create_pkg
-from sark.helpers import flatten_list
+from sark.helpers import flatten_list, consume
 from sark.metatools import get_license
-from sark.validate import check_pkg
+from sark.validate import check_pkg, check_schema
 
 
 def test_check_pkg(pkgdir, subtests):
@@ -54,3 +56,27 @@ def test_check_pkg(pkgdir, subtests):
     # missing value: (11, 9)
     assert counter["missing-value"] == 1
     assert (11, 9, 99, 2, 101, 3) == err_row_cols
+
+
+def test_check_schema(pkgdir):
+    with open(pkgdir / "schemas/sample-ok-1.json") as json_file:
+        schema = json.load(json_file)
+
+    ref = deepcopy(schema)
+    consume(map(ref["fields"].pop, [-2] * 3))  # drop 'VBN', 'ZXC', and 'JKL'
+
+    schema_bad = deepcopy(schema)
+    schema_bad["fields"][-2]["name"] = "FJW"  # rename 'VBN', no error
+    schema_bad["fields"][4]["name"] = "WOP"  # rename 'ASD', missing column
+    # 'time': 'datetime' -> 'string', mismatching type
+    schema_bad["fields"][0]["type"] = "string"
+    # 'QWE': 'integer' -> 'number', mismatching type
+    schema_bad["fields"][1]["type"] = "number"
+
+    assert check_schema(ref, schema) == (True, set(), dict())
+
+    status, missing, mismatch = check_schema(ref, schema_bad)
+    assert status is False
+    assert missing == {"ASD"}
+    assert mismatch.get("time") == ("datetime", "string")
+    assert mismatch.get("QWE") == ("integer", "number")
