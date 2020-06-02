@@ -22,15 +22,16 @@ summarised below:
 ============  ===============
 schema type   ``pandas`` type
 ============  ===============
-boolean       bool
-datetime      datetime64
-integer       Int64
-number        float
-string        string
+``boolean``   ``bool``
+``datetime``  ``datetime64``
+``integer``   ``Int64``
+``number``    ``float``
+``string``    ``string``
 ============  ===============
 
 Note the choice of ``Int64`` and ``string`` among the types.  This
-adds a minimum requirement of Pandas version 1.  ``Int64`` allows you
-to have missing values in integer columns, which would be otherwise
-impossible; and using ``string`` is much more space efficient, making
-it easier to manage larger datasets with lots of text fields.
+adds a minimum requirement of Pandas version 1.0.  ``Int64`` allows
+you to have missing values in integer columns, which would be
+otherwise impossible; and using ``string`` is much more space
+efficient, making it easier to manage larger datasets with lots of
+text fields.

@@ -1,15 +1,10 @@
-What is a ``datapackage``?
---------------------------
+Using a ``datapackage`` from Python
+-------------------------------------
 
-A datapackage consists of a set of data files, any related source
-code, relevant licenses, and a ``datapackage.json`` file that records
-all this information in a single place.  The details of the
-specification can be found on the website_ for frictionless data.
+The Python libraryprovides a convenient way to create, modify, and
+read datapackages.  Some of the API is described below with code
+examples for illustration.
 
-.. _website: https://specs.frictionlessdata.io/
-
-A Hands-on Overview:
-++++++++++++++++++++
 
 .. toctree::
    :maxdepth: 2

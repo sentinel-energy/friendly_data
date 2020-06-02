@@ -7,6 +7,8 @@ Welcome to SENTINEL archive's documentation!
    overview
    hands-on
 
+.. include:: intro.rst
+
 .. include:: overview.rst
 
 .. include:: hands-on.rst

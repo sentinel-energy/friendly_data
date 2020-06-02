@@ -31,8 +31,9 @@ jobs:
           pip install -r requirements-docs.txt
       - name: Build docs
         run: |
-          make -C doc latexpdf
-          make -C doc html
+          wget https://code.orgmode.org/bzg/org-mode/raw/master/contrib/scripts/ditaa.jar -P doc
+          java -Dfile.encoding=UTF-8 -jar doc/ditaa.jar doc/ecosystem.txt doc/ecosystem.png
+          make -C doc latexpdf html
       - name: Publish pages
         uses: peaceiris/actions-gh-pages@v3
         with:
