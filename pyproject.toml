@@ -24,8 +24,10 @@ build-backend = "setuptools.build_meta"
 # [tool.setuptools_scm]
 # write_to = "sark/version.py"
 
-[tool.pytest]
-# not yet supported, see: https://github.com/pytest-dev/pytest/issues/1556
+[tool.pytest.ini_options]
+# used for pytest>=6.0, see: https://github.com/pytest-dev/pytest/pull/7247
+addopts = "-ra -q --cov=sark"
+# --doctest-modules --doctest-continue-on-failure
 
 [tool.coverage.run]
 omit = ["sark/cli.py"]
