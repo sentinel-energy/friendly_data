@@ -68,6 +68,17 @@ def test_check_schema(pkgdir):
     schema_bad = deepcopy(schema)
     schema_bad["fields"][-2]["name"] = "FJW"  # rename 'VBN', no error
     schema_bad["fields"][4]["name"] = "WOP"  # rename 'ASD', missing column
+
+    status, missing, mismatch = check_schema(ref, schema_bad)
+    assert status is False
+    assert missing == {"ASD"}
+
+    status, missing, mismatch = check_schema(
+        ref, schema_bad, remap={"WOP": "ASD"}
+    )
+    assert status is True
+    assert missing == set()
+
     # 'time': 'datetime' -> 'string', mismatching type
     schema_bad["fields"][0]["type"] = "string"
     # 'QWE': 'integer' -> 'number', mismatching type
@@ -77,6 +88,5 @@ def test_check_schema(pkgdir):
 
     status, missing, mismatch = check_schema(ref, schema_bad)
     assert status is False
-    assert missing == {"ASD"}
     assert mismatch.get("time") == ("datetime", "string")
     assert mismatch.get("QWE") == ("integer", "number")

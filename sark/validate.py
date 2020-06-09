@@ -70,7 +70,7 @@ def check_schema(
     dst : Dict[str, str]
         Schema descriptor dictionary from the dataset being validated
     remap : Dict[str, str] (optional)
-       Column/field name remapping (ignored for now)
+       Column/field names that are to be remapped before checking.
 
     Returns
     -------
@@ -95,6 +95,15 @@ def check_schema(
     ref_: List[Dict[str, str]]
     dst_: List[Dict[str, str]]
     ref_, dst_ = glom(schema, [T.pop("fields")])
+
+    if remap:
+        dst_ = [
+            {
+                **i,
+                "name": remap[i["name"]] if i["name"] in remap else i["name"],
+            }
+            for i in dst_
+        ]
 
     # column names
     ref_set: Set[str]
