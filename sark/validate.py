@@ -45,11 +45,13 @@ def check_pkg(pkg_desc: Dict, _filter: Callable = lambda res: True) -> Dict:
     )
 
 
+_cols = Union[Set, Set[str]]
+_mismatch = Union[Dict, Dict[str, Tuple[str, str]]]
+
+
 def check_schema(
     ref: Dict[str, str], dst: Dict[str, str], *, remap: Dict[str, str] = None
-) -> Tuple[
-    bool, Union[Set, Set[str]], Union[Dict, Dict[str, Tuple[str, str]]]
-]:
+) -> Tuple[bool, _cols, _mismatch]:
     """Compare a schema with a reference.
 
     The reference schema is a minimal set, meaning, any additional fields in

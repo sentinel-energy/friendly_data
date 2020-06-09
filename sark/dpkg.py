@@ -13,7 +13,7 @@ from datapackage import Package, Resource
 from glom import glom
 import pandas as pd
 
-from sark.helpers import import_from
+from sark.helpers import consume, import_from
 
 # TODO: compressed files
 _source_ts = ["csv", "xls", "xlsx"]  # "sqlite"
@@ -257,7 +257,7 @@ def to_df(resource: Resource, noexcept: bool = False) -> pd.DataFrame:
     # parse dates
     schema = _schema(resource, _pd_types)
     date_cols = [col for col, col_t in schema.items() if "datetime64" in col_t]
-    tuple(map(schema.pop, date_cols))
+    consume(map(schema.pop, date_cols))
 
     # missing values, NOTE: pandas accepts a list of "additional" tokens to be
     # treated as missing values.
