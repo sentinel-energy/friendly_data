@@ -186,6 +186,7 @@ def _schema(resource: Resource, type_map: Dict[str, str]) -> Dict[str, str]:
     Returns
     -------
     Dict[str, str]
+        Dictionary with column names as key, and types as values
 
     """
     return dict(
@@ -196,11 +197,8 @@ def _schema(resource: Resource, type_map: Dict[str, str]) -> Dict[str, str]:
                 [  # fields inside a list
                     (
                         "descriptor",  # Field property
-                        lambda t: (  # str -> dtypes understood by pandas
-                            t["name"],
-                            type_map[t["type"]]
-                            # (_type_d[t["type"]], t["format"]),
-                        ),
+                        # string names -> string dtypes understood by pandas
+                        lambda t: (t["name"], type_map[t["type"]]),
                     )
                 ],
             ),
