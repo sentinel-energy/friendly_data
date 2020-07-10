@@ -19,9 +19,11 @@ from sark.helpers import consume, import_from
 _source_ts = ["csv", "xls", "xlsx"]  # "sqlite"
 _pd_types = {
     "boolean": "bool",
-    # "date": "datetime64",
-    # "time": "datetime64",
+    "date": "datetime64",
+    "time": "datetime64",
     "datetime": "datetime64",
+    "year": "datetime64",
+    "yearmonth": "datetime64",
     "integer": "Int64",
     "number": "float",
     "string": "string",
