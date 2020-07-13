@@ -74,7 +74,8 @@ def read_timeseries(
         List of columns to be combined to construct the datetime values
 
     col_units : str (for "table" mode)
-        Time units for the columns
+        Time units for the columns.  Accepted values are: "days", "day",
+        "hours", "hour", "minutes", "minute", "seconds", "second".
 
     zero_idx : bool (for "table" mode)
         Whether the columns are zero indexed.  When the columns represent
