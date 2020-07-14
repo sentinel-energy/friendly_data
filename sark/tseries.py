@@ -63,7 +63,8 @@ def read_timeseries(
 
     If `source_t` is not specified (or set to an empty string), options
     specific to this function are ignored, and all other keyword options are
-    passed on to the backend transparently; it's a noop.
+    passed on to the backend transparently; in case of reading a CSV with
+    Pandas, that would include all valid keywords for `pandas.read_csv`.
 
     Parameters
     ----------
