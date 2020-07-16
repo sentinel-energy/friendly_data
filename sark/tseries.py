@@ -1,19 +1,10 @@
+from datetime import datetime
 from pathlib import Path
 from typing import List, TypeVar, Union
-from warnings import warn
+import warnings
 
 import pandas as pd
 
-_time_units = (
-    "days",
-    "day",
-    "hours",
-    "hour",
-    "minutes",
-    "minute",
-    "seconds",
-    "second",
-)
 
 _path_t = Union[str, Path]
 _col_t = TypeVar("_col_t", int, str)
@@ -25,6 +16,7 @@ def read_timeseries(
     date_cols: Union[List[_col_t], None] = None,
     col_units: Union[str, None] = None,
     zero_idx: bool = False,
+    row_fmt: str = "",
     source_t: str = "",
     **kwargs,
 ):
@@ -43,9 +35,9 @@ def read_timeseries(
      4/1/2016      3   11    ..   4.3   9.1
     ===========  ===  ===  ====  ====  ====
 
-    When `source_t` is set to "table", this function reads a tabular dataset,
-    like the one above, and flattens it into a series, while setting the
-    appropriate datetime values as their index.
+    When `source_t` is set to "table", this function reads a tabular dataset
+    like the one above, and flattens it into a series, and sets the appropriate
+    datetime values as their index.
 
     The other common structure is to split the datetime values into multiple
     columns in the table:
@@ -57,14 +49,14 @@ def read_timeseries(
      4/1/2016     11:00    3.14    bar
     ===========  ======  ======  ======
 
-    When `source_t` is set to "multicol". this function the table, while
-    combining the designated columns to construct the datetime values, which
-    are then set as the index.
+    When `source_t` is set to "multicol", as the table is read, the indicated
+    columns are combined to construct the datetime values, which are then set
+    as the index.
 
     If `source_t` is not specified (or set to an empty string), options
     specific to this function are ignored, and all other keyword options are
     passed on to the backend transparently; in case of reading a CSV with
-    Pandas, that would include all valid keywords for `pandas.read_csv`.
+    Pandas, that means all valid keywords for `pandas.read_csv` are accepted.
 
     Parameters
     ----------
@@ -75,14 +67,22 @@ def read_timeseries(
         List of columns to be combined to construct the datetime values
 
     col_units : str (for "table" mode)
-        Time units for the columns.  Accepted values are: "days", "day",
-        "hours", "hour", "minutes", "minute", "seconds", "second".
+        Time units for the columns.  Accepted values: "month", "hour".
 
-    zero_idx : bool (for "table" mode)
+    zero_idx : bool (for "table" mode, default: False)
         Whether the columns are zero indexed.  When the columns represent
         hours, or minutes, it is common to number them as nth hour.  Which
         means they are counted starting at 1 instead of 0.  Set this to False
         if that is the case.
+
+    row_fmt : str (for "table" mode, default: empty string)
+        What is the format of the datetime column (use strftime format strings,
+        see: `man 3 strftime`).  If this is left empty, the reader tries to
+        guess a format using the `dateutil` module (Pandas default)
+
+    source_t : str (default: empty string)
+        Mode of reading the data. Accepted values: "table", "multicol", or
+        empty string
 
     **kwards : Dict
         Other keyword arguments passed on to the reader backend.  Any options
@@ -120,7 +120,11 @@ def read_timeseries(
         if col_units is None:
             raise ValueError("col_units: missing time unit for columns")
         ts = from_table(
-            fpath, col_units=col_units, zero_idx=zero_idx, **kwargs,
+            fpath,
+            col_units=col_units,
+            zero_idx=zero_idx,
+            row_fmt=row_fmt,
+            **kwargs,
         )
     elif source_t == "multicol":
         if date_cols is None:
@@ -128,12 +132,21 @@ def read_timeseries(
         ts = from_multicol(fpath, date_cols=date_cols, **kwargs,)
     else:
         if source_t:
-            warn(f"{source_t}: unsupported source, falling back to default")
+            warnings.warn(
+                f"{source_t}: unsupported source, falling back to default"
+            )
         ts = pd.read_csv(fpath, **kwargs)
     return ts
 
 
-def from_table(fpath: _path_t, *, col_units: str, zero_idx: bool, **kwargs):
+def from_table(
+    fpath: _path_t,
+    *,
+    col_units: str,
+    zero_idx: bool,
+    row_fmt: str = "",
+    **kwargs,
+):
     """Read a time series from a tabular file.
 
     See Also
@@ -141,21 +154,36 @@ def from_table(fpath: _path_t, *, col_units: str, zero_idx: bool, **kwargs):
     read_timeseries : see for full documentation, main entrypoint for users
 
     """
-    assert col_units in _time_units
+    # NOTE: allow for plural forms, as it is quite common, but the allowance is
+    # undocumented, hence not guaranteed to work.
+    if "month" in col_units:
+        offset = pd.tseries.offsets.MonthBegin()
+    elif "hour" in col_units:
+        offset = pd.Timedelta(1, unit="hour")
+    else:
+        raise ValueError(f"{col_units}: unsupported column units")
 
     # NOTE: assumption: input is oriented as portrait
-    ts = pd.read_csv(
-        fpath, **{"parse_dates": True, "index_col": 0, **kwargs}
-    ).stack()
-    # FIXME: do we also need support for custom stack level?  How common is a
-    # hierarchical index for columns
+    opts = {"parse_dates": [0], "index_col": 0}
+    # NOTE: for date-hour, it's okay to use the default dateutil parser for
+    # date, unless otherwise specified, however for year-month it gets confused
+    # and the format string needs to be explicitly set to YYYY
+    if col_units == "month" and row_fmt == "":
+        row_fmt = "%Y"
+    if row_fmt:
+        opts.update(date_parser=lambda dt: datetime.strptime(dt, row_fmt))
+    # NOTE: "parse_dates", and "index_col" maybe overidden by the keyword
+    # arguments so that the user has the option to ignore the inferred values;
+    # it's a wild world, can't think of everything ;)
+    opts.update(kwargs)
+    ts = pd.read_csv(fpath, **opts).stack()
 
     # merge indices
-    ts_idx = pd.DataFrame(ts.index.to_list())
-    ts_delta = pd.to_timedelta(
-        ts_idx.iloc[:, 1].astype(int) - int(not zero_idx), unit=col_units
-    )
-    ts.index = ts_idx.iloc[:, 0] + ts_delta
+    idx_lvls = [ts.index.get_level_values(i) for i in (0, 1)]
+    ts_delta = (idx_lvls[1].astype(int) - int(not zero_idx)) * offset
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", category=pd.errors.PerformanceWarning)
+        ts.index = idx_lvls[0] + ts_delta
     return ts
 
 
