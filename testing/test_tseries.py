@@ -6,18 +6,22 @@ import pytest  # noqa: F401
 from sark.tseries import read_timeseries, from_table, from_multicol
 
 
-def test_from_table(tseries_table):
+@pytest.mark.parametrize("zero_idx", [True, False])
+@pytest.mark.parametrize(
+    "tseries_table,units",
+    [("MS", "month"), ("H", "hour")],
+    indirect=["tseries_table"],
+)
+def test_from_table(tseries_table, units, zero_idx):
+    if units == "month" and zero_idx is True:
+        pytest.skip("months are not expected to be 0-indexed")
+
     df, expected = tseries_table
 
-    # 0-indexed
+    if units == "hour" and zero_idx is False:
+        df.columns = range(1, 25)
     CSV = StringIO(df.to_csv(None))
-    result = from_table(CSV, col_units="hour", zero_idx=True)
-    tm.assert_series_equal(result, expected)
-
-    # naturally indexed
-    df.columns = range(1, 25)
-    CSV = StringIO(df.to_csv(None))
-    result = from_table(CSV, col_units="hour", zero_idx=False)
+    result = from_table(CSV, col_units=units, zero_idx=zero_idx)
     tm.assert_series_equal(result, expected)
 
 

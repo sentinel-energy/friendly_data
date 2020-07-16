@@ -43,25 +43,26 @@ def pkg(pkgdir):
 
 
 @pytest.fixture
-def tseries_table():
-    ts = tm.makeTimeSeries(nper=100, freq="h")
+def tseries_table(request):
+    freq = getattr(request, "param", "H")  # hourly by default
+    assert freq in ("H", "MS")
+
+    ts = tm.makeTimeSeries(nper=100, freq=freq)
     ts_tbl = ts.copy(deep=True)
-    ts_tbl.index = pd.MultiIndex.from_arrays(
-        [pd.to_datetime(ts.index.date), ts.index.hour]
-    )
+    if freq == "H":
+        date_cols = [pd.to_datetime(ts.index.date), ts.index.hour]
+    elif freq == "MS":  # month start
+        date_cols = [ts.index.year, ts.index.month]
+    ts_tbl.index = pd.MultiIndex.from_arrays(date_cols)
     return ts_tbl.unstack(), ts
 
 
 @pytest.fixture
 def tseries_multicol():
-    ts = pd.DataFrame(tm.getTimeSeriesData(nper=100, freq="h"))
+    fmt = "%Y-%m-%d %H:%M:%S"
+    ts = pd.DataFrame(tm.getTimeSeriesData(nper=100, freq="H"))
     ts_multicol = pd.concat(
-        [
-            ts.index.to_series()
-            .dt.strftime("%Y-%m-%d %H:%M:%S")
-            .str.split(expand=True),
-            ts,
-        ],
+        [ts.index.to_series().dt.strftime(fmt).str.split(expand=True), ts],
         axis=1,
     )
     ts_multicol.columns = ["date", "time", "A", "B", "C", "D"]
