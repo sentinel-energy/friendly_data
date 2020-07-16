@@ -195,7 +195,6 @@ def from_multicol(fpath: _path_t, *, date_cols: List[_col_t], **kwargs):
     read_timeseries : see for full documentation, main entrypoint for users
 
     """
-    df = pd.read_csv(
-        fpath, parse_dates=[date_cols], index_col=date_cols[0], **kwargs
-    )
+    # NOTE: index_col=0 b/c columns parsed as dates always end up in the front
+    df = pd.read_csv(fpath, parse_dates=[date_cols], index_col=0, **kwargs)
     return df

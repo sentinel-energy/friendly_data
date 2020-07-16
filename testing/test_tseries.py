@@ -31,6 +31,12 @@ def test_from_multicol(tseries_multicol):
     result = from_multicol(CSV, date_cols=[0, 1])
     tm.assert_frame_equal(result, expected)
 
+    # reordered columns
+    df = df[["A", "B", "time", "date", "C", "D"]]
+    CSV = StringIO(df.to_csv(None, index=False))
+    result = from_multicol(CSV, date_cols=[3, 2])
+    tm.assert_frame_equal(result, expected)
+
 
 def test_read_timeseries(tseries_multicol, tseries_table):
     df, expected = tseries_table
