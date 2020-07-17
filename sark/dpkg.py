@@ -19,9 +19,11 @@ from sark.helpers import consume, import_from
 _source_ts = ["csv", "xls", "xlsx"]  # "sqlite"
 _pd_types = {
     "boolean": "bool",
-    # "date": "datetime64",
-    # "time": "datetime64",
+    "date": "datetime64",
+    "time": "datetime64",
     "datetime": "datetime64",
+    "year": "datetime64",
+    "yearmonth": "datetime64",
     "integer": "Int64",
     "number": "float",
     "string": "string",
@@ -186,6 +188,7 @@ def _schema(resource: Resource, type_map: Dict[str, str]) -> Dict[str, str]:
     Returns
     -------
     Dict[str, str]
+        Dictionary with column names as key, and types as values
 
     """
     return dict(
@@ -196,11 +199,8 @@ def _schema(resource: Resource, type_map: Dict[str, str]) -> Dict[str, str]:
                 [  # fields inside a list
                     (
                         "descriptor",  # Field property
-                        lambda t: (  # str -> dtypes understood by pandas
-                            t["name"],
-                            type_map[t["type"]]
-                            # (_type_d[t["type"]], t["format"]),
-                        ),
+                        # string names -> string dtypes understood by pandas
+                        lambda t: (t["name"], type_map[t["type"]]),
                     )
                 ],
             ),

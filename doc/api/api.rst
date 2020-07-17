@@ -13,6 +13,11 @@ Datapackage tools
 
 .. automodule:: sark.dpkg
 
+Time series API
+---------------
+
+.. automodule:: sark.tseries
+
 Validation functions
 --------------------
 
