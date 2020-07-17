@@ -7,6 +7,7 @@ __pycache__
 
 # build output
 build
+[_.]build
 *.egg-info
 
 # typical cache directories
