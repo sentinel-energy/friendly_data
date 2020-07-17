@@ -28,12 +28,12 @@ def read_timeseries(
 
     The first is to structure it as a table:
 
-    ===========  ===  ===  ====  ====  ====
-                  1    2    ..    23    24
-    ===========  ===  ===  ====  ====  ====
-     1/1/2016      0   10    ..   2.3   5.1
-     4/1/2016      3   11    ..   4.3   9.1
-    ===========  ===  ===  ====  ====  ====
+    ===========  ===  ===  =====  ====  ====
+     date         1    2    ...    23    24
+    ===========  ===  ===  =====  ====  ====
+     1/1/2016      0   10   ...    2.3   5.1
+     4/1/2016      3   11   ...    4.3   9.1
+    ===========  ===  ===  =====  ====  ====
 
     When `source_t` is set to "table", this function reads a tabular dataset
     like the one above, and flattens it into a series, and sets the appropriate
