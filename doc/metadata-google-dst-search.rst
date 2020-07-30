@@ -129,7 +129,10 @@ an example::
     </script>
 
 Here, I have chosen the *euro-calliope* model as illustration.  You
-will note, here some flexibility is desired for some fields; e.g. each
+will note, some flexibility is desired for some fields; e.g. each
 ``citation`` could also be a ``CreativeWork``, and similarly the
-``license`` could be a ``CreativeWork`` used to describe a custom
-license.
+``license`` could be a bare URL to the license.
+
+And the distinction between input and output discussed earlier, can be
+resolved in ``distribution``, e.g. in the example above the
+distinction is between *source code* and *pre-built*.
