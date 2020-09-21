@@ -48,6 +48,8 @@ def tseries_table(request):
     assert freq in ("H", "MS")
 
     ts = tm.makeTimeSeries(nper=100, freq=freq)
+    # unset the freq attribute, makes test fail, not relevant for us
+    ts.index.freq = None
     ts_tbl = ts.copy(deep=True)
     if freq == "H":
         date_cols = [pd.to_datetime(ts.index.date), ts.index.hour]
@@ -61,6 +63,8 @@ def tseries_table(request):
 def tseries_multicol():
     fmt = "%Y-%m-%d %H:%M:%S"
     ts = pd.DataFrame(tm.getTimeSeriesData(nper=100, freq="H"))
+    # unset the freq attribute, makes test fail, not relevant for us
+    ts.index.freq = None
     ts_multicol = pd.concat(
         [ts.index.to_series().dt.strftime(fmt).str.split(expand=True), ts],
         axis=1,
