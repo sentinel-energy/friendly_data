@@ -1,17 +1,17 @@
 from datetime import datetime
 from pathlib import Path
-from typing import List, TypeVar, Union
+from typing import List, TextIO, TypeVar, Union
 import warnings
 
 import pandas as pd
 
 
-_path_t = Union[str, Path]
+_file_t = TypeVar("_file_t", str, Path, TextIO)
 _col_t = TypeVar("_col_t", int, str)
 
 
 def read_timeseries(
-    fpath: _path_t,
+    fpath: _file_t,
     *,
     date_cols: Union[List[_col_t], None] = None,
     col_units: Union[str, None] = None,
@@ -60,7 +60,7 @@ def read_timeseries(
 
     Parameters
     ----------
-    fpath : Union[str, Path]
+    fpath : Union[str, Path, TextIO]
         Path to the dataset file
 
     date_cols : List[int, str] (for "multicol" mode)
@@ -140,7 +140,7 @@ def read_timeseries(
 
 
 def from_table(
-    fpath: _path_t,
+    fpath: _file_t,
     *,
     col_units: str,
     zero_idx: bool,
@@ -187,7 +187,7 @@ def from_table(
     return ts
 
 
-def from_multicol(fpath: _path_t, *, date_cols: List[_col_t], **kwargs):
+def from_multicol(fpath: _file_t, *, date_cols: List[_col_t], **kwargs):
     """Read a time series where datetime values are in multiple columns.
 
     See Also

@@ -224,6 +224,8 @@ def to_df(resource: Resource, noexcept: bool = False) -> pd.DataFrame:
     Returns
     -------
     pandas.DataFrame
+        NOTE: when `noexcept` is `True`, and there's an exception, an empty
+        dataframe is returned
 
     Raises
     ------
@@ -234,7 +236,7 @@ def to_df(resource: Resource, noexcept: bool = False) -> pd.DataFrame:
     """
     if not resource.local:  # pragma: no cover, not implemented
         if noexcept:
-            return None
+            return pd.DataFrame()
         else:
             raise ValueError(f"{resource.source}: not a local resource")
 
@@ -250,7 +252,7 @@ def to_df(resource: Resource, noexcept: bool = False) -> pd.DataFrame:
         )
     except ValueError:
         if noexcept:
-            return None
+            return pd.DataFrame()
         else:
             raise
 
