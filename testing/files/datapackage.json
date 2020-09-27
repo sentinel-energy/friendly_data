@@ -15,7 +15,64 @@
 	    "format": "csv",
 	    "mediatype": "text/csv",
 	    "encoding": "utf-8",
-	    "schema": "schemas/sample-ok-1.json"
+	    "schema": {
+		"fields": [
+		    {
+			"name": "time",
+			"type": "datetime",
+			"format": "%Y-%m-%d %H:%M:%S"
+		    },
+		    {
+			"name": "QWE",
+			"type": "integer",
+			"format": "default"
+		    },
+		    {
+			"name": "RTY",
+			"type": "boolean",
+			"format": "default"
+		    },
+		    {
+			"name": "UIO",
+			"type": "string",
+			"format": "default"
+		    },
+		    {
+			"name": "ASD",
+			"type": "number",
+			"format": "default"
+		    },
+		    {
+			"name": "FGH",
+			"type": "number",
+			"format": "default"
+		    },
+		    {
+			"name": "JKL",
+			"type": "number",
+			"format": "default"
+		    },
+		    {
+			"name": "ZXC",
+			"type": "number",
+			"format": "default"
+		    },
+		    {
+			"name": "VBN",
+			"type": "number",
+			"format": "default"
+		    },
+		    {
+			"name": "MPQ",
+			"type": "string",
+			"format": "default"
+		    }
+		],
+		"missingValues": [
+		    ""
+		]
+	    }
+
 	},
 	{
 	    "path": "data/sample-ok-2.csv",
@@ -24,7 +81,64 @@
 	    "format": "csv",
 	    "mediatype": "text/csv",
 	    "encoding": "utf-8",
-	    "schema": "schemas/sample-ok-2.json"
+	    "schema": {
+		"fields": [
+		    {
+			"name": "lvl",
+			"type": "integer",
+			"format": "default"
+		    },
+		    {
+			"name": "TRE",
+			"type": "string",
+			"format": "default"
+		    },
+		    {
+			"name": "IUY",
+			"type": "string",
+			"format": "default"
+		    },
+		    {
+			"name": "APO",
+			"type": "string",
+			"format": "default"
+		    },
+		    {
+			"name": "FDS",
+			"type": "number",
+			"format": "default"
+		    },
+		    {
+			"name": "JHG",
+			"type": "number",
+			"format": "default"
+		    },
+		    {
+			"name": "ZLK",
+			"type": "number",
+			"format": "default"
+		    },
+		    {
+			"name": "VCX",
+			"type": "integer",
+			"format": "default"
+		    },
+		    {
+			"name": "MNB",
+			"type": "integer",
+			"format": "default"
+		    },
+		    {
+			"name": "remarks",
+			"type": "string",
+			"format": "default"
+		    }
+		],
+		"missingValues": [
+		    ""
+		]
+	    }
+
 	}
     ]
 }
