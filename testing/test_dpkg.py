@@ -220,7 +220,7 @@ def test_pkg_to_df(pkg, subtests):
             df = to_df(resource)
 
         # suppress exceptions
-        assert to_df(resource, noexcept=True) is None
+        assert to_df(resource, noexcept=True).empty
 
 
 def test_pkg_write(pkg, tmp_path_factory, subtests):
