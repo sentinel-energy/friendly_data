@@ -33,7 +33,7 @@ def clean_odls_cache():
 
 @pytest.fixture
 def pkgdir():
-    return Path("testing/files")
+    return Path("testing/files/random")
 
 
 @pytest.fixture
