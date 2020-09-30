@@ -129,7 +129,7 @@ def read_timeseries(
     elif source_t == "multicol":
         if date_cols is None:
             raise ValueError("date_cols: missing list of datetime columns")
-        ts = from_multicol(fpath, date_cols=date_cols, **kwargs,)
+        ts = from_multicol(fpath, date_cols=date_cols, **kwargs)
     else:
         if source_t:
             warnings.warn(

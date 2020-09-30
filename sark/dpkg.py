@@ -209,7 +209,7 @@ def _schema(resource: Resource, type_map: Dict[str, str]) -> Dict[str, str]:
 
 
 def to_df(resource: Resource, noexcept: bool = False) -> pd.DataFrame:
-    """"Reads a data package resource as a `pandas.DataFrame`
+    """Reads a data package resource as a `pandas.DataFrame`
 
     FIXME: only considers 'name' and 'type' in the schema, other options like
     'format', 'missingValues', etc are ignored.

@@ -98,7 +98,7 @@ class HttpCache:
             cf.unlink()
 
     def get(self, arg: str, *args: str) -> bytes:
-        """"Get the URL contents
+        """Get the URL contents
 
         If a valid cache exists, return the contents from there, otherwise
         fetch again.

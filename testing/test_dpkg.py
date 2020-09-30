@@ -200,9 +200,7 @@ def test_pkg_to_df(pkg, subtests):
     with subtests.test(msg="resource with NA", name=resource.name):
         # set new NA value: "sit" from "Lorem ipsum dolor sit amet
         # consectetur adipiscing", TRE - 2nd column
-        glom(
-            resource.descriptor, Assign("schema.missingValues", ["", "sit"]),
-        )
+        glom(resource.descriptor, Assign("schema.missingValues", ["", "sit"]))
         resource.commit()
         df = to_df(resource)
         assert df.isna().any(axis=None)

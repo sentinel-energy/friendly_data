@@ -4,18 +4,14 @@ import requests
 from sark.metatools import ODLS
 
 
-@pytest.mark.parametrize(
-    "http_cache", [ODLS], indirect=["http_cache"],
-)
+@pytest.mark.parametrize("http_cache", [ODLS], indirect=["http_cache"])
 def test_http_cache_file(http_cache):
     assert http_cache.cachedir.exists()
     assert http_cache.cachefile("foo")[0] == http_cache.cachefile("foo")[0]
     assert http_cache.cachefile("foo")[0] != http_cache.cachefile("bar")[0]
 
 
-@pytest.mark.parametrize(
-    "http_cache", [ODLS], indirect=["http_cache"],
-)
+@pytest.mark.parametrize("http_cache", [ODLS], indirect=["http_cache"])
 def test_http_cache_fetch(http_cache):
     grp = "all"
     contents = http_cache.fetch(http_cache.cachefile(grp)[1])
@@ -25,9 +21,7 @@ def test_http_cache_fetch(http_cache):
 
 
 # incorrect url
-@pytest.mark.parametrize(
-    "http_cache", [ODLS[:-1]], indirect=["http_cache"],
-)
+@pytest.mark.parametrize("http_cache", [ODLS[:-1]], indirect=["http_cache"])
 def test_http_cache_fetch_bad_url(caplog, http_cache):
     grp = "all"
     with pytest.raises(ValueError, match=f"error: {ODLS[:-1]} ".format(grp)):
@@ -36,7 +30,7 @@ def test_http_cache_fetch_bad_url(caplog, http_cache):
 
 # non-existent domain / no network
 @pytest.mark.parametrize(
-    "http_cache", ["https://iamnota.site/{}"], indirect=["http_cache"],
+    "http_cache", ["https://iamnota.site/{}"], indirect=["http_cache"]
 )
 def test_http_cache_fetch_no_conn(http_cache):
     grp = "all"
@@ -44,9 +38,7 @@ def test_http_cache_fetch_no_conn(http_cache):
         http_cache.fetch(http_cache.cachefile(grp)[1])
 
 
-@pytest.mark.parametrize(
-    "http_cache", [ODLS], indirect=["http_cache"],
-)
+@pytest.mark.parametrize("http_cache", [ODLS], indirect=["http_cache"])
 def test_http_cache_get(http_cache):
     grp = "all"
     contents = http_cache.get(grp)
@@ -55,9 +47,7 @@ def test_http_cache_get(http_cache):
     assert http_cache.cachefile(grp)[0].exists()  # cache created
 
 
-@pytest.mark.parametrize(
-    "http_cache", [ODLS], indirect=["http_cache"],
-)
+@pytest.mark.parametrize("http_cache", [ODLS], indirect=["http_cache"])
 def test_http_cache_many_gets(http_cache):
     grps = ["all", "osi"]
     contents, caches = [], []
@@ -70,9 +60,7 @@ def test_http_cache_many_gets(http_cache):
     assert caches[0].read_bytes() != caches[1].read_bytes()
 
 
-@pytest.mark.parametrize(
-    "http_cache", [ODLS], indirect=["http_cache"],
-)
+@pytest.mark.parametrize("http_cache", [ODLS], indirect=["http_cache"])
 def test_http_cache_remove(http_cache):
     def _cache_file(count: int):
         caches = tuple(
