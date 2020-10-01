@@ -1,17 +1,14 @@
 from collections import defaultdict
 from copy import deepcopy
-from functools import partial
 import json
 
-from glom import Assign, Check, glom, Iter, T, SKIP
+from glom import Assign, glom, Iter, T
 import pytest  # noqa: F401
 
 from sark.dpkg import create_pkg
-from sark.helpers import flatten_list, consume
+from sark.helpers import flatten_list, consume, select
 from sark.metatools import get_license
 from sark.validate import check_pkg, check_schema
-
-select = partial(Check, default=SKIP)
 
 
 def test_check_pkg(pkgdir):
