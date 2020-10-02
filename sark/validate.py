@@ -31,17 +31,14 @@ def check_pkg(pkg_desc: Dict, _filter: Callable = lambda res: True) -> Dict:
         A dictionary with a summary of the validation checks.
 
     """
-    validation_spec = (
-        "resources",
-        [
-            lambda res: validate(res["path"], schema=res["schema"])
-            if _filter(res)
-            else SKIP
-        ],
-    )
-    reports = glom(pkg_desc, validation_spec)
     return glom(
-        reports, [lambda report: report if report["error-count"] > 0 else SKIP]
+        pkg.resources,
+        Iter()
+        .filter(_filter)
+        .map(Invoke(validate).specs(T.source, schema=T.schema.descriptor))
+        .filter(lambda r: r["error-count"] > 0)
+        .all(),
+    )
     )
 
 
@@ -89,12 +86,10 @@ def check_schema(
               }
 
     """
-    schema = (deepcopy(ref), deepcopy(dst))  # work with copies
-
     # extract columns
     ref_: List[Dict[str, str]]
     dst_: List[Dict[str, str]]
-    ref_, dst_ = glom(schema, [T.pop("fields")])
+    ref_, dst_ = glom((ref, dst), Iter("fields").all())
 
     if remap:
         dst_ = [
@@ -106,10 +101,8 @@ def check_schema(
         ]
 
     # column names
-    ref_set: Set[str]
-    dst_set: Set[str]
-    ref_set, dst_set = glom((ref_, dst_), [(["name"], set)])
-
+    ref_set = glom(ref_, (["name"], set))
+    dst_set = glom(dst_, (["name"], set))
     # missing columns
     missing = ref_set - dst_set
 
