@@ -8,7 +8,7 @@ import pytest  # noqa: F401
 from sark.dpkg import create_pkg
 from sark.helpers import flatten_list, consume, select
 from sark.metatools import get_license
-from sark.validate import check_pkg, check_schema
+from sark.validate import check_pkg, check_schema, summarise_errors
 
 
 def test_check_pkg(pkgdir):
@@ -28,7 +28,7 @@ def test_check_pkg(pkgdir):
     )
     pkg.commit()
 
-    reports = check_pkg(pkg.descriptor)
+    reports = check_pkg(pkg)
 
     # only errors in files w/ bad data
     assert all(
@@ -60,6 +60,8 @@ def test_check_pkg(pkgdir):
 
     # match cells numbers with errors
     assert (11, 9, 99, 2, 100, 10, 101, 3) == err_row_cols
+
+    assert not summarise_errors(reports).empty
 
 
 def test_check_schema(pkgdir):

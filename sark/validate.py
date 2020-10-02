@@ -4,21 +4,22 @@ Tools to check if a data resource is consistent with its schema
 
 """
 
-from copy import deepcopy
+from collections import defaultdict
 from typing import Callable, Dict, List, Set, Tuple, Union
 
-from glom import glom, SKIP, T
+from glom import Fold, glom, Invoke, Iter, T
 from goodtables import validate
+import pandas as pd
 
 from sark.helpers import select
 
 
-def check_pkg(pkg_desc: Dict, _filter: Callable = lambda res: True) -> Dict:
+def check_pkg(pkg, _filter: Callable = lambda res: True) -> List[Dict]:
     """Validate all resources in a datapackage
 
     Parameters
     ----------
-    pkg_desc : Dict
+    pkg : Package
         The datapackage descriptor dictionary
     _filter : Callable
         A predicate function that maybe passed to filter out data resources.
@@ -39,7 +40,51 @@ def check_pkg(pkg_desc: Dict, _filter: Callable = lambda res: True) -> Dict:
         .filter(lambda r: r["error-count"] > 0)
         .all(),
     )
+
+
+def summarise_errors(reports: List[Dict]) -> Union[pd.DataFrame, None]:
+    counts = lambda: defaultdict(lambda: dict(count=0, row=[], col=[]))
+
+    def accumulate(res, err):
+        stats = res[err["code"]]
+        stats["count"] += 1
+        stats["row"].append(err["row-number"])
+        stats["col"].append(err["column-number"])
+        return res
+
+    summary = list(
+        glom(
+            reports,
+            (
+                [
+                    (
+                        "tables",
+                        [
+                            {
+                                "source": T["source"].rsplit("/", 1)[-1],
+                                "errors": (
+                                    "errors",
+                                    Fold(T, counts, accumulate),
+                                    dict,
+                                ),
+                            }
+                        ],
+                    )
+                ],
+                Iter().flatten(),
+            ),
+        ),
     )
+    # transform nested dict as records of dataframe
+    rows = []
+    for row in summary:
+        for err, stats in row.pop("errors").items():
+            _count = stats.pop("count")
+            for i, j in zip(stats["row"], stats["col"]):
+                rows += [
+                    {**row, "error": err, "count": _count, "row": i, "col": j}
+                ]
+    return pd.DataFrame(rows).set_index(["source", "error"]) if rows else None
 
 
 _cols = Union[Set, Set[str]]
@@ -117,3 +162,20 @@ def check_schema(
             mismatch[col["name"]] = (ref_col["type"], col["type"])
 
     return (not (missing or mismatch), missing, mismatch)
+
+
+def summarise_diff(diff: Tuple[bool, Set[str], Dict[str, Tuple[str, str]]]):
+    status, missing, mismatch = diff
+    report = ""
+    if status:
+        return report
+    if missing:
+        report += f"mismatched column names: {missing}\n"
+    if mismatch:
+        df = pd.DataFrame(
+            [(col, *col_ts) for col, col_ts in mismatch.items()],
+            columns=["column", "reference_type", "current_type"],
+        )
+        report += "mismatched column types:\n"
+        report += str(df.to_string(header=True, index=False))
+    return report
