@@ -43,6 +43,7 @@ def check_pkg(pkg, _filter: Callable = lambda res: True) -> List[Dict]:
 
 
 def summarise_errors(reports: List[Dict]) -> Union[pd.DataFrame, None]:
+    counts: Callable[[], Dict]
     counts = lambda: defaultdict(lambda: dict(count=0, row=[], col=[]))
 
     def accumulate(res, err):
@@ -52,27 +53,25 @@ def summarise_errors(reports: List[Dict]) -> Union[pd.DataFrame, None]:
         stats["col"].append(err["column-number"])
         return res
 
-    summary = list(
-        glom(
-            reports,
-            (
-                [
-                    (
-                        "tables",
-                        [
-                            {
-                                "source": T["source"].rsplit("/", 1)[-1],
-                                "errors": (
-                                    "errors",
-                                    Fold(T, counts, accumulate),
-                                    dict,
-                                ),
-                            }
-                        ],
-                    )
-                ],
-                Iter().flatten(),
-            ),
+    summary = glom(
+        reports,
+        (
+            [
+                (
+                    "tables",
+                    [
+                        {
+                            "source": T["source"].rsplit("/", 1)[-1],
+                            "errors": (
+                                "errors",
+                                Fold(T, counts, accumulate),
+                                dict,
+                            ),
+                        }
+                    ],
+                )
+            ],
+            Iter().flatten().all(),
         ),
     )
     # transform nested dict as records of dataframe
@@ -87,13 +86,9 @@ def summarise_errors(reports: List[Dict]) -> Union[pd.DataFrame, None]:
     return pd.DataFrame(rows).set_index(["source", "error"]) if rows else None
 
 
-_cols = Union[Set, Set[str]]
-_mismatch = Union[Dict, Dict[str, Tuple[str, str]]]
-
-
 def check_schema(
     ref: Dict[str, str], dst: Dict[str, str], *, remap: Dict[str, str] = None
-) -> Tuple[bool, _cols, _mismatch]:
+) -> Tuple[bool, Set[str], Dict[str, Tuple[str, str]]]:
     """Compare a schema with a reference.
 
     The reference schema is a minimal set, meaning, any additional fields in
@@ -116,7 +111,7 @@ def check_schema(
 
     Returns
     -------
-    result : Tuple[bool, Union[Set, Set[str]], Union[Dict, Dict[str, Tuple[str, str]]]]
+    result : Tuple[bool, Set[str], Dict[str, Tuple[str, str]]]
         Result tuple:
 
         - Boolean flag indicating if it passed the checks or not
@@ -170,7 +165,7 @@ def summarise_diff(diff: Tuple[bool, Set[str], Dict[str, Tuple[str, str]]]):
     if status:
         return report
     if missing:
-        report += f"mismatched column names: {missing}\n"
+        report += f"missing column names: {missing}\n"
     if mismatch:
         df = pd.DataFrame(
             [(col, *col_ts) for col, col_ts in mismatch.items()],

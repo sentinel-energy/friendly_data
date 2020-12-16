@@ -162,7 +162,7 @@ def write_pkg(pkg, pkg_path: Union[str, Path]):
         raise ValueError(f"{pkg_path}: not a zip file")
 
 
-def _source_type(source: Union[str, Path]):
+def _source_type(source: Union[str, Path]) -> str:
     """From a file path, deduce the file type from the extension
 
     Note: the extension is checked against the list of supported file types
