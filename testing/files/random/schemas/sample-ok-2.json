@@ -53,5 +53,11 @@
     ],
     "missingValues": [
         ""
+    ],
+    "primaryKey": [
+	"lvl",
+	"TRE",
+	"IUY",
+	"APO"
     ]
 }

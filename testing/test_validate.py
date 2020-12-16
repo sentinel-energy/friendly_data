@@ -74,12 +74,14 @@ def test_check_schema(pkgdir):
     schema_bad = deepcopy(schema)
     schema_bad["fields"][-2]["name"] = "FJW"  # rename 'VBN', no error
     schema_bad["fields"][4]["name"] = "WOP"  # rename 'ASD', missing column
+    schema_bad["primaryKey"] = "time"  # ["time"] -> "time", no error
 
-    status, missing, mismatch = check_schema(ref, schema_bad)
+    status, missing, mismatch, pri = check_schema(ref, schema_bad)
     assert status is False
     assert missing == {"ASD"}
+    assert pri == []
 
-    status, missing, mismatch = check_schema(
+    status, missing, mismatch, _ = check_schema(
         ref, schema_bad, remap={"WOP": "ASD"}
     )
     assert status is True
@@ -90,9 +92,26 @@ def test_check_schema(pkgdir):
     # 'QWE': 'integer' -> 'number', mismatching type
     schema_bad["fields"][1]["type"] = "number"
 
-    assert check_schema(ref, schema) == (True, set(), dict())
+    assert check_schema(ref, schema) == (True, set(), dict(), list())
 
-    status, missing, mismatch = check_schema(ref, schema_bad)
+    status, missing, mismatch, _ = check_schema(ref, schema_bad)
     assert status is False
     assert mismatch.get("time") == ("datetime", "string")
     assert mismatch.get("QWE") == ("integer", "number")
+
+    with open(pkgdir / "schemas/sample-ok-2.json") as json_file:
+        schema = json.load(json_file)
+
+    ref = deepcopy(schema)
+    schema_bad = deepcopy(schema)
+    # drop 4th level from: ["lvl", "TRE", "IUY", "APO"]
+    idxlvls = schema["primaryKey"]
+    schema_bad["primaryKey"] = idxlvls[:-1]
+    status, missing, mismatch, pri = check_schema(ref, schema_bad)
+    assert status is False
+    assert pri == [(3, "APO", None)]
+
+    schema_bad["primaryKey"] = idxlvls[:2] + idxlvls[3:]  # drop 3rd level
+    status, missing, mismatch, pri = check_schema(ref, schema_bad)
+    assert status is False
+    assert pri == [(2, "IUY", "APO"), (3, "APO", None)]

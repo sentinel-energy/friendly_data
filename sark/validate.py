@@ -88,7 +88,7 @@ def summarise_errors(reports: List[Dict]) -> Union[pd.DataFrame, None]:
 
 def check_schema(
     ref: Dict[str, str], dst: Dict[str, str], *, remap: Dict[str, str] = None
-) -> Tuple[bool, Set[str], Dict[str, Tuple[str, str]]]:
+) -> Tuple[bool, Set[str], Dict[str, Tuple[str, str]], List[Tuple]]:
     """Compare a schema with a reference.
 
     The reference schema is a minimal set, meaning, any additional fields in
@@ -96,9 +96,7 @@ def check_schema(
 
     Name comparisons are case-sensitive.
 
-    TODO: name remappings will be supported in the future.
-
-    NOTE: At the moment only name and types are compared
+    TODO: maybe also compare constraints?
 
     Parameters
     ----------
@@ -111,7 +109,7 @@ def check_schema(
 
     Returns
     -------
-    result : Tuple[bool, Set[str], Dict[str, Tuple[str, str]]]
+    result : Tuple[bool, Set[str], Dict[str, Tuple[str, str]], List[Tuple]]
         Result tuple:
 
         - Boolean flag indicating if it passed the checks or not
@@ -124,6 +122,11 @@ def check_schema(
                   'col_x': ('integer', 'number'),
                   'col_y': ('datetime', 'string'),
               }
+
+        - If primary keys are different, tuple with the diff.  The first
+          element is the index where the two differ, and the two subsequent
+          elements are the corresponding elements from the reference and
+          dataset primary key list: ``(index, ref_col, dst_col)``
 
     """
     # extract columns
@@ -156,11 +159,33 @@ def check_schema(
         if ref_col["type"] != col["type"]:
             mismatch[col["name"]] = (ref_col["type"], col["type"])
 
-    return (not (missing or mismatch), missing, mismatch)
+    # metadata: ignore missing values
+    pri_ref, pri_dst = ref.get("primaryKey", []), dst.get("primaryKey", [])
+    if isinstance(pri_ref, str):
+        pri_ref = [pri_ref]
+    if isinstance(pri_dst, str):
+        pri_dst = [pri_dst]
+
+    def pair(i: List[str], j: List[str]) -> Callable[[], Tuple]:
+        iitr, jitr = iter(i), iter(j)
+
+        def _pair() -> Tuple:
+            return next(iitr, None), next(jitr, None)
+
+        return _pair
+
+    pri_diff = []
+    if pri_ref != pri_dst:
+        pairs = iter(pair(pri_ref, pri_dst), (None, None))
+        pri_diff = [(i, j, k) for i, (j, k) in enumerate(pairs) if j != k]
+
+    return (not (missing or mismatch or pri_diff), missing, mismatch, pri_diff)
 
 
-def summarise_diff(diff: Tuple[bool, Set[str], Dict[str, Tuple[str, str]]]):
-    status, missing, mismatch = diff
+def summarise_diff(
+    diff: Tuple[bool, Set[str], Dict[str, Tuple[str, str]], List[Tuple]]
+):
+    status, missing, mismatch, pri = diff
     report = ""
     if status:
         return report
@@ -172,5 +197,11 @@ def summarise_diff(diff: Tuple[bool, Set[str], Dict[str, Tuple[str, str]]]):
             columns=["column", "reference_type", "current_type"],
         )
         report += "mismatched column types:\n"
+        report += str(df.to_string(header=True, index=False))
+    if pri:
+        df = pd.DataFrame(
+            pri, columns=["level", "reference_col", "current_col"]
+        )
+        report += "mismatched index levels/cols:\n"
         report += str(df.to_string(header=True, index=False))
     return report
