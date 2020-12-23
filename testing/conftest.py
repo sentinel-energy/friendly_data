@@ -1,3 +1,4 @@
+import io
 from pathlib import Path
 
 import pandas as pd
@@ -40,6 +41,17 @@ def pkgdir():
 def pkg(pkgdir):
     dpkg_json = pkgdir / "datapackage.json"
     return read_pkg(dpkg_json)
+
+
+@pytest.fixture(params=["csv", "yaml", "yml", "json", "stream"])
+def pkg_index(request):
+    idxdir = Path("testing/files/indices")
+    if request.param in ("csv", "yaml", "json"):
+        return idxdir / f"index.{request.param}", ""
+    elif request.param == "yml":
+        return idxdir / "index.yaml", ""
+    elif request.param == "stream":
+        return io.StringIO((idxdir / "index.csv").read_text()), "csv"
 
 
 @pytest.fixture

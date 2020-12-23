@@ -4,14 +4,16 @@ PS: the coincidential module name is intentional ;)
 
 """
 
+import csv
 import json
 from pathlib import Path
-from typing import Dict, Iterable, Union
+from typing import Dict, Iterable, TextIO, Union
 from zipfile import ZipFile
 
 from datapackage import Package, Resource
-from glom import glom
+from glom import Assign, glom, Spec, T
 import pandas as pd
+import yaml
 
 from sark.helpers import consume, import_from
 
@@ -148,6 +150,145 @@ def update_pkg(pkg, resource, schema_update: Dict, fields: bool = True):
     return pkg.valid
 
 
+def read_pkg_index(fpath: Union[str, Path, TextIO], suffix: str = "") -> pd.DataFrame:
+    """Read the index of files incuded in the datapackage
+
+    The index can be in either CSV, YAML, or JSON file format.  It is a list of
+    dataset files, names, and a list of columns in the dataset that are to be
+    treated as index columns.
+
+    CSV::
+
+        >>> csv_f = '''
+        ... file,name,idxcols
+        ... file1,dst1,cola,colb
+        ... file2,dst2,colx,coly,colz
+        ... file3,dst3,col
+        ... '''
+
+    YAML::
+
+        >>> yaml_f = '''
+        ... - file: file1
+        ...   name: dst1
+        ...   idxcols: [cola, colb]
+        ... - file: file2
+        ...   name: dst2
+        ...   idxcols: [colx, coly, colz]
+        ... - file: file3
+        ...   name: dst3
+        ...   idxcols: [col]
+        ... '''
+
+    JSON::
+
+        >>> json_f = '''
+        ... [
+        ...     {
+        ...         "file": "file1",
+        ...         "name": "dst1",
+        ...         "idxcols": [
+        ...             "cola",
+        ...             "colb"
+        ...         ]
+        ...     },
+        ...     {
+        ...         "file": "file2",
+        ...         "name": "dst2",
+        ...         "idxcols": [
+        ...             "colx",
+        ...             "coly",
+        ...             "colz"
+        ...         ]
+        ...     },
+        ...     {
+        ...         "file": "file3",
+        ...         "name": "dst3",
+        ...         "idxcols": [
+        ...             "col"
+        ...         ]
+        ...     }
+        ... ]
+        ... '''
+
+    Parameters
+    ----------
+    fpath : Union[str, Path, TextIO]
+        Index file path or a stream object
+
+    suffix : str (default: empty string)
+        File type, one of: csv, yaml, yml, json.  If it is empty (default), the
+        file type is deduced from the filename extension.  Since a stream does
+        not always have a file associated with it, it is mandatory to specify a
+        non-empty `suffix` when `fpath` is a stream.
+
+    Returns
+    -------
+    pd.DataFrame
+        A dataframe with the columns: 'file', 'name', and 'idxcols'; 'idxcols'
+        is a tuple.
+
+    Raises
+    ------
+    ValueError
+        If 'suffix' is empty when 'fpath' is a stream, or it does not have an
+        extension.
+    RuntimeError
+        If the file is a YAML, or JSON, but do not return a list
+        If the file has an unknown extension
+
+    Examples
+    --------
+
+    Index as read from the example above::
+
+        >>> from io import StringIO
+        >>> import numpy as np
+        >>> idx = read_pkg_index(StringIO(csv_f), 'csv')
+        >>> idx
+             file  name             idxcols
+        0   file1  dst1        (cola, colb)
+        1   file2  dst2  (colx, coly, colz)
+        2   file3  dst3              (col,)
+        >>> np.array_equal(idx, read_pkg_index(StringIO(yaml_f), 'yaml'))
+        True
+        >>> np.array_equal(idx, read_pkg_index(StringIO(yaml_f), 'yml'))
+        True
+        >>> np.array_equal(idx, read_pkg_index(StringIO(json_f), 'json'))
+        True
+
+    """
+    if isinstance(fpath, (str, Path)):
+        idxfile = open(fpath)
+        suffix = suffix if suffix else Path(fpath).suffix.strip(".").lower()
+    else:  # stream
+        idxfile = fpath
+        suffix = suffix.lower()
+    if not suffix:
+        raise ValueError(f"{suffix=} cannot be empty, when {fpath=}")
+
+    if suffix == "csv":
+        idx = [
+            {"file": fname, "name": dst, "idxcols": idxcols}
+            for fname, dst, *idxcols in csv.reader(idxfile)
+        ]
+        idx = idx[1:]  # drop header row
+    elif suffix in ("yaml", "yml"):
+        idx = yaml.safe_load(idxfile)
+    elif suffix == "json":
+        idx = json.load(idxfile)
+    else:
+        idxfile.close()  # cleanup
+        raise RuntimeError(f"{fpath}: unknown index file format")
+
+    idxfile.close()  # cleanup
+
+    if not isinstance(idx, list):
+        raise RuntimeError(f"{fpath}: bad index file")
+
+    # # convert list (idxcols) into tuples, easier to query in DataFrame
+    # glom(idx, [Assign("idxcols", Spec((T["idxcols"], tuple)))])
+    return pd.DataFrame(idx)
 def write_pkg(pkg, pkg_path: Union[str, Path]):
     """Write data package to a zip file
 

@@ -11,6 +11,7 @@ from sark.dpkg import (
     to_df,
     update_pkg,
     write_pkg,
+    read_pkg_index,
     _schema,
     _source_type,
 )
@@ -147,6 +148,13 @@ def test_pkg_update(pkg, subtests):
         assert update["primaryKey"] == res
 
     # FIXME: test assertions inside update_pkg
+
+
+def test_read_pkg_index(pkg_index):
+    idx = read_pkg_index(*pkg_index)  # contents, suffix
+    np.testing.assert_array_equal(idx.columns, ["file", "name", "idxcols"])
+    assert idx.shape == (3, 3)
+    np.testing.assert_array_equal(idx["idxcols"].agg(len), [2, 3, 1])
 
 
 def test_pkg_to_df(pkg, subtests):
