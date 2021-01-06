@@ -6,7 +6,7 @@ from functools import partial
 from importlib import import_module
 from typing import Iterable
 
-from glom import Check, SKIP
+from glom import Check, Match, SKIP
 
 
 def import_from(module: str, name: str):
@@ -22,25 +22,51 @@ def flatten_list(lst: Iterable) -> Iterable:
             yield el
 
 
-select = partial(Check, default=SKIP)
-select.__doc__ = f"""
-Wrap `glom.Check` object with the default action set to `glom.SKIP`.
+def select(spec, **kwargs):
+    """Wrap `glom.Check` with the default action set to `glom.SKIP`.
 
-This is very useful to select items inside nested data structures.  A few
-example uses:
+    This is very useful to select items inside nested data structures.  A few
+    example uses:
 
->>> from glom import glom
->>> cols = [
-...     {{"name": "abc", "type": "integer"}},
-...     {{"name": "def", "type": "string"}},
-... ]
->>> select(cols, [select("name", equal_to="abc")])
-[{{"name": "abc", "type": "integer"}}]
+    >>> from glom import glom
+    >>> cols = [
+    ...     {"name": "abc", "type": "integer"},
+    ...     {"name": "def", "type": "string"},
+    ... ]
+    >>> glom(cols, [select("name", equal_to="abc")])
+    [{"name": "abc", "type": "integer"}]
 
-Full documentation of `glom.Check` is below:
+    Full documentation of `glom.Check` is below:
 
-{Check.__doc__}
-"""
+    """
+    return Check(spec, default=SKIP, **kwargs)
+
+
+select.__doc__ += Check.__doc__
+
+
+def match(pattern, **kwargs):
+    """Wrap `glom.Match` with the default action set to `glom.SKIP`.
+
+    This is very useful to match items inside nested data structures.  A few
+    example uses:
+
+    >>> from glom import glom
+    >>> cols = [
+    ...     {"name": "abc", "type": "integer", "constraints": {"enum": []}},
+    ...     {"name": "def", "type": "string"},
+    ... ]
+    >>> glom(cols, [match({"constraints": {"enum": list}, str: str})])
+    [{"name": "abc", "type": "integer", "constraints": {"enum": []}}]
+
+    Full documentation of `glom.Match` is below:
+
+    """
+    return Match(pattern, default=SKIP, **kwargs)
+
+
+match.__doc__ += Match.__doc__
+
 
 consume = partial(deque, maxlen=0)
 consume.__doc__ = "Consume or exhaust an iterator"
