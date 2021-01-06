@@ -133,6 +133,7 @@ def update_pkg(pkg, resource, schema_update: Dict, fields: bool = True):
 
     """
     desc = pkg.descriptor
+    assert "resources" in desc, "Package should have at least one resource"
     res, *_ = [res for res in desc["resources"] if res["name"] == resource]
     if fields:
         for field in res["schema"]["fields"]:
