@@ -62,11 +62,7 @@ def summarise_errors(reports: List[Dict]) -> Union[pd.DataFrame, None]:
                     [
                         {
                             "source": T["source"].rsplit("/", 1)[-1],
-                            "errors": (
-                                "errors",
-                                Fold(T, counts, accumulate),
-                                dict,
-                            ),
+                            "errors": ("errors", Fold(T, counts, accumulate), dict),
                         }
                     ],
                 )
@@ -80,9 +76,7 @@ def summarise_errors(reports: List[Dict]) -> Union[pd.DataFrame, None]:
         for err, stats in row.pop("errors").items():
             _count = stats.pop("count")
             for i, j in zip(stats["row"], stats["col"]):
-                rows += [
-                    {**row, "error": err, "count": _count, "row": i, "col": j}
-                ]
+                rows += [{**row, "error": err, "count": _count, "row": i, "col": j}]
     return pd.DataFrame(rows).set_index(["source", "error"]) if rows else None
 
 
@@ -136,10 +130,7 @@ def check_schema(
 
     if remap:
         dst_ = [
-            {
-                **i,
-                "name": remap[i["name"]] if i["name"] in remap else i["name"],
-            }
+            {**i, "name": remap[i["name"]] if i["name"] in remap else i["name"]}
             for i in dst_
         ]
 
@@ -199,9 +190,7 @@ def summarise_diff(
         report += "mismatched column types:\n"
         report += str(df.to_string(header=True, index=False))
     if pri:
-        df = pd.DataFrame(
-            pri, columns=["level", "reference_col", "current_col"]
-        )
+        df = pd.DataFrame(pri, columns=["level", "reference_col", "current_col"])
         report += "mismatched index levels/cols:\n"
         report += str(df.to_string(header=True, index=False))
     return report

@@ -42,9 +42,7 @@ def test_read_timeseries(tseries_multicol, tseries_table):
     df, expected = tseries_table
     CSV = StringIO(df.to_csv(None))  # 0-indexed
 
-    result = read_timeseries(
-        CSV, source_t="table", col_units="hour", zero_idx=True
-    )
+    result = read_timeseries(CSV, source_t="table", col_units="hour", zero_idx=True)
     tm.assert_series_equal(result, expected)
 
     with pytest.raises(ValueError, match="col_units: .+"):

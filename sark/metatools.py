@@ -22,8 +22,7 @@ License = Dict[str, str]
 def _fetch_license(group: str = "all") -> Dict:
     if group not in ODLS_GROUPS:
         raise ValueError(
-            f"unknown license group: {group},"
-            f" should be one of: {ODLS_GROUPS}"
+            f"unknown license group: {group}, should be one of: {ODLS_GROUPS}"
         )
     cache = HttpCache(ODLS)
     return json.loads(cache.get(group))
@@ -143,7 +142,5 @@ def _license_status(lic: License) -> str:
 
 def _license_domain(lic: License) -> Tuple[str, ...]:
     return tuple(
-        lic_t
-        for lic_t in ["content", "data", "software"]
-        if lic[f"domain_{lic_t}"]
+        lic_t for lic_t in ["content", "data", "software"] if lic[f"domain_{lic_t}"]
     )

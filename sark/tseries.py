@@ -132,9 +132,7 @@ def read_timeseries(
         ts = from_multicol(fpath, date_cols=date_cols, **kwargs)
     else:
         if source_t:
-            warnings.warn(
-                f"{source_t}: unsupported source, falling back to default"
-            )
+            warnings.warn(f"{source_t}: unsupported source, falling back to default")
         ts = pd.read_csv(fpath, **kwargs)
     return ts
 

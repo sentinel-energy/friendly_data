@@ -101,9 +101,7 @@ def test_zippkg_read(pkg, tmp_path_factory, subtests):
 def test_pkg_update(pkg, subtests):
     with subtests.test(msg="schema field update", name="single"):
         resource_name = "sample-ok-1"
-        update = {
-            "time": {"name": "time", "type": "string", "format": "default"}
-        }
+        update = {"time": {"name": "time", "type": "string", "format": "default"}}
         assert update_pkg(pkg, resource_name, update)
         res, *_ = glom(
             pkg.descriptor,

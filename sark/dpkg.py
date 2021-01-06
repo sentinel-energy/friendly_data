@@ -63,9 +63,7 @@ def create_pkg(meta: Dict, resources: Iterable[Union[str, Path, Dict]]):
     return pkg
 
 
-def read_pkg(
-    pkg_path: Union[str, Path], extract_dir: Union[str, Path, None] = None
-):
+def read_pkg(pkg_path: Union[str, Path], extract_dir: Union[str, Path, None] = None):
     """Read a  datapackage
 
     If `pkg_path` points to a `datapackage.json` file, read it as is.  If it
@@ -388,9 +386,7 @@ def to_df(resource: Resource, noexcept: bool = False) -> pd.DataFrame:
         # "sqlite": "read_sql",
     }
     try:
-        reader = import_from(
-            "pandas", pd_readers[_source_type(resource.source)]
-        )
+        reader = import_from("pandas", pd_readers[_source_type(resource.source)])
     except ValueError:
         if noexcept:
             return pd.DataFrame()

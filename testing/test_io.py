@@ -63,9 +63,7 @@ def test_http_cache_many_gets(http_cache):
 @pytest.mark.parametrize("http_cache", [ODLS], indirect=["http_cache"])
 def test_http_cache_remove(http_cache):
     def _cache_file(count: int):
-        caches = tuple(
-            http_cache.cachedir.glob(f"http-{http_cache.url_t_hex}-*")
-        )
+        caches = tuple(http_cache.cachedir.glob(f"http-{http_cache.url_t_hex}-*"))
         assert len(caches) == count
 
     n = len(tuple(map(http_cache.get, ["all", "osi", "od"])))

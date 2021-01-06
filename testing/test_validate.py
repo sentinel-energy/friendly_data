@@ -81,9 +81,7 @@ def test_check_schema(pkgdir):
     assert missing == {"ASD"}
     assert pri == []
 
-    status, missing, mismatch, _ = check_schema(
-        ref, schema_bad, remap={"WOP": "ASD"}
-    )
+    status, missing, mismatch, _ = check_schema(ref, schema_bad, remap={"WOP": "ASD"})
     assert status is True
     assert missing == set()
 

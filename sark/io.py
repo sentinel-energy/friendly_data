@@ -153,6 +153,4 @@ class HttpCache:
         if response.ok:
             return response.content
         else:
-            raise ValueError(
-                f"error: {response.url} responded {response.reason}"
-            )
+            raise ValueError(f"error: {response.url} responded {response.reason}")
