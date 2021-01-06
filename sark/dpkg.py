@@ -8,6 +8,7 @@ import csv
 import json
 from pathlib import Path
 from typing import Dict, Iterable, TextIO, Union
+from warnings import warn
 from zipfile import ZipFile
 
 from datapackage import Package, Resource
@@ -32,33 +33,45 @@ _pd_types = {
 }
 
 
-def create_pkg(meta: Dict, resources: Iterable[Union[str, Path, Dict]]):
+def create_pkg(meta: Dict, resources: Iterable[Union[str, Path]], base_path: str = ""):
     """Create a datapackage from metadata and resources.
+
+    If `resources` point to files that exist, their schema are inferred and
+    added to the package.  If `base_path` is a non empty string, it is treated
+    as the parent directory, and all resource file paths are checked relative
+    to it.
 
     Parameters
     ----------
     meta : Dict
         A dictionary with package metadata.
-    resources : Iterable[Union[str, Path, Dict]]
-        An iterator over different resources.  Resources are just a path to
-        files, either as a string or a Path object.  It can also be a
-        dictionary as represented by the datapackage library.
+
+    resources : Iterable[Union[str, Path]]
+        An iterator over different resources.  Resources are paths to files,
+        relative to `base_path`.
+
+    base_path : str (default: empty string)
+        Directory where the package files are located
 
     Returns
     -------
     Package
-        A fully configured datapackage
+        A datapackage with inferred schema for all the package resources
 
     """
     # for an interesting discussion on type hints with unions, see:
     # https://stackoverflow.com/q/60235477/289784
-    pkg = Package(meta)
+    pkg = Package(meta, base_path=base_path)
+    # TODO: filter out and handle non-tabular (custom) data
     for res in resources:
         if isinstance(res, (str, Path)):
-            if not Path(res).exists():  # pragma: no cover, bad path
+            res = Path(res)
+            full_path = f"{base_path}" / res
+            if not Path(full_path).exists():
+                warn(f"{full_path}: skipped, doesn't exist", RuntimeWarning)
                 continue
             pkg.infer(f"{res}")
-        else:  # pragma: no cover, adding with Dict
+        else:  # pragma: no cover, adding with Dict (undocumented feature)
             pkg.add_resource(res)
     return pkg
 
@@ -111,10 +124,9 @@ def update_pkg(pkg, resource, schema_update: Dict, fields: bool = True):
         Package object
 
     resource
-        Resource name
+        Resource name FIXME: cannot handle duplicate names in subdirectories
 
     schema_update : Dict
-
         Updated fields in the schema, if `field` is `False`, can be used to
         update `missingValues`, or `primaryKey`.  When updating the schema, it
         looks like this ('foo'/'bar' are names of the fields being updated):
