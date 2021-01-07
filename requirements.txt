@@ -8,3 +8,4 @@ requests
 tableschema
 tabulator
 xarray
+git+git://github.com/sentinel-energy/sentinel-archive-registry#egg=SENTINEL-archive-registry

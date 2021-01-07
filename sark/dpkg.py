@@ -5,18 +5,20 @@ PS: the coincidential module name is intentional ;)
 """
 
 import csv
+from itertools import chain
 import json
 from pathlib import Path
-from typing import Dict, Iterable, TextIO, Union
+from typing import Dict, Iterable, Literal, TextIO, Tuple, Union
 from warnings import warn
 from zipfile import ZipFile
 
 from datapackage import Package, Resource
-from glom import Assign, glom, Spec, T
+from glom import Assign, glom, Invoke, Iter, Spec, T
 import pandas as pd
+from pkg_resources import resource_filename
 import yaml
 
-from sark.helpers import consume, import_from
+from sark.helpers import consume, import_from, match, select
 
 # TODO: compressed files
 _source_ts = ["csv", "xls", "xlsx"]  # "sqlite"
@@ -300,6 +302,175 @@ def read_pkg_index(fpath: Union[str, Path, TextIO], suffix: str = "") -> pd.Data
     # # convert list (idxcols) into tuples, easier to query in DataFrame
     # glom(idx, [Assign("idxcols", Spec((T["idxcols"], tuple)))])
     return pd.DataFrame(idx)
+
+
+def registry(col: str, col_t: Literal["cols", "idxcols"]) -> Dict:
+    """Retrieve the column schema from column schema registry: `sark_registry`
+
+    Parameters
+    ----------
+    col : str
+        Column name to look for
+
+    col_t : Literal["cols", "idxcols"]
+        A literal string specifying the kind of column; one of: "cols", or "idxcols"
+
+    Returns
+    -------
+    Dict
+        Column schema; an empty dictionary is returned in case there are no matches
+
+    Raises
+    ------
+    RuntimeError
+        When more than one matches are found
+    ValueError
+        When the schema file in the registry is unsupported; not one of: JSON, or YAML
+
+    """
+    curdir = Path(resource_filename("sark_registry", col_t))
+    schema = list(
+        chain.from_iterable(curdir.glob(f"{col}.{fmt}") for fmt in ("json", "yaml"))
+    )
+    if len(schema) == 0:
+        return {}  # no match, unregistered column
+    if len(schema) > 1:
+        raise RuntimeError(f"more than one matching schema: {schema}")
+    with open(curdir / schema[0]) as f:
+        fsuffix = Path(f.name).suffix.strip(".").lower()
+        if fsuffix == "yaml":
+            return yaml.safe_load(f)
+        elif fsuffix == "json":
+            return json.load(f)
+        else:  # shouldn't reach here
+            raise ValueError(f"{f.name}: unsupported schema file format")
+
+
+def index_levels(_file: str, idxcols: Iterable[str]) -> Tuple[str, Dict]:
+    """Read a dataset and determine the index levels
+
+    Parameters
+    ----------
+    _file : str
+        Path to the dataset
+
+    idxcols : Iterable[str]
+        List of columns in the dataset that constitute the index
+
+    Returns
+    -------
+    Tuple[str, Dict]
+
+        Tuple of path to the dataset, and the schema of each column as a dictionary.
+        If `idxcols` was ["foo", "bar"], the dictionary might look like:
+
+          {
+            "foo": {"name": "foo", "type": "datetime", "format": "default"},
+            "bar": {"name": "bar", "type": "string", "constraints": {"enum": ["a", "b"]}}
+          }
+
+        Note that the index columns that have categorical values, are filled in
+        by reading the dataset and determining the full set of values.
+
+    """
+    coldict = {col: registry(col, "idxcols") for col in idxcols}
+    # select columns with an enum constraint where the enum values are empty
+    select_cols = match({"constraints": {"enum": []}, str: str})
+    cols = glom(coldict.values(), Iter().filter(select_cols).map("name").all())
+    idx = pd.read_csv(_file, index_col=cols).index
+    if isinstance(idx, pd.MultiIndex):
+        levels = {col: list(lvls) for col, lvls in zip(idx.names, idx.levels)}
+    else:
+        levels = {idx.names[0]: list(idx.unique())}
+    enum_vals = Spec(Invoke(levels.__getitem__).specs("name"))
+    glom(
+        coldict.values(),
+        Iter().filter(select_cols).map(Assign("constraints.enum", enum_vals)).all(),
+    )
+    return _file, coldict
+
+
+def pkg_from_index(meta: Dict, fpath: Union[str, Path]) -> Tuple[Path, Package]:
+    """Read an index file, and create a datapackage with the provided metadata.
+
+    Parameters
+    ----------
+    meta : Dict
+        Package metadata dictionary
+
+    fpath : Union[str, Path]
+        Path to the index file.  Note the index file has to be at the top level
+        directory of the datapackage.  See :func:`sark.dpkg.read_pkg_index`
+
+    Returns
+    -------
+    Tuple[Path, Package]
+        The package directory, and the `Package` object.
+
+    """
+    pkg_dir = Path(fpath).parent
+    idx = read_pkg_index(fpath)
+    # FIXME: also update regular columns
+    pkg = create_pkg(meta, idx["file"], base_path=f"{pkg_dir}")
+    for entry in idx.to_records():
+        resource_name = Path(entry.file).stem
+        _, update = index_levels(pkg_dir / entry.file, entry.idxcols)
+        update_pkg(pkg, resource_name, update)
+        update_pkg(pkg, resource_name, {"primaryKey": entry.idxcols}, fields=False)
+        # set of value columns
+        cols = glom(
+            pkg.descriptor,
+            (
+                "resources",
+                Iter()
+                .filter(select("path", equal_to=entry.file))
+                .map("schema.fields")
+                .flatten()
+                .map("name")
+                .all(),
+                set,
+            ),
+        ) - set(entry.idxcols)
+        update_pkg(pkg, resource_name, {col: registry(col, "cols") for col in cols})
+    return pkg_dir, pkg
+
+
+def pkg_glossary(pkg: Package, idx: pd.DataFrame) -> pd.DataFrame:
+    """Generate glossary from the package and the package index.
+
+    Parameters
+    ----------
+    pkg : Package
+
+    idx : pd.DataFrame
+        The index dataframe
+
+    Returns
+    -------
+    pd.DataFrame
+        The glossary as dataframe
+
+    """
+    _levels = lambda row: glom(
+        pkg.descriptor,
+        (
+            "resources",
+            Iter()
+            .filter(select("path", equal_to=row["file"]))
+            .map("schema.fields")
+            .flatten()
+            .filter(
+                match({"name": row["idxcols"], "constraints": {"enum": list}, str: str})
+            )
+            .map("constraints.enum")
+            .flatten()
+            .all(),
+        ),
+    )
+    glossary = idx.explode("idxcols").reset_index(drop=True)
+    return glossary.assign(values=glossary.apply(_levels, axis=1))
+
+
 def write_pkg(pkg, pkg_path: Union[str, Path]):
     """Write data package to a zip file
 
