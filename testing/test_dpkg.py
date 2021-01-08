@@ -62,9 +62,9 @@ def test_schema_parsing():
 
 
 def test_pkg_creation(pkgdir, subtests):
-    datadir = pkgdir / "data"
     pkg_meta = {"name": "test", "licenses": get_license("CC0-1.0")}
-    pkg = create_pkg(pkg_meta, datadir.glob("sample-ok-?.csv"))
+    csvs = [f.relative_to(pkgdir) for f in (pkgdir / "data").glob("sample-ok-?.csv")]
+    pkg = create_pkg(pkg_meta, csvs, pkgdir)
     for resource in pkg.resources:
         with subtests.test(msg="resource", name=resource.name):
             assert _schema(resource, noop_map()) == expected_schema(resource)

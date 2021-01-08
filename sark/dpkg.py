@@ -63,7 +63,7 @@ def create_pkg(meta: Dict, resources: Iterable[Union[str, Path]], base_path: str
     """
     # for an interesting discussion on type hints with unions, see:
     # https://stackoverflow.com/q/60235477/289784
-    pkg = Package(meta, base_path=base_path)
+    pkg = Package(meta, base_path=str(base_path))
     # TODO: filter out and handle non-tabular (custom) data
     for res in resources:
         if isinstance(res, (str, Path)):
