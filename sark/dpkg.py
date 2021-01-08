@@ -8,7 +8,7 @@ import csv
 from itertools import chain
 import json
 from pathlib import Path
-from typing import Dict, Iterable, Literal, TextIO, Tuple, Union
+from typing import Dict, Iterable, Literal, Optional, TextIO, Tuple, Union
 from warnings import warn
 from zipfile import ZipFile
 
@@ -34,8 +34,10 @@ _pd_types = {
     "string": "string",
 }
 
+_path_t = Union[str, Path]  # file path type
 
-def create_pkg(meta: Dict, resources: Iterable[Union[str, Path]], base_path: str = ""):
+
+def create_pkg(meta: Dict, resources: Iterable[_path_t], base_path: _path_t = ""):
     """Create a datapackage from metadata and resources.
 
     If `resources` point to files that exist, their schema are inferred and
@@ -78,7 +80,7 @@ def create_pkg(meta: Dict, resources: Iterable[Union[str, Path]], base_path: str
     return pkg
 
 
-def read_pkg(pkg_path: Union[str, Path], extract_dir: Union[str, Path, None] = None):
+def read_pkg(pkg_path: _path_t, extract_dir: Optional[_path_t] = None):
     """Read a  datapackage
 
     If `pkg_path` points to a `datapackage.json` file, read it as is.  If it
@@ -163,7 +165,7 @@ def update_pkg(pkg, resource, schema_update: Dict, fields: bool = True):
     return pkg.valid
 
 
-def read_pkg_index(fpath: Union[str, Path, TextIO], suffix: str = "") -> pd.DataFrame:
+def read_pkg_index(fpath: Union[_path_t, TextIO], suffix: str = "") -> pd.DataFrame:
     """Read the index of files incuded in the datapackage
 
     The index can be in either CSV, YAML, or JSON file format.  It is a list of
@@ -346,7 +348,7 @@ def registry(col: str, col_t: Literal["cols", "idxcols"]) -> Dict:
             raise ValueError(f"{f.name}: unsupported schema file format")
 
 
-def index_levels(_file: str, idxcols: Iterable[str]) -> Tuple[str, Dict]:
+def index_levels(_file: _path_t, idxcols: Iterable[str]) -> Tuple[_path_t, Dict]:
     """Read a dataset and determine the index levels
 
     Parameters
@@ -390,7 +392,7 @@ def index_levels(_file: str, idxcols: Iterable[str]) -> Tuple[str, Dict]:
     return _file, coldict
 
 
-def pkg_from_index(meta: Dict, fpath: Union[str, Path]) -> Tuple[Path, Package]:
+def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package]:
     """Read an index file, and create a datapackage with the provided metadata.
 
     Parameters
@@ -471,7 +473,7 @@ def pkg_glossary(pkg: Package, idx: pd.DataFrame) -> pd.DataFrame:
     return glossary.assign(values=glossary.apply(_levels, axis=1))
 
 
-def write_pkg(pkg, pkg_path: Union[str, Path]):
+def write_pkg(pkg, pkg_path: _path_t):
     """Write data package to a zip file
 
     NOTE: This exists because we want to support saving to other kinds of
@@ -485,7 +487,7 @@ def write_pkg(pkg, pkg_path: Union[str, Path]):
         raise ValueError(f"{pkg_path}: not a zip file")
 
 
-def _source_type(source: Union[str, Path]) -> str:
+def _source_type(source: _path_t) -> str:
     """From a file path, deduce the file type from the extension
 
     Note: the extension is checked against the list of supported file types
