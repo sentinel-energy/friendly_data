@@ -4,13 +4,18 @@ from collections import deque
 from collections.abc import Sequence
 from functools import partial
 from importlib import import_module
-from typing import Iterable
+from typing import Callable, get_args, get_origin, get_type_hints, Iterable, Tuple
 
 from glom import Check, Match, SKIP
 
 
 def import_from(module: str, name: str):
     return getattr(import_module(module), name)
+
+
+def from_hints(fn: Callable, arg: str) -> Tuple:
+    hint = get_type_hints(fn)[arg]
+    return get_origin(hint), get_args(hint)
 
 
 def flatten_list(lst: Iterable) -> Iterable:
