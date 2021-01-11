@@ -8,7 +8,7 @@ import csv
 from itertools import chain
 import json
 from pathlib import Path
-from typing import Dict, Iterable, Literal, Optional, TextIO, Tuple, Union
+from typing import Dict, Iterable, Optional, TextIO, Tuple, Union
 from warnings import warn
 from zipfile import ZipFile
 
@@ -18,7 +18,7 @@ import pandas as pd
 from pkg_resources import resource_filename
 import yaml
 
-from sark.helpers import consume, import_from, match, select, from_hints
+from sark.helpers import consume, import_from, match, select
 
 # TODO: compressed files
 _source_ts = ["csv", "xls", "xlsx"]  # "sqlite"
@@ -305,7 +305,8 @@ def read_pkg_index(fpath: Union[_path_t, TextIO], suffix: str = "") -> pd.DataFr
     return pd.DataFrame(idx)
 
 
-def registry(col: str, col_t: Literal["cols", "idxcols"]) -> Dict:
+# FIXME: can't use Literal until we drop 3.7
+def registry(col: str, col_t: str) -> Dict:
     """Retrieve the column schema from column schema registry: `sark_registry`
 
     Parameters
@@ -329,7 +330,7 @@ def registry(col: str, col_t: Literal["cols", "idxcols"]) -> Dict:
         When the schema file in the registry is unsupported; not one of: JSON, or YAML
 
     """
-    if col_t not in from_hints(registry, "col_t")[1]:
+    if col_t not in ("cols", "idxcols"):
         raise ValueError(f"{col_t}: unknown column type")
 
     curdir = Path(resource_filename("sark_registry", col_t))
