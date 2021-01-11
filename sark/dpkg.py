@@ -132,7 +132,8 @@ def update_pkg(pkg, resource, schema_update: Dict, fields: bool = True):
     schema_update : Dict
         Updated fields in the schema, if `field` is `False`, can be used to
         update `missingValues`, or `primaryKey`.  When updating the schema, it
-        looks like this ('foo'/'bar' are names of the fields being updated):
+        looks like this ('foo'/'bar' are names of the fields being updated)::
+
           {
             "foo": {"name": "foo", "type": "datetime", "format": "default"},
             "bar": {"name": "bar", "type": "integer", "format": "default"}
@@ -368,7 +369,7 @@ def index_levels(_file: _path_t, idxcols: Iterable[str]) -> Tuple[_path_t, Dict]
     Tuple[str, Dict]
 
         Tuple of path to the dataset, and the schema of each column as a dictionary.
-        If `idxcols` was ["foo", "bar"], the dictionary might look like:
+        If `idxcols` was ["foo", "bar"], the dictionary might look like::
 
           {
             "foo": {"name": "foo", "type": "datetime", "format": "default"},

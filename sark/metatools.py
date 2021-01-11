@@ -105,8 +105,9 @@ def check_license(lic: License) -> License:
     lic : Dict[str, str], alias License
         License metadata dictionary (as returned by the Open Definition
         License Service)
-        Example: CC-BY-SA
-        {
+        Example: CC-BY-SA::
+
+          {
             "domain_content": true,
             "domain_data": true,
             "domain_software": false,
@@ -118,7 +119,7 @@ def check_license(lic: License) -> License:
             "status": "active",
             "title": "Creative Commons Attribution Share-Alike 4.0",
             "url": "https://creativecommons.org/licenses/by-sa/4.0/"
-        }
+          }
 
     """
     # TODO: to add more checks, add to the following lists
