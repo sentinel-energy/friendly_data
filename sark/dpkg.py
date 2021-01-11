@@ -424,19 +424,22 @@ def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pd.DataFr
         update_pkg(pkg, resource_name, update)
         update_pkg(pkg, resource_name, {"primaryKey": entry.idxcols}, fields=False)
         # set of value columns
-        cols = glom(
-            pkg.descriptor,
-            (
-                "resources",
-                Iter()
-                .filter(select("path", equal_to=entry.file))
-                .map("schema.fields")
-                .flatten()
-                .map("name")
-                .all(),
-                set,
-            ),
-        ) - set(entry.idxcols)
+        cols = (
+            glom(
+                pkg.descriptor,
+                (
+                    "resources",
+                    Iter()
+                    .filter(select("path", equal_to=entry.file))
+                    .map("schema.fields")
+                    .flatten()
+                    .map("name")
+                    .all(),
+                    set,
+                ),
+            )
+            - set(entry.idxcols)
+        )
         update_pkg(pkg, resource_name, {col: registry(col, "cols") for col in cols})
     return pkg_dir, pkg, idx
 
