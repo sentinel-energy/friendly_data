@@ -1,4 +1,7 @@
-"""I/O"""
+"""
+I/O
+---
+"""
 
 from hashlib import sha256
 from pathlib import Path
@@ -10,7 +13,7 @@ import requests
 
 
 def get_cachedir() -> Path:
-    """Create the directory `$TMPDIR/sark-cache` and return the Path object"""
+    """Create the directory ``$TMPDIR/sark-cache`` and return the Path object"""
     cachedir = Path(tempfile.gettempdir()) / "sark-cache"
     cachedir.mkdir(exist_ok=True)
     return cachedir
@@ -20,15 +23,20 @@ class HttpCache:
     """An HTTP cache
 
     It accepts a URL template which accepts parameters:
-    'https://www.example.com/path/{}.json', the parameters can be provided
+    ``https://www.example.com/path/{}.json``, the parameters can be provided
     later at fetch time.  No checks are made if the number of parameters passed
     are compatible with the URL template.
 
     After fetching a resource, it is cached in a file under
-    '$TMPDIR/sark-cache/'.  The file name is of the form
-    'http-<checksum-of-url-template>-<checksum-of-url>'.  The cache is updated
-    every 24 hours.  A user may also force a cache cleanup by calling the
-    'remove()' method.
+    ``$TMPDIR/sark-cache/``.  The file name is of the form
+    ``http-<checksum-of-url-template>-<checksum-of-url>``.  The cache is
+    updated every 24 hours.  A user may also force a cache cleanup by calling
+    the :meth:`remove()` method.
+
+    Parameters
+    ----------
+    url_t : str
+        URL template, e.g. ``https://www.example.com/path/{}.json``
 
     Attributes
     ----------
@@ -40,12 +48,6 @@ class HttpCache:
     cachedir: Path = get_cachedir()
 
     def __init__(self, url_t: str):
-        """
-        Parameters
-        ----------
-        url_t : str
-            URL template, e.g. 'https://www.example.com/path/{}.json'
-        """
         self.url_t = url_t
         self.url_t_hex = sha256(bytes(url_t, "utf8")).hexdigest()
 

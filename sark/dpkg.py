@@ -1,8 +1,5 @@
-"""Data package
-
-PS: the coincidential module name is intentional ;)
-
-"""
+"""Datapackage"""
+# PS: the coincidential module name is intentional ;)
 
 import csv
 from itertools import chain
@@ -135,8 +132,16 @@ def update_pkg(pkg, resource, schema_update: Dict, fields: bool = True):
         looks like this ('foo'/'bar' are names of the fields being updated)::
 
           {
-            "foo": {"name": "foo", "type": "datetime", "format": "default"},
-            "bar": {"name": "bar", "type": "integer", "format": "default"}
+              "foo": {
+                  "name": "foo",
+                  "type": "datetime",
+                  "format": "default"
+              },
+              "bar": {
+                  "name": "bar",
+                  "type": "integer",
+                  "format": "default"
+              }
           }
 
     fields : bool (default: True)
@@ -372,8 +377,18 @@ def index_levels(_file: _path_t, idxcols: Iterable[str]) -> Tuple[_path_t, Dict]
         If `idxcols` was ["foo", "bar"], the dictionary might look like::
 
           {
-            "foo": {"name": "foo", "type": "datetime", "format": "default"},
-            "bar": {"name": "bar", "type": "string", "constraints": {"enum": ["a", "b"]}}
+              "foo": {
+                  "name": "foo",
+                  "type": "datetime",
+                  "format": "default"
+              },
+              "bar": {
+                  "name": "bar",
+                  "type": "string",
+                  "constraints": {
+                      "enum": ["a", "b"]
+                  }
+              }
           }
 
         Note that the index columns that have categorical values, are filled in

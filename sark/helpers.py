@@ -1,4 +1,7 @@
-"""Helpers"""
+"""
+Helpers
+-------
+"""
 
 from collections import deque
 from collections.abc import Sequence
@@ -31,49 +34,60 @@ def flatten_list(lst: Iterable) -> Iterable:
 
 
 def select(spec, **kwargs):
-    """Wrap `glom.Check` with the default action set to `glom.SKIP`.
+    """Wrap ``glom.Check`` with the default action set to ``glom.SKIP``.
 
     This is very useful to select items inside nested data structures.  A few
     example uses:
 
     >>> from glom import glom
     >>> cols = [
-    ...     {"name": "abc", "type": "integer"},
-    ...     {"name": "def", "type": "string"},
+    ...     {
+    ...         "name": "abc",
+    ...         "type": "integer"
+    ...     },
+    ...     {
+    ...         "name": "def",
+    ...         "type": "string"
+    ...     },
     ... ]
     >>> glom(cols, [select("name", equal_to="abc")])
     [{"name": "abc", "type": "integer"}]
 
-    Full documentation of `glom.Check` is below:
+    For details see: `glom.Check`_
+
+    .. _glom.Check: https://glom.readthedocs.io/en/latest/matching.html#validation-with-check
 
     """
     return Check(spec, default=SKIP, **kwargs)
 
 
-select.__doc__ += Check.__doc__
-
-
 def match(pattern, **kwargs):
-    """Wrap `glom.Match` with the default action set to `glom.SKIP`.
+    """Wrap ``glom.Match`` with the default action set to ``glom.SKIP``.
 
     This is very useful to match items inside nested data structures.  A few
     example uses:
 
     >>> from glom import glom
     >>> cols = [
-    ...     {"name": "abc", "type": "integer", "constraints": {"enum": []}},
-    ...     {"name": "def", "type": "string"},
+    ...     {
+    ...         "name": "abc",
+    ...         "type": "integer",
+    ...         "constraints": {"enum": []}
+    ...     },
+    ...     {
+    ...         "name": "def",
+    ...         "type": "string"
+    ...     },
     ... ]
     >>> glom(cols, [match({"constraints": {"enum": list}, str: str})])
     [{"name": "abc", "type": "integer", "constraints": {"enum": []}}]
 
-    Full documentation of `glom.Match` is below:
+    For details see: `glom.Match`_
+
+    .. _glom.Match: https://glom.readthedocs.io/en/latest/matching.html#validation-with-match
 
     """
     return Match(pattern, default=SKIP, **kwargs)
-
-
-match.__doc__ += Match.__doc__
 
 
 consume = partial(deque, maxlen=0)
