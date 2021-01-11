@@ -280,7 +280,7 @@ def read_pkg_index(fpath: Union[_path_t, TextIO], suffix: str = "") -> pd.DataFr
         idxfile = fpath
         suffix = suffix.lower()
     if not suffix:
-        raise ValueError(f"{suffix=} cannot be empty, when {fpath=}")
+        raise ValueError(f"suffix={suffix} cannot be empty, when fpath={fpath}")
 
     if suffix == "csv":
         idx = [
