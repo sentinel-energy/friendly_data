@@ -14,14 +14,21 @@
 import sys
 from unittest.mock import MagicMock
 
+
+class MyMock(MagicMock):
+    def __repr__(self):
+        parent = self._mock_parent
+        return f"{parent}.{self._mock_name}" if parent else self._mock_name
+
+
 sys.path.insert(0, "../")
 mocked_modules = ["datapackage", "glom", "goodtables", "pandas"]
-sys.modules.update((mod, MagicMock()) for mod in mocked_modules)
+sys.modules.update((mod, MyMock(name=mod)) for mod in mocked_modules)
 
 # -- Project information -----------------------------------------------------
 
 project = "SENTINEL archive"
-copyright = "2020, SENTINEL collaboration"
+copyright = "2021, SENTINEL collaboration"
 author = "SENTINEL collaboration"
 
 # The full version, including alpha/beta/rc tags
@@ -67,18 +74,11 @@ html_theme = "alabaster"
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 
-
 # -- Options for LaTeX output ------------------------------------------------
 # latex_engine = "xelatex"
 
 latex_documents = [
-    (
-        "index_pdf",
-        "sentinel-data-format.tex",
-        "",
-        "SENTINEL collaboration",
-        "howto",
-    ),
+    ("index_pdf", "sentinel-data-format.tex", "", "SENTINEL collaboration", "howto"),
     # (
     #     "api/api",
     #     "sentinel-archive-api-docs.tex",
