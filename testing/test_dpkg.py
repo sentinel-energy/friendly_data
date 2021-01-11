@@ -1,13 +1,20 @@
+from contextlib import nullcontext as does_not_raise
+import json
+from operator import contains
 from pathlib import Path
 
-from glom import Assign, glom, T
+from glom import Assign, glom, Iter, T
 import numpy as np
 import pandas as pd
 import pytest
 
 from sark.dpkg import (
     create_pkg,
+    index_levels,
+    pkg_from_index,
+    pkg_glossary,
     read_pkg,
+    registry,
     to_df,
     update_pkg,
     write_pkg,
@@ -15,7 +22,7 @@ from sark.dpkg import (
     _schema,
     _source_type,
 )
-from sark.helpers import select
+from sark.helpers import match, select
 from sark.metatools import get_license
 
 
@@ -153,6 +160,96 @@ def test_read_pkg_index(pkg_index):
     np.testing.assert_array_equal(idx.columns, ["file", "name", "idxcols"])
     assert idx.shape == (3, 3)
     np.testing.assert_array_equal(idx["idxcols"].agg(len), [2, 3, 1])
+
+
+def test_read_pkg_index_errors(tmp_path):
+    idxfile = tmp_path / "index.txt"
+    with pytest.raises(FileNotFoundError):
+        read_pkg_index(idxfile)
+
+    idxfile.touch()
+    with pytest.raises(RuntimeError, match=".+index.txt: unknown index.+"):
+        read_pkg_index(idxfile)
+
+    idxfile = idxfile.with_suffix(".json")
+    bad_data = {"file": "file1", "name": "dst1", "idxcols": ["cola", "colb"]}
+    idxfile.write_text(json.dumps(bad_data))
+    with pytest.raises(RuntimeError, match=".+index.json: bad index file"):
+        read_pkg_index(idxfile)
+
+
+@pytest.mark.parametrize(
+    "col, col_t, expectation",
+    [
+        ("locs", "idxcols", does_not_raise()),
+        ("storage", "cols", does_not_raise()),
+        (
+            "notinreg",
+            "cols",
+            pytest.warns(RuntimeWarning, match=f"notinreg: not in registry"),
+        ),
+        (
+            "timesteps",
+            "bad_col_t",
+            pytest.raises(ValueError, match=f"bad_col_t: unknown column type"),
+        ),
+    ],
+)
+def test_registry(col, col_t, expectation):
+    with expectation:
+        res = registry(col, col_t)
+        assert isinstance(res, dict)
+        if col == "notinreg":
+            assert res == {}
+
+
+@pytest.mark.parametrize(
+    "csvfile, idxcols, ncatcols",
+    [
+        ("inputs/cost_energy_cap.csv", ["costs", "locs", "techs"], 3),
+        ("inputs/energy_eff.csv", ["locs", "techs"], 2),
+        ("inputs/names.csv", ["techs"], 1),
+        ("outputs/capacity_factor.csv", ["carriers", "locs", "techs", "timesteps"], 3),
+        ("outputs/resource_area.csv", ["locs", "techs"], 2),
+    ],
+)
+def test_index_levels(csvfile, idxcols, ncatcols):
+    pkgdir = Path("testing/files/mini-ex")
+    _, coldict = index_levels(pkgdir / csvfile, idxcols)
+    assert all(map(contains, idxcols, coldict))
+    cols_w_vals = glom(
+        coldict.values(),
+        [match({"constraints": {"enum": lambda i: len(i) > 0}, str: str})],
+    )
+    # ncatcols: only categorical columns are inferred
+    assert len(cols_w_vals) == ncatcols
+
+
+@pytest.mark.parametrize("idx_t", [".csv", ".yaml", ".json"])
+def test_pkg_from_index(idx_t):
+    meta = {
+        "name": "foobarbaz",
+        "title": "Foo Bar Baz",
+        "keywords": ["foo", "bar", "baz"],
+        "license": ["CC0-1.0"],
+    }
+    idxpath = Path("testing/files/mini-ex/index").with_suffix(idx_t)
+    pkgdir, pkg, _ = pkg_from_index(meta, idxpath)
+    assert pkgdir == idxpath.parent
+    assert len(pkg.descriptor["resources"]) == 5  # number of datasets
+    indices = glom(pkg.descriptor, ("resources", Iter().map("schema.primaryKey").all()))
+    assert len(indices) == 5
+    # FIXME: not sure what else to check
+
+
+def test_pkg_glossary():
+    pkgdir = Path("testing/files/mini-ex")
+    pkg = read_pkg(pkgdir / "datapackage.json")
+    idx = read_pkg_index(pkgdir / "index.csv")
+    glossary = pkg_glossary(pkg, idx)
+    assert all(glossary.columns == ["file", "name", "idxcols", "values"])
+    assert glossary["values"].apply(lambda i: isinstance(i, list)).all()
+    assert len(glossary["file"].unique()) <= glossary.shape[0]
 
 
 def test_pkg_to_df(pkg, subtests):

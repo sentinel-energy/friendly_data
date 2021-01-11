@@ -18,7 +18,7 @@ import pandas as pd
 from pkg_resources import resource_filename
 import yaml
 
-from sark.helpers import consume, import_from, match, select
+from sark.helpers import consume, import_from, match, select, from_hints
 
 # TODO: compressed files
 _source_ts = ["csv", "xls", "xlsx"]  # "sqlite"
@@ -330,21 +330,25 @@ def registry(col: str, col_t: Literal["cols", "idxcols"]) -> Dict:
         When the schema file in the registry is unsupported; not one of: JSON, or YAML
 
     """
+    if col_t not in from_hints(registry, "col_t")[1]:
+        raise ValueError(f"{col_t}: unknown column type")
+
     curdir = Path(resource_filename("sark_registry", col_t))
     schema = list(
         chain.from_iterable(curdir.glob(f"{col}.{fmt}") for fmt in ("json", "yaml"))
     )
     if len(schema) == 0:
+        warn(f"{col}: not in registry", RuntimeWarning)
         return {}  # no match, unregistered column
-    if len(schema) > 1:
-        raise RuntimeError(f"more than one matching schema: {schema}")
+    if len(schema) > 1:  # pragma: no cover, bad registry
+        raise RuntimeError(f"{schema}: multiple matches, duplicates in registry")
     with open(curdir / schema[0]) as f:
         fsuffix = Path(f.name).suffix.strip(".").lower()
         if fsuffix == "yaml":
             return yaml.safe_load(f)
         elif fsuffix == "json":
             return json.load(f)
-        else:  # shouldn't reach here
+        else:  # pragma: no cover, shouldn't reach here
             raise ValueError(f"{f.name}: unsupported schema file format")
 
 
@@ -392,7 +396,7 @@ def index_levels(_file: _path_t, idxcols: Iterable[str]) -> Tuple[_path_t, Dict]
     return _file, coldict
 
 
-def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package]:
+def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pd.DataFrame]:
     """Read an index file, and create a datapackage with the provided metadata.
 
     Parameters
@@ -406,8 +410,8 @@ def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package]:
 
     Returns
     -------
-    Tuple[Path, Package]
-        The package directory, and the `Package` object.
+    Tuple[Path, Package, pandas.DataFrame]
+        The package directory, the `Package` object, and the index dataframe.
 
     """
     pkg_dir = Path(fpath).parent
@@ -434,7 +438,7 @@ def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package]:
             ),
         ) - set(entry.idxcols)
         update_pkg(pkg, resource_name, {col: registry(col, "cols") for col in cols})
-    return pkg_dir, pkg
+    return pkg_dir, pkg, idx
 
 
 def pkg_glossary(pkg: Package, idx: pd.DataFrame) -> pd.DataFrame:
