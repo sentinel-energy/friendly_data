@@ -69,9 +69,8 @@ def create_pkg(meta: Dict, resources: Iterable[_path_t], base_path: _path_t = ""
     # TODO: filter out and handle non-tabular (custom) data
     for res in resources:
         if isinstance(res, (str, Path)):
-            res = Path(res)
-            full_path = f"{base_path}" / res
-            if not Path(full_path).exists():
+            full_path = Path(base_path) / res
+            if not full_path.exists():
                 warn(f"{full_path}: skipped, doesn't exist", RuntimeWarning)
                 continue
             pkg.infer(f"{res}")
