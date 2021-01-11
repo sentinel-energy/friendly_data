@@ -4,6 +4,7 @@ goodtables
 numexpr
 numpy
 pandas>=1.0
+pyyaml
 requests
 tableschema
 tabulator
