@@ -1,0 +1,12 @@
+file,name,idxcols,values
+inputs/cost_energy_cap.csv,cost_energy_cap,costs,['monetary']
+inputs/cost_energy_cap.csv,cost_energy_cap,locs,"['region1', 'region1-1', 'region1-2', 'region1-3', 'region2']"
+inputs/cost_energy_cap.csv,cost_energy_cap,techs,"['ac_transmission:region1', 'ac_transmission:region2', 'ccgt', 'csp']"
+inputs/energy_eff.csv,energy_eff,locs,"['region1', 'region1-1', 'region1-2', 'region1-3', 'region2']"
+inputs/energy_eff.csv,energy_eff,techs,"['ac_transmission:region1', 'ac_transmission:region2', 'battery', 'ccgt', 'csp', 'free_transmission:region1', 'free_transmission:region1-1', 'free_transmission:region1-2', 'free_transmission:region1-3']"
+outputs/capacity_factor.csv,capacity_factor,carriers,['power']
+outputs/capacity_factor.csv,capacity_factor,locs,"['region1', 'region1-1', 'region1-2', 'region1-3', 'region2']"
+outputs/capacity_factor.csv,capacity_factor,techs,"['ac_transmission:region1', 'ac_transmission:region2', 'battery', 'ccgt', 'csp', 'free_transmission:region1', 'free_transmission:region1-1', 'free_transmission:region1-2', 'free_transmission:region1-3']"
+outputs/capacity_factor.csv,capacity_factor,timesteps,[]
+outputs/resource_area.csv,resource_area,locs,"['region1-1', 'region1-2', 'region1-3']"
+outputs/resource_area.csv,resource_area,techs,['csp']

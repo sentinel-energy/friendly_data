@@ -1,0 +1,261 @@
+{
+    "name": "foobarbaz",
+    "title": "Foo Bar Baz",
+    "licenses": "CC0",
+    "keywords": [
+        "foo",
+        "bar",
+        "baz"
+    ],
+    "profile": "tabular-data-package",
+    "resources": [
+        {
+            "path": "inputs/cost_energy_cap.csv",
+            "profile": "tabular-data-resource",
+            "name": "cost_energy_cap",
+            "format": "csv",
+            "mediatype": "text/csv",
+            "encoding": "utf-8",
+            "schema": {
+                "fields": [
+                    {
+                        "name": "costs",
+                        "type": "string",
+                        "format": "default",
+                        "constraints": {
+                            "enum": [
+                                "monetary"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "locs",
+                        "type": "string",
+                        "format": "default",
+                        "constraints": {
+                            "enum": [
+                                "region1",
+                                "region1-1",
+                                "region1-2",
+                                "region1-3",
+                                "region2"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "techs",
+                        "type": "string",
+                        "format": "default",
+                        "constraints": {
+                            "enum": [
+                                "ac_transmission:region1",
+                                "ac_transmission:region2",
+                                "ccgt",
+                                "csp"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "cost_energy_cap",
+                        "type": "number",
+                        "format": "default"
+                    }
+                ],
+                "missingValues": [
+                    ""
+                ],
+                "primaryKey": [
+                    "costs",
+                    "locs",
+                    "techs"
+                ]
+            }
+        },
+        {
+            "path": "inputs/energy_eff.csv",
+            "profile": "tabular-data-resource",
+            "name": "energy_eff",
+            "format": "csv",
+            "mediatype": "text/csv",
+            "encoding": "utf-8",
+            "schema": {
+                "fields": [
+                    {
+                        "name": "locs",
+                        "type": "string",
+                        "format": "default",
+                        "constraints": {
+                            "enum": [
+                                "region1",
+                                "region1-1",
+                                "region1-2",
+                                "region1-3",
+                                "region2"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "techs",
+                        "type": "string",
+                        "format": "default",
+                        "constraints": {
+                            "enum": [
+                                "ac_transmission:region1",
+                                "ac_transmission:region2",
+                                "battery",
+                                "ccgt",
+                                "csp",
+                                "free_transmission:region1",
+                                "free_transmission:region1-1",
+                                "free_transmission:region1-2",
+                                "free_transmission:region1-3"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "energy_eff",
+                        "type": "number",
+                        "format": "default",
+                        "constraints": {
+                            "minimum": 0,
+                            "maximum": 1
+                        }
+                    }
+                ],
+                "missingValues": [
+                    ""
+                ],
+                "primaryKey": [
+                    "locs",
+                    "techs"
+                ]
+            }
+        },
+        {
+            "path": "outputs/capacity_factor.csv",
+            "profile": "tabular-data-resource",
+            "name": "capacity_factor",
+            "format": "csv",
+            "mediatype": "text/csv",
+            "encoding": "utf-8",
+            "schema": {
+                "fields": [
+                    {
+                        "name": "carriers",
+                        "type": "string",
+                        "format": "default",
+                        "constraints": {
+                            "enum": [
+                                "power"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "locs",
+                        "type": "string",
+                        "format": "default",
+                        "constraints": {
+                            "enum": [
+                                "region1",
+                                "region1-1",
+                                "region1-2",
+                                "region1-3",
+                                "region2"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "techs",
+                        "type": "string",
+                        "format": "default",
+                        "constraints": {
+                            "enum": [
+                                "ac_transmission:region1",
+                                "ac_transmission:region2",
+                                "battery",
+                                "ccgt",
+                                "csp",
+                                "free_transmission:region1",
+                                "free_transmission:region1-1",
+                                "free_transmission:region1-2",
+                                "free_transmission:region1-3"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "timesteps",
+                        "type": "datetime",
+                        "format": "default"
+                    },
+                    {
+                        "name": "capacity_factor",
+                        "type": "number",
+                        "format": "default",
+                        "constraints": {
+                            "minimum": 0,
+                            "maximum": 1
+                        }
+                    }
+                ],
+                "missingValues": [
+                    ""
+                ],
+                "primaryKey": [
+                    "carriers",
+                    "locs",
+                    "techs",
+                    "timesteps"
+                ]
+            }
+        },
+        {
+            "path": "outputs/resource_area.csv",
+            "profile": "tabular-data-resource",
+            "name": "resource_area",
+            "format": "csv",
+            "mediatype": "text/csv",
+            "encoding": "utf-8",
+            "schema": {
+                "fields": [
+                    {
+                        "name": "locs",
+                        "type": "string",
+                        "format": "default",
+                        "constraints": {
+                            "enum": [
+                                "region1-1",
+                                "region1-2",
+                                "region1-3"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "techs",
+                        "type": "string",
+                        "format": "default",
+                        "constraints": {
+                            "enum": [
+                                "csp"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "resource_area",
+                        "type": "number",
+                        "format": "default",
+                        "constraints": {
+                            "minimum": 0
+                        }
+                    }
+                ],
+                "missingValues": [
+                    ""
+                ],
+                "primaryKey": [
+                    "locs",
+                    "techs"
+                ]
+            }
+        }
+    ]
+}
