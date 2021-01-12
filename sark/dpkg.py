@@ -1,7 +1,6 @@
 """Datapackage"""
 # PS: the coincidential module name is intentional ;)
 
-import csv
 from itertools import chain
 import json
 from pathlib import Path
@@ -173,18 +172,9 @@ def update_pkg(pkg, resource, schema_update: Dict, fields: bool = True):
 def read_pkg_index(fpath: Union[_path_t, TextIO], suffix: str = "") -> pd.DataFrame:
     """Read the index of files incuded in the datapackage
 
-    The index can be in either CSV, YAML, or JSON file format.  It is a list of
-    dataset files, names, and a list of columns in the dataset that are to be
-    treated as index columns.
-
-    CSV::
-
-        >>> csv_f = '''
-        ... file,name,idxcols
-        ... file1,dst1,cola,colb
-        ... file2,dst2,colx,coly,colz
-        ... file3,dst3,col
-        ... '''
+    The index can be in either YAML, or JSON format.  It is a list of dataset
+    files, names, and a list of columns in the dataset that are to be treated
+    as index columns.
 
     YAML::
 
@@ -237,9 +227,9 @@ def read_pkg_index(fpath: Union[_path_t, TextIO], suffix: str = "") -> pd.DataFr
         Index file path or a stream object
 
     suffix : str (default: empty string)
-        File type, one of: csv, yaml, yml, json.  If it is empty (default), the
-        file type is deduced from the filename extension.  Since a stream does
-        not always have a file associated with it, it is mandatory to specify a
+        File type, one of: yaml, yml, json.  If it is empty (default), the file
+        type is deduced from the filename extension.  Since a stream does not
+        always have a file associated with it, it is mandatory to specify a
         non-empty `suffix` when `fpath` is a stream.
 
     Returns
@@ -264,7 +254,7 @@ def read_pkg_index(fpath: Union[_path_t, TextIO], suffix: str = "") -> pd.DataFr
 
         >>> from io import StringIO
         >>> import numpy as np
-        >>> idx = read_pkg_index(StringIO(csv_f), 'csv')
+        >>> idx = read_pkg_index(StringIO(json_f), 'json')
         >>> idx
              file  name             idxcols
         0   file1  dst1        (cola, colb)
@@ -273,8 +263,6 @@ def read_pkg_index(fpath: Union[_path_t, TextIO], suffix: str = "") -> pd.DataFr
         >>> np.array_equal(idx, read_pkg_index(StringIO(yaml_f), 'yaml'))
         True
         >>> np.array_equal(idx, read_pkg_index(StringIO(yaml_f), 'yml'))
-        True
-        >>> np.array_equal(idx, read_pkg_index(StringIO(json_f), 'json'))
         True
 
     """
@@ -287,13 +275,7 @@ def read_pkg_index(fpath: Union[_path_t, TextIO], suffix: str = "") -> pd.DataFr
     if not suffix:
         raise ValueError(f"suffix={suffix} cannot be empty, when fpath={fpath}")
 
-    if suffix == "csv":
-        idx = [
-            {"file": fname, "name": dst, "idxcols": idxcols}
-            for fname, dst, *idxcols in csv.reader(idxfile)
-        ]
-        idx = idx[1:]  # drop header row
-    elif suffix in ("yaml", "yml"):
+    if suffix in ("yaml", "yml"):
         idx = yaml.safe_load(idxfile)
     elif suffix == "json":
         idx = json.load(idxfile)

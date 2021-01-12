@@ -163,12 +163,12 @@ def test_read_pkg_index(pkg_index):
 
 
 def test_read_pkg_index_errors(tmp_path):
-    idxfile = tmp_path / "index.txt"
+    idxfile = tmp_path / "index.csv"
     with pytest.raises(FileNotFoundError):
         read_pkg_index(idxfile)
 
     idxfile.touch()
-    with pytest.raises(RuntimeError, match=".+index.txt: unknown index.+"):
+    with pytest.raises(RuntimeError, match=".+index.csv: unknown index.+"):
         read_pkg_index(idxfile)
 
     idxfile = idxfile.with_suffix(".json")
@@ -225,7 +225,7 @@ def test_index_levels(csvfile, idxcols, ncatcols):
     assert len(cols_w_vals) == ncatcols
 
 
-@pytest.mark.parametrize("idx_t", [".csv", ".yaml", ".json"])
+@pytest.mark.parametrize("idx_t", [".yaml", ".json"])
 def test_pkg_from_index(idx_t):
     meta = {
         "name": "foobarbaz",
@@ -242,10 +242,11 @@ def test_pkg_from_index(idx_t):
     # FIXME: not sure what else to check
 
 
-def test_pkg_glossary():
+@pytest.mark.parametrize("idx_t", [".yaml", ".json"])
+def test_pkg_glossary(idx_t):
     pkgdir = Path("testing/files/mini-ex")
     pkg = read_pkg(pkgdir / "datapackage.json")
-    idx = read_pkg_index(pkgdir / "index.csv")
+    idx = read_pkg_index(pkgdir / f"index{idx_t}")
     glossary = pkg_glossary(pkg, idx)
     assert all(glossary.columns == ["file", "name", "idxcols", "values"])
     assert glossary["values"].apply(lambda i: isinstance(i, list)).all()

@@ -43,15 +43,13 @@ def pkg(pkgdir):
     return read_pkg(dpkg_json)
 
 
-@pytest.fixture(params=["csv", "yaml", "yml", "json", "stream"])
+@pytest.fixture(params=["yaml", "yml", "json", "stream"])
 def pkg_index(request):
     idxdir = Path("testing/files/indices")
-    if request.param in ("csv", "yaml", "json"):
+    if request.param in ("yml", "yaml", "json"):
         return idxdir / f"index.{request.param}", ""
-    elif request.param == "yml":
-        return idxdir / "index.yaml", ""
     elif request.param == "stream":
-        return io.StringIO((idxdir / "index.csv").read_text()), "csv"
+        return io.StringIO((idxdir / "index.json").read_text()), "json"
 
 
 @pytest.fixture

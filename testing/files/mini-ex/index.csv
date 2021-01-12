@@ -1,6 +1,0 @@
-file,name,idxcols
-inputs/cost_energy_cap.csv,cost_energy_cap,costs,locs,techs
-inputs/energy_eff.csv,energy_eff,locs,techs
-inputs/names.csv,names,techs
-outputs/capacity_factor.csv,capacity_factor,carriers,locs,techs,timesteps
-outputs/resource_area.csv,resource_area,locs,techs
