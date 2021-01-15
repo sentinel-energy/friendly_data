@@ -8,27 +8,13 @@ from typing import Dict, Iterable, Optional, TextIO, Tuple, Union
 from warnings import warn
 from zipfile import ZipFile
 
-from datapackage import Package, Resource
+from datapackage import Package
 from glom import Assign, glom, Invoke, Iter, Spec, T
 import pandas as pd
 from pkg_resources import resource_filename
 import yaml
 
-from sark.helpers import consume, import_from, match, select
-
-# TODO: compressed files
-_source_ts = ["csv", "xls", "xlsx"]  # "sqlite"
-_pd_types = {
-    "boolean": "bool",
-    "date": "datetime64",
-    "time": "datetime64",
-    "datetime": "datetime64",
-    "year": "datetime64",
-    "yearmonth": "datetime64",
-    "integer": "Int64",
-    "number": "float",
-    "string": "string",
-}
+from sark.helpers import match, select
 
 _path_t = Union[str, Path]  # file path type
 
@@ -114,15 +100,15 @@ def read_pkg(pkg_path: _path_t, extract_dir: Optional[_path_t] = None):
         raise ValueError(f"{pkg_path}: expecting a JSON or ZIP file")
 
 
-def update_pkg(pkg, resource, schema_update: Dict, fields: bool = True):
+def update_pkg(pkg: Package, resource: str, schema_update: Dict, fields: bool = True):
     """Update package resource schema
 
     Parameters
     ----------
-    pkg
+    pkg : Package
         Package object
 
-    resource
+    resource : str
         Resource name FIXME: cannot handle duplicate names in subdirectories
 
     schema_update : Dict
@@ -414,7 +400,6 @@ def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pd.DataFr
     """
     pkg_dir = Path(fpath).parent
     idx = read_pkg_index(fpath)
-    # FIXME: also update regular columns
     pkg = create_pkg(meta, idx["file"], base_path=f"{pkg_dir}")
     for entry in idx.to_records():
         resource_name = Path(entry.file).stem
@@ -478,7 +463,46 @@ def pkg_glossary(pkg: Package, idx: pd.DataFrame) -> pd.DataFrame:
     return glossary.assign(values=glossary.apply(_levels, axis=1))
 
 
-def write_pkg(pkg, pkg_path: _path_t):
+def pkg_from_files(meta: Dict, idxpath: _path_t, fpaths: Iterable[_path_t]):
+    """Create a package from an index file and other files
+
+    Parameters
+    ----------
+    meta : Dict
+        A dictionary with package metadata.
+
+    idxpath : Union[str, Path]
+        Path to the index file.  Note the index file has to be at the top level
+        directory of the datapackage.  See :func:`sark.dpkg.read_pkg_index`
+
+    fpaths : List[Union[str, Path]]
+        A list of paths to datasets/resources not in the index.  If any of the
+        paths point to a dataset already present in the index, it is ignored.
+
+    Returns
+    -------
+    Tuple[Path, Package, pd.DataFrame]
+        A datapackage with inferred schema for the resources/datasets present
+        in the index; all other resources are added with a basic inferred
+        schema.
+
+    """
+    pkgdir, pkg, idx = pkg_from_index(meta, idxpath)
+    _fpaths = [
+        _p1.relative_to(pkgdir)  # convert path to relative to pkgdir
+        for _p1 in filter(  # only accept files not in index
+            lambda _p2: not any(
+                # check if already in index
+                map(lambda _p3: _p2.samefile(_p3), pkgdir / idx["file"])
+            ),
+            map(Path, fpaths),
+        )
+    ]
+    pkg = create_pkg(pkg.descriptor, _fpaths, base_path=pkgdir)
+    return pkgdir, pkg, idx
+
+
+def write_pkg(pkg: Package, pkg_path: _path_t):
     """Write data package to a zip file
 
     NOTE: This exists because we want to support saving to other kinds of
@@ -490,123 +514,3 @@ def write_pkg(pkg, pkg_path: _path_t):
         pkg.save(pkg_path)
     else:
         raise ValueError(f"{pkg_path}: not a zip file")
-
-
-def _source_type(source: _path_t) -> str:
-    """From a file path, deduce the file type from the extension
-
-    Note: the extension is checked against the list of supported file types
-
-    """
-    # FIXME: use file magic
-    source_t = Path(source).suffix.strip(".").lower()
-    if source_t not in _source_ts:
-        raise ValueError(f"unsupported source: {source_t}")
-    return source_t
-
-
-def _schema(resource: Resource, type_map: Dict[str, str]) -> Dict[str, str]:
-    """Parse a Resource schema and return types mapped to each column.
-
-    Parameters
-    ----------
-    resource
-        A resource descriptor
-    type_map : Dict[str, str]
-        A dictionary that maps datapackage type names to pandas types.
-
-    Returns
-    -------
-    Dict[str, str]
-        Dictionary with column names as key, and types as values
-
-    """
-    return dict(
-        glom(
-            resource,  # target
-            (  # spec
-                "schema.fields",  # Resource & Schema properties
-                [  # fields inside a list
-                    (
-                        "descriptor",  # Field property
-                        # string names -> string dtypes understood by pandas
-                        lambda t: (t["name"], type_map[t["type"]]),
-                    )
-                ],
-            ),
-        )
-    )
-
-
-def to_df(resource: Resource, noexcept: bool = False) -> pd.DataFrame:
-    """Reads a data package resource as a `pandas.DataFrame`
-
-    FIXME: only considers 'name' and 'type' in the schema, other options like
-    'format', 'missingValues', etc are ignored.
-
-    Parameters
-    ----------
-    resource : `datapackage.Resource`
-        A data package resource object
-    noexcept : bool (default: False)
-        Whether to suppress an exception
-
-    Returns
-    -------
-    pandas.DataFrame
-        NOTE: when `noexcept` is `True`, and there's an exception, an empty
-        dataframe is returned
-
-    Raises
-    ------
-    ValueError
-        If the resource is not local
-        If the source type the resource is pointing to isn't supported
-
-    """
-    if not resource.local:  # pragma: no cover, not implemented
-        if noexcept:
-            return pd.DataFrame()
-        else:
-            raise ValueError(f"{resource.source}: not a local resource")
-
-    pd_readers = {
-        "csv": "read_csv",
-        "xls": "read_excel",
-        "xlsx": "read_excel",
-        # "sqlite": "read_sql",
-    }
-    try:
-        reader = import_from("pandas", pd_readers[_source_type(resource.source)])
-    except ValueError:
-        if noexcept:
-            return pd.DataFrame()
-        else:
-            raise
-
-    # parse dates
-    schema = _schema(resource, _pd_types)
-    date_cols = [col for col, col_t in schema.items() if "datetime64" in col_t]
-    consume(map(schema.pop, date_cols))
-
-    # missing values, NOTE: pandas accepts a list of "additional" tokens to be
-    # treated as missing values.
-    na_values = (
-        glom(resource, ("descriptor.schema.missingValues", set))
-        - pd._libs.parsers.STR_NA_VALUES
-    )
-    # FIXME: check if empty set is the same as None
-
-    # FIXME: how to handle constraints? e.g. 'required', 'unique', 'enum', etc
-    # see: https://specs.frictionlessdata.io/table-schema/#constraints
-
-    # set 'primaryKey' as index_col, a list is interpreted as a MultiIndex
-    index_col = glom(resource, ("descriptor.schema.primaryKey"), default=False)
-
-    return reader(
-        resource.source,
-        dtype=schema,
-        na_values=na_values,
-        index_col=index_col,
-        parse_dates=date_cols,
-    )

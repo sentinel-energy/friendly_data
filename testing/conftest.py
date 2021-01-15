@@ -10,6 +10,32 @@ from sark.io import HttpCache
 from sark.metatools import ODLS
 
 
+# values as per noop
+default_type_map = {
+    "object": "string",
+    "float64": "number",
+    "int64": "integer",
+    "Int64": "integer",
+    "bool": "boolean",
+}
+
+
+def expected_schema(df, type_map=default_type_map):
+    # handle a resource and a path
+    if not isinstance(df, pd.DataFrame):
+        try:
+            df = pd.read_csv(df.source)
+        except AttributeError:
+            df = pd.read_csv(df)  # path
+    # datapackage.Package.infer(..) relies on tableschema.Schema.infer(..),
+    # which infers datetime as string
+    return (
+        df.dtypes.astype(str)
+        .map(lambda t: type_map[t] if t in type_map else t)
+        .to_dict()
+    )
+
+
 @pytest.fixture
 def http_cache(request):
     # request: special object to parametrize fixtures

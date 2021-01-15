@@ -1,4 +1,3 @@
 coverage[toml]
 pytest>=6
 pytest-cov
-pytest-subtests
