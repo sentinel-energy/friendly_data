@@ -96,6 +96,9 @@ def read_pkg(pkg_path: _path_t, extract_dir: Optional[_path_t] = None):
             pkg_zip.extractall(path=extract_dir)
             with open(extract_dir / "datapackage.json") as pkg_json:
                 return Package(json.load(pkg_json), base_path=f"{extract_dir}")
+    elif pkg_path.is_dir():
+        with open(pkg_path / "datapackage.json") as pkg_json:
+            return Package(json.load(pkg_json), base_path=str(pkg_path))
     else:
         raise ValueError(f"{pkg_path}: expecting a JSON or ZIP file")
 
