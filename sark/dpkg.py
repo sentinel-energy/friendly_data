@@ -4,7 +4,7 @@
 from itertools import chain
 import json
 from pathlib import Path
-from typing import Dict, Iterable, Optional, TextIO, Tuple, Union
+from typing import Dict, Iterable, List, Optional, Tuple
 from warnings import warn
 from zipfile import ZipFile
 
@@ -149,7 +149,7 @@ def update_pkg(pkg: Package, resource: str, schema_update: Dict, fields: bool = 
             if field["name"] in schema_update:
                 field.update(schema_update[field["name"]])
     else:
-        # FIXME: do the following checks properly
+        # FIXME: do the following checks w/o asserts
         assert "fields" not in schema_update, "cannot add fields to schema"
         # prevents from adding additional keys
         assert set(schema_update) - {"primaryKey", "missingValues"} == set()
@@ -241,7 +241,7 @@ def index_levels(_file: _path_t, idxcols: Iterable[str]) -> Tuple[_path_t, Dict]
 
     Parameters
     ----------
-    _file : str
+    _file : Union[str, Path]
         Path to the dataset
 
     idxcols : Iterable[str]
@@ -293,6 +293,10 @@ def index_levels(_file: _path_t, idxcols: Iterable[str]) -> Tuple[_path_t, Dict]
 def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pd.DataFrame]:
     """Read an index file, and create a datapackage with the provided metadata.
 
+    The index can be in either YAML, or JSON format.  It is a list of dataset
+    files, names, and a list of columns in the dataset that are to be treated
+    as index columns (see example below)
+
     Parameters
     ----------
     meta : Dict
@@ -300,12 +304,69 @@ def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pd.DataFr
 
     fpath : Union[str, Path]
         Path to the index file.  Note the index file has to be at the top level
-        directory of the datapackage.  See :func:`sark.dpkg.read_pkg_index`
+        directory of the datapackage.
 
     Returns
     -------
     Tuple[Path, Package, pandas.DataFrame]
         The package directory, the `Package` object, and the index dataframe.
+
+    Examples
+    --------
+
+    YAML::
+
+        >>> yaml_f = '''
+        ... - file: file1
+        ...   name: dst1
+        ...   idxcols: [cola, colb]
+        ... - file: file2
+        ...   name: dst2
+        ...   idxcols: [colx, coly, colz]
+        ... - file: file3
+        ...   name: dst3
+        ...   idxcols: [col]
+        ... '''
+
+    JSON::
+
+        >>> json_f = '''
+        ... [
+        ...     {
+        ...         "file": "file1",
+        ...         "name": "dst1",
+        ...         "idxcols": [
+        ...             "cola",
+        ...             "colb"
+        ...         ]
+        ...     },
+        ...     {
+        ...         "file": "file2",
+        ...         "name": "dst2",
+        ...         "idxcols": [
+        ...             "colx",
+        ...             "coly",
+        ...             "colz"
+        ...         ]
+        ...     },
+        ...     {
+        ...         "file": "file3",
+        ...         "name": "dst3",
+        ...         "idxcols": [
+        ...             "col"
+        ...         ]
+        ...     }
+        ... ]
+        ... '''
+
+    Index as read from the example above::
+
+        >>> idx = read_pkg_index("testing/files/indices/index.json")
+        >>> idx
+             file  name             idxcols
+        0   file1  dst1        (cola, colb)
+        1   file2  dst2  (colx, coly, colz)
+        2   file3  dst3              (col,)
 
     """
     pkg_dir = Path(fpath).parent
@@ -412,15 +473,84 @@ def pkg_from_files(meta: Dict, idxpath: _path_t, fpaths: Iterable[_path_t]):
     return pkgdir, pkg, idx
 
 
-def write_pkg(pkg: Package, pkg_path: _path_t):
-    """Write data package to a zip file
+def idxpath_from_pkgpath(pkgpath: _path_t) -> _path_t:
+    """Return a valid index path given a package path
 
-    NOTE: This exists because we want to support saving to other kinds of
-    archives like tar, maybe even HDF5, or NetCDF.
+    Parameters
+    ----------
+    pkgpath : Union[str, Path]
+        Path to package directory
+
+    Returns
+    -------
+    Union[str, Path]
+        - Returns a valid index path; if there are multiple matches, returns
+          the first match
+        - If an index file is not found, returns an empty string
+
+    Warnings
+    --------
+    RuntimeWarning
+        - Warns if no index file is not found
+        - Warns if multiple index files are found
 
     """
-    pkg_path = Path(pkg_path)
-    if pkg_path.suffix == ".zip":
-        pkg.save(pkg_path)
-    else:
-        raise ValueError(f"{pkg_path}: not a zip file")
+    pkgpath = Path(pkgpath)
+    idxpath = [
+        p for p in pkgpath.glob("index.*") if p.suffix in (".yaml", ".yml", ".json")
+    ]
+    if not idxpath:
+        warn(f"{pkgpath}: no index file found", RuntimeWarning)
+        return ""
+    elif len(idxpath) > 1:
+        warn(
+            f"multiple indices: {','.join(map(str, idxpath))}, using {idxpath[0]}",
+            RuntimeWarning,
+        )
+    return idxpath[0]
+
+
+def write_pkg(
+    pkg: Package,
+    pkgdir: _path_t,
+    *,
+    idx: Optional[pd.DataFrame] = None,
+    glossary: Optional[pd.DataFrame] = None,
+) -> List[Path]:
+    """Write a data package to path
+
+    Parameters
+    ----------
+    pkg: Package
+        Package object
+
+    pkgdir: Union[str, Path]
+        Path to write to
+
+    idx : pandas.DataFrame (optional)
+        Package index written to `pkgdir/index.json`
+
+    glossary : pandas.DataFrame (optional)
+        Package glossary written to `pkgdir/glossary.json`
+
+    Returns
+    -------
+    List[Path]
+        List of files written to disk
+
+    """
+    pkgdir = Path(pkgdir)
+    files = [pkgdir / "datapackage.json"]
+
+    dwim_file(files[-1], pkg.descriptor)
+
+    if isinstance(idx, pd.DataFrame):
+        files.append(pkgdir / "index.json")
+        dwim_file(files[-1], idx.to_dict(orient="records"))
+
+    if isinstance(glossary, pd.DataFrame):
+        files.append(pkgdir / "glossary.json")
+        dwim_file(files[-1], idx.to_dict(orient="records"))
+
+    # TODO: support saving to archives (zip, tar, etc)
+    return files

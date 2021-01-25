@@ -11,6 +11,7 @@ import pytest
 from sark.converters import _schema, _source_type
 from sark.dpkg import create_pkg
 from sark.dpkg import index_levels
+from sark.dpkg import idxpath_from_pkgpath
 from sark.dpkg import pkg_from_files
 from sark.dpkg import pkg_from_index
 from sark.dpkg import pkg_glossary
@@ -132,18 +133,13 @@ def test_read_pkg_index(ext):
 
 
 def test_read_pkg_index_errors(tmp_path):
-    idxfile = tmp_path / "index.csv"
-    with pytest.raises(FileNotFoundError):
-        read_pkg_index(idxfile)
-
+    idxfile = tmp_path / "index.yaml"
     idxfile.touch()
-    with pytest.raises(RuntimeError, match=".+index.csv:.+"):
+    with pytest.raises(ValueError, match=f"{idxfile}: bad index file"):
         read_pkg_index(idxfile)
 
-    idxfile = idxfile.with_suffix(".json")
-    bad_data = {"file": "file1", "name": "dst1", "idxcols": ["cola", "colb"]}
-    idxfile.write_text(json.dumps(bad_data))
-    with pytest.raises(ValueError, match=".+index.json: bad index file"):
+    idxfile = idxfile.with_suffix(".txt")
+    with pytest.raises(RuntimeError, match=f"{idxfile}:.+"):
         read_pkg_index(idxfile)
 
 
@@ -236,7 +232,44 @@ def test_pkg_from_files():
     assert len(pkg.descriptor["resources"]) - len(idx) == 2
 
 
-def test_pkg_write(pkg, tmp_path_factory):
+def test_idxpath_from_pkgpath(tmp_path):
+    idxpath = tmp_path / "index.yml"
+    with pytest.warns(RuntimeWarning, match=f"{tmp_path}: no index file found"):
+        assert idxpath_from_pkgpath(tmp_path) == ""
+
+    idxpath.touch()
+    assert idxpath_from_pkgpath(tmp_path) == idxpath
+
+    idxpath.with_suffix(".yaml").touch()
+    idxpath.with_suffix(".json").touch()
+    with pytest.warns(RuntimeWarning, match=f"multiple indices:.+"):
+        # NOTE: the newest file is returned
+        assert idxpath_from_pkgpath(tmp_path) == idxpath.with_suffix(".json")
+
+
+def test_write_pkg(pkg, tmp_path):
+    res = write_pkg(pkg, tmp_path)
+    assert len(res) == 1
+    assert res[0].exists()
+
+    assert not (tmp_path / "index.json").exists()
+    assert not (tmp_path / "glossary.json").exists()
+
+
+def test_write_pkg_idx_glossary(pkg, tmp_path):
+    idx = read_pkg_index(f"{pkg.base_path}/index.json")
+    glossary = pkg_glossary(pkg, idx)
+
+    res = write_pkg(pkg, tmp_path, idx=idx, glossary=glossary)
+    assert len(res) == 3
+    assert all([p.exists() for p in res])
+
+    with pytest.raises(TypeError):
+        write_pkg(pkg, tmp_path, idx, glossary)
+
+
+@pytest.mark.skip(reason="not implemented")
+def test_write_pkg_archive(pkg, tmp_path_factory):
     with tmp_path_factory.mktemp("pkgwrite-") as tmpdir:
         zipfile = tmpdir / "testpkg.zip"
 
