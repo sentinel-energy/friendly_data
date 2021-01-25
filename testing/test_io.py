@@ -1,7 +1,26 @@
+from pathlib import Path
 import pytest
 import requests
 
+from sark.io import dwim_file
 from sark.metatools import ODLS
+
+
+@pytest.mark.parametrize("ext", [".yaml", ".yml", ".json"])
+def test_dwim_file_read(ext):
+    fpath = Path(f"testing/files/indices/index{ext}")
+    res = dwim_file(fpath)
+    assert isinstance(res, list)
+    assert len(res) == 3
+    assert isinstance(res[0], dict)
+
+
+@pytest.mark.parametrize("ext", [".yaml", ".yml", ".json"])
+def test_dwim_file_write(tmp_path, ext):
+    fpath = tmp_path / f"index{ext}"
+    data = {"foo": 1, "bar": 2}
+    dwim_file(fpath, data)
+    assert fpath.exists()
 
 
 @pytest.mark.parametrize("http_cache", [ODLS], indirect=["http_cache"])

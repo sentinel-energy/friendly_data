@@ -4,12 +4,42 @@ I/O
 """
 
 from hashlib import sha256
+import json
 from pathlib import Path
 import tempfile
 import time
-from typing import Tuple
+from typing import Dict, List, overload, Tuple, Union
 
 import requests
+import yaml
+
+
+@overload
+def dwim_file(fpath: Path) -> Union[Dict, List]:
+    ...
+
+
+@overload
+def dwim_file(fpath: Path, data) -> None:
+    ...
+
+
+def dwim_file(fpath: Path, data=None):
+    mode = "r" if data is None else "w"
+    if fpath.suffix in (".yaml", ".yml"):
+        with open(fpath, mode=mode) as stream:
+            if data is None:
+                return yaml.safe_load(stream)
+            else:
+                yaml.safe_dump(data, stream)
+    elif fpath.suffix == ".json":
+        with open(fpath, mode=mode) as stream:
+            if data is None:
+                return json.load(stream)
+            else:
+                json.dump(data, stream, indent=4)
+    else:
+        raise RuntimeError(f"{fpath}: not a JSON or YAML file")
 
 
 def get_cachedir() -> Path:
