@@ -35,7 +35,8 @@ def test_source_type_heuristics():
         _source_type("/path/to/non-existent-file.ext")
 
 
-def test_pkg_creation(pkgdir):
+def test_pkg_creation():
+    pkgdir = Path("testing/files/random")
     pkg_meta = {"name": "test", "licenses": get_license("CC0-1.0")}
     csvs = [f.relative_to(pkgdir) for f in (pkgdir / "data").glob("sample-ok-?.csv")]
     pkg = create_pkg(pkg_meta, csvs, pkgdir)
@@ -43,16 +44,17 @@ def test_pkg_creation(pkgdir):
         assert _schema(resource, noop_map()) == expected_schema(resource)
 
 
-def test_pkg_read(pkgdir):
+def test_pkg_read():
+    pkgdir = Path("testing/files/random")
     dpkg_json = pkgdir / "datapackage.json"
     pkg = read_pkg(dpkg_json)
     assert all(Path(res.source).exists() for res in pkg.resources)
 
 
-def test_zippkg_read(pkg, tmp_path_factory):
+def test_zippkg_read(rnd_pkg, tmp_path_factory):
     with tmp_path_factory.mktemp("ziptest-") as tmpdir:
         zipfile = tmpdir / "testpackage.zip"
-        pkg.save(f"{zipfile}")
+        rnd_pkg.save(f"{zipfile}")
 
         # unzip to current dir
         _ = read_pkg(zipfile)
@@ -70,13 +72,13 @@ def test_pkg_read_error():
         read_pkg(tarball)
 
 
-def test_pkg_update(pkg):
+def test_pkg_update(rnd_pkg):
     # update a single column in a dataset
     resource_name = "sample-ok-1"
     update = {"time": {"name": "time", "type": "string", "format": "default"}}
-    assert update_pkg(pkg, resource_name, update)
+    assert update_pkg(rnd_pkg, resource_name, update)
     res, *_ = glom(
-        pkg.descriptor,
+        rnd_pkg.descriptor,
         (
             "resources",
             [select(T["name"], equal_to=resource_name)],
@@ -91,9 +93,9 @@ def test_pkg_update(pkg):
         "time": {"name": "time", "type": "datetime", "format": "default"},
         "QWE": {"name": "QWE", "type": "string", "format": "default"},
     }
-    assert update_pkg(pkg, resource_name, update)
+    assert update_pkg(rnd_pkg, resource_name, update)
     res = glom(
-        pkg.descriptor,
+        rnd_pkg.descriptor,
         (
             "resources",
             [select(T["name"], equal_to=resource_name)],
@@ -106,9 +108,9 @@ def test_pkg_update(pkg):
     # update missing values, index columns
     resource_name = "sample-ok-2"
     update = {"primaryKey": ["lvl", "TRE", "IUY"]}
-    assert update_pkg(pkg, resource_name, update, fields=False)
+    assert update_pkg(rnd_pkg, resource_name, update, fields=False)
     res = glom(
-        pkg.descriptor,
+        rnd_pkg.descriptor,
         (
             "resources",
             [select(T["name"], equal_to=resource_name)],

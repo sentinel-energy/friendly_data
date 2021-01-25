@@ -12,8 +12,8 @@ def test_schema_parsing():
     pass
 
 
-def test_pkg_to_df(pkg):
-    for resource in pkg.resources:
+def test_pkg_to_df(rnd_pkg):
+    for resource in rnd_pkg.resources:
         df = to_df(resource)  # test target, don't touch this
         from_impl = expected_schema(df, type_map={})
         # read from file; strings are read as `object`, remap to `string`
@@ -24,6 +24,7 @@ def test_pkg_to_df(pkg):
             field.name for field in resource.schema.fields if "datetime" in field.type
         ]
         raw.update((col, "datetime64[ns]") for col in ts_cols)
+        print(resource.name)
         assert from_impl == raw
 
         if not ts_cols:  # no timestamps, skip
@@ -34,7 +35,7 @@ def test_pkg_to_df(pkg):
         assert dtype_cmp.all(axis=None)
 
     # resource w/ a index
-    resource = pkg.resources[0]
+    resource = rnd_pkg.resources[0]
     field_names = [field.name for field in resource.schema.fields]
     glom(resource.descriptor, Assign("schema.primaryKey", field_names[0]))
     resource.commit()
@@ -54,7 +55,7 @@ def test_pkg_to_df(pkg):
     assert df.index.names == field_names[:2]
 
     # resource w/ NA
-    resource = pkg.resources[1]
+    resource = rnd_pkg.resources[1]
     # set new NA value: "sit" from "Lorem ipsum dolor sit amet consectetur
     # adipiscing", TRE - 2nd column
     glom(resource.descriptor, Assign("schema.missingValues", ["", "sit"]))
@@ -63,7 +64,7 @@ def test_pkg_to_df(pkg):
     assert df.isna().any(axis=None)
 
     # unsupported resource type
-    resource = pkg.resources[0]
+    resource = rnd_pkg.resources[0]
     update = {
         "path": resource.descriptor["path"].replace("csv", "txt"),
         "mediatype": resource.descriptor["mediatype"].replace("csv", "plain"),

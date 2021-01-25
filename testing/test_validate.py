@@ -1,6 +1,7 @@
 from collections import defaultdict
 from copy import deepcopy
 import json
+from pathlib import Path
 
 from glom import Assign, glom, Iter, T
 import pytest  # noqa: F401
@@ -11,7 +12,8 @@ from sark.metatools import get_license
 from sark.validate import check_pkg, check_schema, summarise_errors
 
 
-def test_check_pkg(pkgdir):
+def test_check_pkg():
+    pkgdir = Path("testing/files/random")
     pkg_meta = {"name": "test", "licenses": get_license("CC0-1.0")}
     csvs = [f.relative_to(pkgdir) for f in (pkgdir / "data").glob("*.csv")]
     pkg = create_pkg(pkg_meta, csvs, base_path=pkgdir)
@@ -64,7 +66,8 @@ def test_check_pkg(pkgdir):
     assert not summarise_errors(reports).empty
 
 
-def test_check_schema(pkgdir):
+def test_check_schema():
+    pkgdir = Path("testing/files/random")
     with open(pkgdir / "schemas/sample-ok-1.json") as json_file:
         schema = json.load(json_file)
 

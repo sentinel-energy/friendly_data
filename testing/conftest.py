@@ -59,12 +59,15 @@ def clean_odls_cache():
 
 
 @pytest.fixture
-def pkgdir():
-    return Path("testing/files/random")
+def pkg():
+    pkgdir = Path("testing/files/mini-ex")
+    dpkg_json = pkgdir / "datapackage.json"
+    return read_pkg(dpkg_json)
 
 
 @pytest.fixture
-def pkg(pkgdir):
+def rnd_pkg():
+    pkgdir = Path("testing/files/random")
     dpkg_json = pkgdir / "datapackage.json"
     return read_pkg(dpkg_json)
 
