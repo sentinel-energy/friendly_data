@@ -6,7 +6,7 @@ from glom import glom
 import pandas as pd
 from pandas._libs.parsers import STR_NA_VALUES
 
-from sark.dpkg import _path_t
+from sark._types import _path_t
 from sark.helpers import consume, import_from
 
 # TODO: compressed files

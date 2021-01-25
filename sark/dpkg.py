@@ -15,9 +15,8 @@ from pkg_resources import resource_filename
 import yaml
 
 from sark.helpers import match, select
-
-_path_t = Union[str, Path]  # file path type
 from sark.io import dwim_file
+from sark._types import _path_t
 
 
 def create_pkg(meta: Dict, resources: Iterable[_path_t], base_path: _path_t = ""):

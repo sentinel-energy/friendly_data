@@ -6,6 +6,7 @@ from operator import contains
 from typing import Dict, List, Tuple
 
 from sark.io import HttpCache
+from sark._types import _license_t
 
 logger = logging.getLogger()
 
@@ -14,9 +15,6 @@ ODLS = "https://licenses.opendefinition.org/licenses/groups/{}.json"
 # ODLS groups: all, OSI compliant, Open Definition compliant, specially
 # selected for CKAN (https://ckan.org)
 ODLS_GROUPS = ["all", "osi", "od", "ckan"]
-
-# type aliases
-License = Dict[str, str]
 
 
 def _fetch_license(group: str = "all") -> Dict:
@@ -33,7 +31,7 @@ def list_licenses(group: str = "all") -> List[str]:
     return list(_fetch_license(group).keys())
 
 
-def get_license(lic: str, group: str = "all") -> License:
+def get_license(lic: str, group: str = "all") -> _license_t:
     """Return the license metadata
 
     Retrieve the license metadata of the requested group from the Open
@@ -49,7 +47,7 @@ def get_license(lic: str, group: str = "all") -> License:
 
     Returns
     -------
-    Dict[str, str], alias License
+    Dict[str, str], alias _license_t
         A dictionary with the license metadata
 
     Raises
@@ -95,14 +93,14 @@ def _get_license_interactively(
         return licenses[lic]
 
 
-def check_license(lic: License) -> License:
+def check_license(lic: _license_t) -> _license_t:
     """Return the license spec from the metadata
 
     Issue a warning if the license is old.  TODO: add other recommendations
 
     Parameters
     ----------
-    lic : Dict[str, str], alias License
+    lic : Dict[str, str], alias _license_t
         License metadata dictionary (as returned by the Open Definition
         License Service)
         Example: CC-BY-SA::
@@ -137,11 +135,11 @@ def check_license(lic: License) -> License:
     }
 
 
-def _license_status(lic: License) -> str:
+def _license_status(lic: _license_t) -> str:
     return lic["status"]
 
 
-def _license_domain(lic: License) -> Tuple[str, ...]:
+def _license_domain(lic: _license_t) -> Tuple[str, ...]:
     return tuple(
         lic_t for lic_t in ["content", "data", "software"] if lic[f"domain_{lic_t}"]
     )
