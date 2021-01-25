@@ -120,8 +120,10 @@ def test_pkg_update(pkg):
     # FIXME: test assertions inside update_pkg
 
 
-def test_read_pkg_index(pkg_index):
-    idx = read_pkg_index(*pkg_index)  # contents, suffix
+@pytest.mark.parametrize("ext", [".yaml", ".yml", ".json"])
+def test_read_pkg_index(ext):
+    fpath = Path(f"testing/files/indices/index{ext}")
+    idx = read_pkg_index(fpath)
     np.testing.assert_array_equal(idx.columns, ["file", "name", "idxcols"])
     assert idx.shape == (3, 3)
     np.testing.assert_array_equal(idx["idxcols"].agg(len), [2, 3, 1])
@@ -133,13 +135,13 @@ def test_read_pkg_index_errors(tmp_path):
         read_pkg_index(idxfile)
 
     idxfile.touch()
-    with pytest.raises(RuntimeError, match=".+index.csv: unknown index.+"):
+    with pytest.raises(RuntimeError, match=".+index.csv:.+"):
         read_pkg_index(idxfile)
 
     idxfile = idxfile.with_suffix(".json")
     bad_data = {"file": "file1", "name": "dst1", "idxcols": ["cola", "colb"]}
     idxfile.write_text(json.dumps(bad_data))
-    with pytest.raises(RuntimeError, match=".+index.json: bad index file"):
+    with pytest.raises(ValueError, match=".+index.json: bad index file"):
         read_pkg_index(idxfile)
 
 

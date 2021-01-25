@@ -69,15 +69,6 @@ def pkg(pkgdir):
     return read_pkg(dpkg_json)
 
 
-@pytest.fixture(params=["yaml", "yml", "json", "stream"])
-def pkg_index(request):
-    idxdir = Path("testing/files/indices")
-    if request.param in ("yml", "yaml", "json"):
-        return idxdir / f"index.{request.param}", ""
-    elif request.param == "stream":
-        return io.StringIO((idxdir / "index.json").read_text()), "json"
-
-
 @pytest.fixture
 def tseries_table(request):
     freq = getattr(request, "param", "H")  # hourly by default

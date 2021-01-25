@@ -17,6 +17,7 @@ import yaml
 from sark.helpers import match, select
 
 _path_t = Union[str, Path]  # file path type
+from sark.io import dwim_file
 
 
 def create_pkg(meta: Dict, resources: Iterable[_path_t], base_path: _path_t = ""):
@@ -158,68 +159,13 @@ def update_pkg(pkg: Package, resource: str, schema_update: Dict, fields: bool = 
     return pkg.valid
 
 
-def read_pkg_index(fpath: Union[_path_t, TextIO], suffix: str = "") -> pd.DataFrame:
+def read_pkg_index(fpath: _path_t) -> pd.DataFrame:
     """Read the index of files incuded in the datapackage
-
-    The index can be in either YAML, or JSON format.  It is a list of dataset
-    files, names, and a list of columns in the dataset that are to be treated
-    as index columns.
-
-    YAML::
-
-        >>> yaml_f = '''
-        ... - file: file1
-        ...   name: dst1
-        ...   idxcols: [cola, colb]
-        ... - file: file2
-        ...   name: dst2
-        ...   idxcols: [colx, coly, colz]
-        ... - file: file3
-        ...   name: dst3
-        ...   idxcols: [col]
-        ... '''
-
-    JSON::
-
-        >>> json_f = '''
-        ... [
-        ...     {
-        ...         "file": "file1",
-        ...         "name": "dst1",
-        ...         "idxcols": [
-        ...             "cola",
-        ...             "colb"
-        ...         ]
-        ...     },
-        ...     {
-        ...         "file": "file2",
-        ...         "name": "dst2",
-        ...         "idxcols": [
-        ...             "colx",
-        ...             "coly",
-        ...             "colz"
-        ...         ]
-        ...     },
-        ...     {
-        ...         "file": "file3",
-        ...         "name": "dst3",
-        ...         "idxcols": [
-        ...             "col"
-        ...         ]
-        ...     }
-        ... ]
-        ... '''
 
     Parameters
     ----------
-    fpath : Union[str, Path, TextIO]
+    fpath : Union[str, Path]
         Index file path or a stream object
-
-    suffix : str (default: empty string)
-        File type, one of: yaml, yml, json.  If it is empty (default), the file
-        type is deduced from the filename extension.  Since a stream does not
-        always have a file associated with it, it is mandatory to specify a
-        non-empty `suffix` when `fpath` is a stream.
 
     Returns
     -------
@@ -230,52 +176,14 @@ def read_pkg_index(fpath: Union[_path_t, TextIO], suffix: str = "") -> pd.DataFr
     Raises
     ------
     ValueError
-        If 'suffix' is empty when 'fpath' is a stream, or it does not have an
-        extension.
+        If the file type is correct (YAML/JSON), but does not return a list
     RuntimeError
-        If the file is a YAML, or JSON, but do not return a list
-        If the file has an unknown extension
-
-    Examples
-    --------
-
-    Index as read from the example above::
-
-        >>> from io import StringIO
-        >>> import numpy as np
-        >>> idx = read_pkg_index(StringIO(json_f), 'json')
-        >>> idx
-             file  name             idxcols
-        0   file1  dst1        (cola, colb)
-        1   file2  dst2  (colx, coly, colz)
-        2   file3  dst3              (col,)
-        >>> np.array_equal(idx, read_pkg_index(StringIO(yaml_f), 'yaml'))
-        True
-        >>> np.array_equal(idx, read_pkg_index(StringIO(yaml_f), 'yml'))
-        True
+        If the file has an unknown extension (raised by :func:`sark.io.dwim_file`)
 
     """
-    if isinstance(fpath, (str, Path)):
-        idxfile = open(fpath)
-        suffix = suffix if suffix else Path(fpath).suffix.strip(".").lower()
-    else:  # stream
-        idxfile = fpath
-        suffix = suffix.lower()
-    if not suffix:
-        raise ValueError(f"suffix={suffix} cannot be empty, when fpath={fpath}")
-
-    if suffix in ("yaml", "yml"):
-        idx = yaml.safe_load(idxfile)
-    elif suffix == "json":
-        idx = json.load(idxfile)
-    else:
-        idxfile.close()  # cleanup
-        raise RuntimeError(f"{fpath}: unknown index file format")
-
-    idxfile.close()  # cleanup
-
+    idx = dwim_file(Path(fpath))
     if not isinstance(idx, list):
-        raise RuntimeError(f"{fpath}: bad index file")
+        raise ValueError(f"{fpath}: bad index file")
 
     # # convert list (idxcols) into tuples, easier to query in DataFrame
     # glom(idx, [Assign("idxcols", Spec((T["idxcols"], tuple)))])
