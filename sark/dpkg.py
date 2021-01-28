@@ -49,7 +49,11 @@ def create_pkg(meta: Dict, resources: Iterable[_path_t], base_path: _path_t = ""
     # https://stackoverflow.com/q/60235477/289784
     pkg = Package(meta, base_path=str(base_path))
     # TODO: filter out and handle non-tabular (custom) data
+    existing = glom(meta.get("resources", []), Iter("path").all())
     for res in resources:
+        if str(res) in existing:
+            # list of resources may be paths, but descriptor will always be strings
+            continue
         if isinstance(res, (str, Path)):
             full_path = Path(base_path) / res
             if not full_path.exists():
@@ -541,7 +545,6 @@ def write_pkg(
     """
     pkgdir = Path(pkgdir)
     files = [pkgdir / "datapackage.json"]
-
     dwim_file(files[-1], pkg.descriptor)
 
     if isinstance(idx, pd.DataFrame):
@@ -550,7 +553,7 @@ def write_pkg(
 
     if isinstance(glossary, pd.DataFrame):
         files.append(pkgdir / "glossary.json")
-        dwim_file(files[-1], idx.to_dict(orient="records"))
+        dwim_file(files[-1], glossary.to_dict(orient="records"))
 
     # TODO: support saving to archives (zip, tar, etc)
     return files
