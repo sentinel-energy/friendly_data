@@ -1,5 +1,6 @@
 import io
 from pathlib import Path
+from shutil import copytree
 
 import pandas as pd
 import pandas._testing as tm
@@ -52,6 +53,14 @@ def clean_odls_cache():
     yield
     http_cache = HttpCache(ODLS)
     http_cache.remove()
+
+
+@pytest.fixture
+def tmp_pkgdir(tmp_path):
+    src = Path("testing/files/mini-ex")
+    dest = tmp_path / "pkg"
+    copytree(src, dest)
+    return src, dest
 
 
 @pytest.fixture

@@ -60,37 +60,7 @@ def get_license(lic: str, group: str = "all") -> _license_t:
     """
 
     licenses = _fetch_license(group)
-    if lic is None:  # pragma: no cover, only used from cli
-        lic_meta = _get_license_interactively(licenses, group)
-    else:
-        lic_meta = licenses[lic]
-    return check_license(lic_meta)
-
-
-def _get_license_interactively(
-    licenses: Dict[str, License], group: str
-) -> License:  # pragma: no cover
-    """Interactively ask for the license name to retrieve
-
-    Parameters
-    ----------
-    licenses
-        Dictionary of licenses
-    group
-        License group (for logging)
-
-    Returns
-    -------
-    Dict[str, str], alias License
-        License metadata
-    """
-    while True:
-        lic = input("license: ")
-        if lic not in licenses:
-            logger.error(f"cannot find '{lic}' in license group '{group}'")
-            logger.error("Press Ctrl-c to abort")
-            continue
-        return licenses[lic]
+    return check_license(licenses[lic])
 
 
 def check_license(lic: _license_t) -> _license_t:
