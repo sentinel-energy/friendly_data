@@ -29,11 +29,7 @@ def expected_schema(df, type_map=default_type_map):
             df = pd.read_csv(df)  # path
     # datapackage.Package.infer(..) relies on tableschema.Schema.infer(..),
     # which infers datetime as string
-    return (
-        df.dtypes.astype(str)
-        .map(lambda t: type_map[t] if t in type_map else t)
-        .to_dict()
-    )
+    return df.dtypes.astype(str).map(lambda t: type_map.get(t, t)).to_dict()
 
 
 @pytest.fixture

@@ -1,6 +1,5 @@
 from contextlib import nullcontext as does_not_raise
 from itertools import chain
-import json
 from operator import contains
 from pathlib import Path
 
@@ -243,7 +242,7 @@ def test_idxpath_from_pkgpath(tmp_path):
     idxpath.with_suffix(".yaml").touch()
     idxpath.with_suffix(".json").touch()
     with pytest.warns(RuntimeWarning, match=f"multiple indices:.+"):
-        # NOTE: the newest file is returned
+        # NOTE: the newest file (by creation time) is returned
         assert idxpath_from_pkgpath(tmp_path) == idxpath.with_suffix(".json")
 
 
