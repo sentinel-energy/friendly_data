@@ -4,7 +4,7 @@
 from itertools import chain
 import json
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Tuple
+from typing import cast, Dict, Iterable, List, Optional, Tuple
 from warnings import warn
 from zipfile import ZipFile
 
@@ -12,7 +12,6 @@ from datapackage import Package
 from glom import Assign, glom, Invoke, Iter, Spec, T
 import pandas as pd
 from pkg_resources import resource_filename
-import yaml
 
 from sark.helpers import match, select
 from sark.io import dwim_file
@@ -230,14 +229,7 @@ def registry(col: str, col_t: str) -> Dict:
         return {}  # no match, unregistered column
     if len(schema) > 1:  # pragma: no cover, bad registry
         raise RuntimeError(f"{schema}: multiple matches, duplicates in registry")
-    with open(curdir / schema[0]) as f:
-        fsuffix = Path(f.name).suffix.strip(".").lower()
-        if fsuffix == "yaml":
-            return yaml.safe_load(f)
-        elif fsuffix == "json":
-            return json.load(f)
-        else:  # pragma: no cover, shouldn't reach here
-            raise ValueError(f"{f.name}: unsupported schema file format")
+    return cast(Dict, dwim_file(curdir / schema[0]))
 
 
 def index_levels(_file: _path_t, idxcols: Iterable[str]) -> Tuple[_path_t, Dict]:
