@@ -140,7 +140,7 @@ def create(
         "keywords": keywords,
         "metadata": metadata,
     }
-    meta = _metadata(["name", "license"], **meta)
+    meta = _metadata(["name", "license"], **meta)  # type: ignore[arg-type]
     return _create(meta, idxpath, *fpaths)
 
 
@@ -216,7 +216,7 @@ def update(
         "keywords": keywords,
         "metadata": metadata,
     }
-    meta = _metadata([], **meta)
+    meta = _metadata([], **meta)  # type: ignore[arg-type]
     pkg = read_pkg(pkgpath)
     pkg.descriptor.update(meta)
     pkg.commit()
