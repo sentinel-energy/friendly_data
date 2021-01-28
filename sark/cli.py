@@ -6,7 +6,7 @@ Commands to manage a data package.
 
 from pathlib import Path
 import re
-import readline
+import sys
 from typing import Dict, List, Union
 
 from glom import glom, Iter
@@ -41,8 +41,12 @@ def license_prompt() -> _license_t:  # pragma: no cover, interactive function
                 else:
                     state -= 1
 
-    readline.parse_and_bind("tab: complete")
-    readline.set_completer(complete)
+    if sys.platform not in ("win32", "cygwin"):
+        import readline
+
+        readline.parse_and_bind("tab: complete")
+        readline.set_completer(complete)
+
     return check_license(licenses[input("license: ")])
 
 
