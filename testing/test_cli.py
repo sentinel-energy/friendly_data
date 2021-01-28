@@ -102,7 +102,7 @@ def test_add_badfile(tmp_pkgdir):
     pkgjson = dest / "datapackage.json"
     count = glom(json.loads(pkgjson.read_text()), ("resources", len))
     files = [dest / f"inputs/{f}" for f in ("inheritance.csv", "nonexistent.csv")]
-    with pytest.warns(RuntimeWarning, match=f"{files[-1]}: skipped.+"):
+    with pytest.warns(RuntimeWarning, match=f"{files[-1].name}: skipped.+"):
         assert add(dest, *files)
     assert glom(json.loads(pkgjson.read_text()), ("resources", len)) == count + 1
 

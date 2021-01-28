@@ -134,11 +134,11 @@ def test_read_pkg_index(ext):
 def test_read_pkg_index_errors(tmp_path):
     idxfile = tmp_path / "index.yaml"
     idxfile.touch()
-    with pytest.raises(ValueError, match=f"{idxfile}: bad index file"):
+    with pytest.raises(ValueError, match=f".*{idxfile.name}: bad index file"):
         read_pkg_index(idxfile)
 
     idxfile = idxfile.with_suffix(".txt")
-    with pytest.raises(RuntimeError, match=f"{idxfile}:.+"):
+    with pytest.raises(RuntimeError, match=f".*{idxfile.name}:.+"):
         read_pkg_index(idxfile)
 
 
@@ -233,7 +233,7 @@ def test_pkg_from_files():
 
 def test_idxpath_from_pkgpath(tmp_path):
     idxpath = tmp_path / "index.json"
-    with pytest.warns(RuntimeWarning, match=f"{tmp_path}: no index file found"):
+    with pytest.warns(RuntimeWarning, match=f".*{tmp_path.name}: no index file found"):
         assert idxpath_from_pkgpath(tmp_path) == ""
 
     idxpath.touch()
