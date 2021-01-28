@@ -232,7 +232,7 @@ def test_pkg_from_files():
 
 
 def test_idxpath_from_pkgpath(tmp_path):
-    idxpath = tmp_path / "index.yml"
+    idxpath = tmp_path / "index.json"
     with pytest.warns(RuntimeWarning, match=f"{tmp_path}: no index file found"):
         assert idxpath_from_pkgpath(tmp_path) == ""
 
@@ -240,9 +240,9 @@ def test_idxpath_from_pkgpath(tmp_path):
     assert idxpath_from_pkgpath(tmp_path) == idxpath
 
     idxpath.with_suffix(".yaml").touch()
-    idxpath.with_suffix(".json").touch()
+    idxpath.with_suffix(".yml").touch()
     with pytest.warns(RuntimeWarning, match=f"multiple indices:.+"):
-        # NOTE: the newest file (by creation time) is returned
+        # NOTE: returns the lexicographically first match
         assert idxpath_from_pkgpath(tmp_path) == idxpath.with_suffix(".json")
 
 

@@ -481,7 +481,7 @@ def idxpath_from_pkgpath(pkgpath: _path_t) -> _path_t:
     -------
     Union[str, Path]
         - Returns a valid index path; if there are multiple matches, returns
-          the first match
+          the lexicographically first match
         - If an index file is not found, returns an empty string
 
     Warnings
@@ -493,7 +493,9 @@ def idxpath_from_pkgpath(pkgpath: _path_t) -> _path_t:
     """
     pkgpath = Path(pkgpath)
     idxpath = [
-        p for p in pkgpath.glob("index.*") if p.suffix in (".yaml", ".yml", ".json")
+        p
+        for p in sorted(pkgpath.glob("index.*"))
+        if p.suffix in (".yaml", ".yml", ".json")
     ]
     if not idxpath:
         warn(f"{pkgpath}: no index file found", RuntimeWarning)
