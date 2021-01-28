@@ -1,0 +1,11 @@
+coordinates,locs,loc_coordinates
+lon,region1-1,-2
+lon,region2,-8
+lon,region1,-2
+lon,region1-2,-1
+lon,region1-3,-2
+lat,region1-1,41
+lat,region2,40
+lat,region1,40
+lat,region1-2,39
+lat,region1-3,39
