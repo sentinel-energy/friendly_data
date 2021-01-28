@@ -1,12 +1,12 @@
 {
     "name": "foobarbaz",
     "title": "Foo Bar Baz",
-    "licenses": "CC0",
     "keywords": [
         "foo",
         "bar",
         "baz"
     ],
+    "license": "CC0-1.0",
     "profile": "tabular-data-package",
     "resources": [
         {
@@ -127,6 +127,44 @@
                 ],
                 "primaryKey": [
                     "locs",
+                    "techs"
+                ]
+            }
+        },
+        {
+            "path": "inputs/names.csv",
+            "profile": "tabular-data-resource",
+            "name": "names",
+            "format": "csv",
+            "mediatype": "text/csv",
+            "encoding": "utf-8",
+            "schema": {
+                "fields": [
+                    {
+                        "name": "techs",
+                        "type": "string",
+                        "format": "default",
+                        "constraints": {
+                            "enum": [
+                                "battery",
+                                "free_transmission",
+                                "ccgt",
+                                "ac_transmission",
+                                "csp",
+                                "demand_power"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "names",
+                        "type": "string",
+                        "format": "default"
+                    }
+                ],
+                "missingValues": [
+                    ""
+                ],
+                "primaryKey": [
                     "techs"
                 ]
             }
