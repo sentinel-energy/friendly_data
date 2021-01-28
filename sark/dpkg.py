@@ -455,15 +455,12 @@ def pkg_from_files(meta: Dict, idxpath: _path_t, fpaths: Iterable[_path_t]):
 
     """
     pkgdir, pkg, idx = pkg_from_index(meta, idxpath)
+    idx_fpath = idx["file"].apply(lambda f: pkgdir / f)  # convert to full path
     _fpaths = [
         _p1.relative_to(pkgdir)  # convert path to relative to pkgdir
-        for _p1 in filter(  # only accept files not in index
-            lambda _p2: not any(
-                # check if already in index
-                map(lambda _p3: _p2.samefile(_p3), pkgdir / idx["file"])
-            ),
-            map(Path, fpaths),
-        )
+        for _p1 in filter(
+            lambda _p2: not idx_fpath.apply(_p2.samefile).any(), map(Path, fpaths)
+        )  # accept only if not in index
     ]
     pkg = create_pkg(pkg.descriptor, _fpaths, base_path=pkgdir)
     return pkgdir, pkg, idx
