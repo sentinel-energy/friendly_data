@@ -75,7 +75,7 @@ def test_metadata_file(ext):
 def test_create(tmp_pkgdir):
     _, dest = tmp_pkgdir
     (dest / "datapackage.json").unlink()
-    (dest / "glossary.json").unlink(missing_ok=True)
+    (dest / "glossary.json").unlink()
     files = [
         dest / f"inputs/{f}"
         for f in ("names.csv", "inheritance.csv", "loc_coordinates.csv")
