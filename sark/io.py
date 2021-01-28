@@ -16,12 +16,12 @@ import yaml
 
 @overload
 def dwim_file(fpath: Path) -> Union[Dict, List]:
-    ...
+    ...  # pragma: no cover, oveload
 
 
 @overload
 def dwim_file(fpath: Path, data) -> None:
-    ...
+    ...  # pragma: no cover, oveload
 
 
 def dwim_file(fpath: Path, data=None):
