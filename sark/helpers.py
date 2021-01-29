@@ -7,7 +7,7 @@ from collections import deque
 from collections.abc import Sequence
 from functools import partial
 from importlib import import_module
-from typing import Callable, Iterable, Tuple
+from typing import Iterable
 
 from glom import Check, Match, SKIP
 

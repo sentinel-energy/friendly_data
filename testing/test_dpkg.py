@@ -150,12 +150,12 @@ def test_read_pkg_index_errors(tmp_path):
         (
             "notinreg",
             "cols",
-            pytest.warns(RuntimeWarning, match=f"notinreg: not in registry"),
+            pytest.warns(RuntimeWarning, match="notinreg: not in registry"),
         ),
         (
             "timesteps",
             "bad_col_t",
-            pytest.raises(ValueError, match=f"bad_col_t: unknown column type"),
+            pytest.raises(ValueError, match="bad_col_t: unknown column type"),
         ),
     ],
 )
@@ -241,7 +241,7 @@ def test_idxpath_from_pkgpath(tmp_path):
 
     idxpath.with_suffix(".yaml").touch()
     idxpath.with_suffix(".yml").touch()
-    with pytest.warns(RuntimeWarning, match=f"multiple indices:.+"):
+    with pytest.warns(RuntimeWarning, match="multiple indices:.+"):
         # NOTE: returns the lexicographically first match
         assert idxpath_from_pkgpath(tmp_path) == idxpath.with_suffix(".json")
 

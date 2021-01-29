@@ -1,4 +1,3 @@
-import io
 from pathlib import Path
 from shutil import copytree
 
