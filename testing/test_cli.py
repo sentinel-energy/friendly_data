@@ -1,9 +1,10 @@
 from pathlib import Path
-from typing import cast, List
+from typing import cast, Dict, List
 
 from glom import glom, Iter
 import pytest
 
+from sark._types import _path_t
 from sark.cli import _metadata, remove
 from sark.cli import _create
 from sark.cli import _rm_from_idx
@@ -83,27 +84,31 @@ def test_create(tmp_pkgdir):
     assert (dest / "datapackage.json").exists() and (dest / "glossary.json").exists()
 
 
+def nresources(pkgjson: _path_t):
+    return len(cast(Dict, dwim_file(pkgjson))["resources"])
+
+
 def test_add(tmp_pkgdir):
     _, dest = tmp_pkgdir
     pkgjson = dest / "datapackage.json"
-    count = glom(json.loads(pkgjson.read_text()), ("resources", len))
+    count = nresources(pkgjson)
     files = [
         dest / f"inputs/{f}"
         for f in ("names.csv", "inheritance.csv", "loc_coordinates.csv")
     ]
     assert add(dest, *files)
     # names.csv is already included
-    assert glom(json.loads(pkgjson.read_text()), ("resources", len)) == count + 2
+    assert nresources(pkgjson) == count + 2
 
 
 def test_add_badfile(tmp_pkgdir):
     _, dest = tmp_pkgdir
     pkgjson = dest / "datapackage.json"
-    count = glom(json.loads(pkgjson.read_text()), ("resources", len))
+    count = nresources(pkgjson)
     files = [dest / f"inputs/{f}" for f in ("inheritance.csv", "nonexistent.csv")]
     with pytest.warns(RuntimeWarning, match=f"{files[-1].name}: skipped.+"):
         assert add(dest, *files)
-    assert glom(json.loads(pkgjson.read_text()), ("resources", len)) == count + 1
+    assert nresources(pkgjson) == count + 1
 
 
 def test_update(tmp_pkgdir):
@@ -126,8 +131,9 @@ def test_update(tmp_pkgdir):
     [dwim_file(dest / f, idx) for f in ("index.yaml", "index.json")]
     with pytest.warns(RuntimeWarning):  # multiple index files in test pkg
         assert update(dest, dest / meta["file"])
+    dpkgjson = dwim_file(dest / "datapackage.json")
     entry, *_ = glom(
-        dwim_file(dest / "datapackage.json"),
+        dpkgjson,
         (
             "resources",
             Iter().filter(lambda i: meta["file"] == i["path"]).all(),
@@ -147,6 +153,11 @@ def test_rm_from_et_al(tmp_pkgdir):
     glossary = _rm_from_glossary(dest, dstpath)
     assert "inputs/names.csv" not in glossary["file"].unique()
 
+    print("index in test:")
+    print(idx["file"].unique())
+    print("glossary in test:")
+    print(glossary["file"].unique())
+
     (dest / "glossary.json").unlink()  # pkg w/o glossary
     assert _rm_from_glossary(dest, dstpath) is None
 
@@ -157,6 +168,10 @@ def test_rm_from_et_al(tmp_pkgdir):
 
 def test_remove(tmp_pkgdir):
     _, dest = tmp_pkgdir
+
+    print("dir listing:")
+    print(list(dest.iterdir()))
+
     with pytest.warns(RuntimeWarning):  # multiple indices
         msg = remove(dest, dest / "inputs/names.csv")  # pkg w/ glossary
     assert msg and msg.count("json") == 3
@@ -165,3 +180,17 @@ def test_remove(tmp_pkgdir):
     with pytest.warns(RuntimeWarning):  # multiple indices
         msg = remove(dest, dest / "inputs/energy_eff.csv")
     assert msg and msg.count("json") == 2
+
+
+def test_windows(tmp_path):
+    print(type(tmp_path), tmp_path)
+
+    mydir = tmp_path / "foo"
+    mydir.mkdir()
+    print(type(mydir), mydir)
+
+    myfile = tmp_path / "foo/bar.txt"
+    myfile.touch()
+    print(type(myfile), myfile)
+
+    assert False
