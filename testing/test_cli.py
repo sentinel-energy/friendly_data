@@ -182,15 +182,22 @@ def test_remove(tmp_pkgdir):
     assert msg and msg.count("json") == 2
 
 
+import sys
+
+
+def posixpathstr(fpath: Path) -> str:
+    return str(fpath.as_posix()) if sys.platform in ("win32", "cygwin") else str(fpath)
+
+
 def test_windows(tmp_path):
-    print(type(tmp_path), tmp_path)
+    print(type(tmp_path), tmp_path, posixpathstr(tmp_path))
 
     mydir = tmp_path / "foo"
     mydir.mkdir()
-    print(type(mydir), mydir)
+    print(type(mydir), mydir, posixpathstr(mydir))
 
     myfile = tmp_path / "foo/bar.txt"
     myfile.touch()
-    print(type(myfile), myfile)
+    print(type(myfile), myfile, posixpathstr(myfile))
 
     assert False
