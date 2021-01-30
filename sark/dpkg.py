@@ -4,6 +4,7 @@
 from itertools import chain
 import json
 from pathlib import Path
+import sys
 from typing import cast, Dict, Iterable, List, Optional, Tuple
 from warnings import warn
 from zipfile import ZipFile
@@ -14,8 +15,27 @@ import pandas as pd
 from pkg_resources import resource_filename
 
 from sark.helpers import match, select
-from sark.io import dwim_file
+from sark.io import dwim_file, posixpathstr
 from sark._types import _path_t
+
+
+def _ensure_posix(pkg):
+    """Ensure resource paths in the package are POSIX compliant
+
+    FIXME: The :class:`datapackage.Package` implementation does not ensure
+    paths are POSIX paths on Windows, correct them after the fact.  This is a
+    temporary solution; see:
+    https://github.com/frictionlessdata/datapackage-py/issues/279
+
+    """
+    if sys.platform in ("win32", "cygwin"):
+        to_posix = Spec(Invoke(posixpathstr).specs("path"))
+        glom(
+            pkg.descriptor,
+            ("resources", Iter().map(Assign("path", to_posix)).all()),
+        )
+        pkg.commit()
+    return pkg
 
 
 def create_pkg(meta: Dict, resources: Iterable[_path_t], base_path: _path_t = ""):
@@ -61,7 +81,7 @@ def create_pkg(meta: Dict, resources: Iterable[_path_t], base_path: _path_t = ""
             pkg.infer(f"{res}")
         else:  # pragma: no cover, adding with Dict (undocumented feature)
             pkg.add_resource(res)
-    return pkg
+    return _ensure_posix(pkg)
 
 
 def read_pkg(pkg_path: _path_t, extract_dir: Optional[_path_t] = None):
@@ -89,7 +109,7 @@ def read_pkg(pkg_path: _path_t, extract_dir: Optional[_path_t] = None):
     if pkg_path.suffix == ".json":
         with open(pkg_path) as pkg_json:
             base_path = f"{Path(pkg_path).parent}"
-            return Package(json.load(pkg_json), base_path=base_path)
+            pkg = Package(json.load(pkg_json), base_path=base_path)
     elif pkg_path.suffix == ".zip":
         if extract_dir is None:
             extract_dir = pkg_path.parent
@@ -98,12 +118,13 @@ def read_pkg(pkg_path: _path_t, extract_dir: Optional[_path_t] = None):
         with ZipFile(pkg_path) as pkg_zip:
             pkg_zip.extractall(path=extract_dir)
             with open(extract_dir / "datapackage.json") as pkg_json:
-                return Package(json.load(pkg_json), base_path=f"{extract_dir}")
+                pkg = Package(json.load(pkg_json), base_path=f"{extract_dir}")
     elif pkg_path.is_dir():
         with open(pkg_path / "datapackage.json") as pkg_json:
-            return Package(json.load(pkg_json), base_path=str(pkg_path))
+            pkg = Package(json.load(pkg_json), base_path=str(pkg_path))
     else:
         raise ValueError(f"{pkg_path}: expecting a JSON or ZIP file")
+    return _ensure_posix(pkg)
 
 
 def update_pkg(pkg: Package, resource: str, schema_update: Dict, fields: bool = True):

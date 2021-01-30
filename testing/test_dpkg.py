@@ -2,6 +2,7 @@ from contextlib import nullcontext as does_not_raise
 from itertools import chain
 from operator import contains
 from pathlib import Path
+import sys
 
 from glom import glom, Iter, T
 import numpy as np
@@ -28,6 +29,27 @@ from .conftest import expected_schema
 class noop_map(dict):
     def __getitem__(self, key):
         return key
+
+
+@pytest.mark.skipif(
+    sys.platform not in ("win32", "cygwin"), reason="only relevant for windows"
+)
+def test_ensure_posix():
+    pkgdir = Path("testing/files/mini-ex")
+    meta = {
+        "name": "foobarbaz",
+        "title": "Foo Bar Baz",
+        "licenses": "CC0-1.0",
+        "keywords": ["foo", "bar", "baz"],
+    }
+    files = chain(pkgdir.glob("inputs/*"), pkgdir.glob("outputs/*"))
+    pkg = create_pkg(meta, [f.relative_to(pkgdir) for f in files], pkgdir)
+    # NOTE: count windows path separators in the resource path, should be 0 as the
+    # spec requires resource paths to be POSIX paths
+    npathsep = glom(
+        pkg.descriptor, ("resources", Iter().map("path").map(T.count("\\")).all(), sum)
+    )
+    assert npathsep == 0
 
 
 def test_source_type_heuristics():

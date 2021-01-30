@@ -13,6 +13,12 @@ from typing import Dict, List, overload, Tuple, Union
 import requests
 import yaml
 
+from sark._types import _path_t
+
+
+def posixpathstr(fpath: _path_t) -> str:
+    return str(Path(fpath).as_posix())
+
 
 @overload
 def dwim_file(fpath: Path) -> Union[Dict, List]:
