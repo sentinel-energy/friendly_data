@@ -132,6 +132,7 @@ def test_update(tmp_pkgdir):
     with pytest.warns(RuntimeWarning):  # multiple index files in test pkg
         assert update(dest, dest / meta["file"])
     dpkgjson = dwim_file(dest / "datapackage.json")
+    print(dpkgjson["resources"])
     entry, *_ = glom(
         dpkgjson,
         (
@@ -152,11 +153,6 @@ def test_rm_from_et_al(tmp_pkgdir):
 
     glossary = _rm_from_glossary(dest, dstpath)
     assert "inputs/names.csv" not in glossary["file"].unique()
-
-    print("index in test:")
-    print(idx["file"].unique())
-    print("glossary in test:")
-    print(glossary["file"].unique())
 
     (dest / "glossary.json").unlink()  # pkg w/o glossary
     assert _rm_from_glossary(dest, dstpath) is None
@@ -180,24 +176,3 @@ def test_remove(tmp_pkgdir):
     with pytest.warns(RuntimeWarning):  # multiple indices
         msg = remove(dest, dest / "inputs/energy_eff.csv")
     assert msg and msg.count("json") == 2
-
-
-import sys
-
-
-def posixpathstr(fpath: Path) -> str:
-    return str(fpath.as_posix()) if sys.platform in ("win32", "cygwin") else str(fpath)
-
-
-def test_windows(tmp_path):
-    print(type(tmp_path), tmp_path, posixpathstr(tmp_path))
-
-    mydir = tmp_path / "foo"
-    mydir.mkdir()
-    print(type(mydir), mydir, posixpathstr(mydir))
-
-    myfile = tmp_path / "foo/bar.txt"
-    myfile.touch()
-    print(type(myfile), myfile, posixpathstr(myfile))
-
-    assert False
