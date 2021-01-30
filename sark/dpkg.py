@@ -4,6 +4,7 @@
 from itertools import chain
 import json
 from pathlib import Path
+import sys
 from typing import cast, Dict, Iterable, List, Optional, Tuple
 from warnings import warn
 from zipfile import ZipFile
@@ -14,7 +15,7 @@ import pandas as pd
 from pkg_resources import resource_filename
 
 from sark.helpers import match, select
-from sark.io import dwim_file
+from sark.io import dwim_file, posixpathstr
 from sark._types import _path_t
 
 
@@ -62,6 +63,16 @@ def create_pkg(meta: Dict, resources: Iterable[_path_t], base_path: _path_t = ""
             print("create_pkg: adding ", pkg.descriptor["resources"][-1])
         else:  # pragma: no cover, adding with Dict (undocumented feature)
             pkg.add_resource(res)
+    # FIXME: `Package` implementation does not ensure paths are POSIX paths on
+    # Windows, so correct them after the fact.  This is a temporary solution;
+    # see: https://github.com/frictionlessdata/datapackage-py/issues/279
+    if sys.platform in ("win32", "cygwin"):
+        to_posix = Spec(Invoke(posixpathstr).specs("path"))
+        glom(
+            pkg.descriptor,
+            ("resources", Iter().map(Assign("path", to_posix)).all()),
+        )
+        pkg.commit()
     return pkg
 
 
