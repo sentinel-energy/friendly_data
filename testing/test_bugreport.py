@@ -17,5 +17,4 @@ def test_pathstring(tmp_pkgdir):
 
     res, *_ = pkg.descriptor["resources"]
     print(res)
-    assert res["path"].count("\\") > 0
-    assert False
+    assert res["path"].count("\\") == 0

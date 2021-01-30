@@ -73,6 +73,7 @@ def create_pkg(meta: Dict, resources: Iterable[_path_t], base_path: _path_t = ""
             ("resources", Iter().map(Assign("path", to_posix)).all()),
         )
         pkg.commit()
+    print("create_pkg: ", pkg.descriptor["resources"])
     return pkg
 
 
