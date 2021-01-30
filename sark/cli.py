@@ -239,7 +239,6 @@ def _rm_from_pkg(pkgpath: _path_t, *fpaths: _path_t):
     pkg = read_pkg(pkgpath)
     print("_rm_from_pkg:")
     print(fpaths)
-    print(_fpaths)
     count = len(pkg.descriptor["resources"])
     resources = glom(
         pkg.descriptor,
