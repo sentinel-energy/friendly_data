@@ -88,6 +88,7 @@ def _metadata(
 # add similar ability for update(..)
 def _create(meta: Dict, idxpath: _path_t, *fpaths: _path_t) -> str:
     pkgdir, pkg, idx = pkg_from_files(meta, idxpath, fpaths)
+    print("created: ", pkg.descriptor["resources"][-1])
     glossary = pkg_glossary(pkg, idx)
     fmeta, fglossary = write_pkg(pkg, pkgdir, glossary=glossary)
     return f"Package metadata: {fmeta}\nPackage glossary: {fglossary}"
@@ -237,8 +238,6 @@ def update(
 
 def _rm_from_pkg(pkgpath: _path_t, *fpaths: _path_t):
     pkg = read_pkg(pkgpath)
-    print("_rm_from_pkg:")
-    print(fpaths)
     count = len(pkg.descriptor["resources"])
     resources = glom(
         pkg.descriptor,
@@ -247,7 +246,6 @@ def _rm_from_pkg(pkgpath: _path_t, *fpaths: _path_t):
             Iter().filter(lambda r: pkgpath / r["path"] not in map(Path, fpaths)).all(),
         ),
     )
-    print(resources)
     if count == len(resources):
         return None  # no changes
     pkg.descriptor["resources"] = resources

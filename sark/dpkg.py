@@ -59,6 +59,7 @@ def create_pkg(meta: Dict, resources: Iterable[_path_t], base_path: _path_t = ""
                 warn(f"{full_path}: skipped, doesn't exist", RuntimeWarning)
                 continue
             pkg.infer(f"{res}")
+            print("create_pkg: adding ", pkg.descriptor["resources"][-1])
         else:  # pragma: no cover, adding with Dict (undocumented feature)
             pkg.add_resource(res)
     return pkg

@@ -131,10 +131,8 @@ def test_update(tmp_pkgdir):
     [dwim_file(dest / f, idx) for f in ("index.yaml", "index.json")]
     with pytest.warns(RuntimeWarning):  # multiple index files in test pkg
         assert update(dest, dest / meta["file"])
-    dpkgjson = dwim_file(dest / "datapackage.json")
-    print(dpkgjson["resources"])
     entry, *_ = glom(
-        dpkgjson,
+        dwim_file(dest / "datapackage.json"),
         (
             "resources",
             Iter().filter(lambda i: meta["file"] == i["path"]).all(),
