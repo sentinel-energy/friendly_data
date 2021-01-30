@@ -48,9 +48,9 @@ def create_pkg(meta: Dict, resources: Iterable[_path_t], base_path: _path_t = ""
     # https://stackoverflow.com/q/60235477/289784
     pkg = Package(meta, base_path=str(base_path))
     # TODO: filter out and handle non-tabular (custom) data
-    existing = glom(meta.get("resources", []), Iter("path").all())
+    existing = glom(meta.get("resources", []), Iter("path").map(Path).all())
     for res in resources:
-        if str(res) in existing:
+        if Path(res) in existing:
             # list of resources may be paths, but descriptor will always be strings
             continue
         if isinstance(res, (str, Path)):

@@ -237,7 +237,6 @@ def update(
 
 def _rm_from_pkg(pkgpath: _path_t, *fpaths: _path_t):
     pkg = read_pkg(pkgpath)
-    _fpaths = [str(p.relative_to(pkgpath)) for p in map(Path, fpaths)]
     print("_rm_from_pkg:")
     print(fpaths)
     print(_fpaths)
@@ -246,7 +245,7 @@ def _rm_from_pkg(pkgpath: _path_t, *fpaths: _path_t):
         pkg.descriptor,
         (
             "resources",
-            Iter().filter(lambda r: r["path"] not in _fpaths).all(),
+            Iter().filter(lambda r: pkgpath / r["path"] not in map(Path, fpaths)).all(),
         ),
     )
     print(resources)
