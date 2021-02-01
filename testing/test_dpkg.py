@@ -35,6 +35,7 @@ class noop_map(dict):
     sys.platform not in ("win32", "cygwin"), reason="only relevant for windows"
 )
 def test_ensure_posix():
+    print("test_ensure_posix")
     pkgdir = Path("testing/files/mini-ex")
     meta = {
         "name": "foobarbaz",
@@ -53,11 +54,13 @@ def test_ensure_posix():
 
 
 def test_source_type_heuristics():
+    print("test_source_type_heuristics")
     with pytest.raises(ValueError):
         _source_type("/path/to/non-existent-file.ext")
 
 
 def test_pkg_creation():
+    print("test_pkg_creation")
     pkgdir = Path("testing/files/random")
     pkg_meta = {"name": "test", "licenses": get_license("CC0-1.0")}
     csvs = [f.relative_to(pkgdir) for f in (pkgdir / "data").glob("sample-ok-?.csv")]
@@ -67,6 +70,7 @@ def test_pkg_creation():
 
 
 def test_pkg_read():
+    print("test_pkg_read")
     pkgdir = Path("testing/files/random")
     dpkg_json = pkgdir / "datapackage.json"
     pkg = read_pkg(dpkg_json)
@@ -74,6 +78,7 @@ def test_pkg_read():
 
 
 def test_zippkg_read(rnd_pkg, tmp_path_factory):
+    print("test_zippkg_read")
     with tmp_path_factory.mktemp("ziptest-") as tmpdir:
         zipfile = tmpdir / "testpackage.zip"
         rnd_pkg.save(f"{zipfile}")
@@ -88,6 +93,7 @@ def test_zippkg_read(rnd_pkg, tmp_path_factory):
 
 
 def test_pkg_read_error():
+    print("test_pkg_read_error")
     # unsupported archive: tarball
     tarball = Path("/path/to/package.tar")
     with pytest.raises(ValueError, match=f".*{tarball.name}:.+"):
@@ -95,6 +101,7 @@ def test_pkg_read_error():
 
 
 def test_pkg_update(rnd_pkg):
+    print("test_pkg_update")
     # update a single column in a dataset
     resource_name = "sample-ok-1"
     update = {"time": {"name": "time", "type": "string", "format": "default"}}
@@ -146,6 +153,7 @@ def test_pkg_update(rnd_pkg):
 
 @pytest.mark.parametrize("ext", [".yaml", ".yml", ".json"])
 def test_read_pkg_index(ext):
+    print("test_read_pkg_index", ext)
     fpath = Path(f"testing/files/indices/index{ext}")
     idx = read_pkg_index(fpath)
     np.testing.assert_array_equal(idx.columns, ["file", "name", "idxcols"])
@@ -154,6 +162,7 @@ def test_read_pkg_index(ext):
 
 
 def test_read_pkg_index_errors(tmp_path):
+    print("test_read_pkg_index_errors")
     idxfile = tmp_path / "index.yaml"
     idxfile.touch()
     with pytest.raises(ValueError, match=f".*{idxfile.name}: bad index file"):
@@ -182,6 +191,7 @@ def test_read_pkg_index_errors(tmp_path):
     ],
 )
 def test_registry(col, col_t, expectation):
+    print("test_registry", col, col_t)
     with expectation:
         res = registry(col, col_t)
         assert isinstance(res, dict)
@@ -200,6 +210,7 @@ def test_registry(col, col_t, expectation):
     ],
 )
 def test_index_levels(csvfile, idxcols, ncatcols):
+    print("test_index_levels", csvfile)
     pkgdir = Path("testing/files/mini-ex")
     _, coldict = index_levels(pkgdir / csvfile, idxcols)
     assert all(map(contains, idxcols, coldict))
@@ -213,6 +224,7 @@ def test_index_levels(csvfile, idxcols, ncatcols):
 
 @pytest.mark.parametrize("idx_t", [".yaml", ".json"])
 def test_pkg_from_index(idx_t):
+    print("test_pkg_from_index", idx_t)
     meta = {
         "name": "foobarbaz",
         "title": "Foo Bar Baz",
@@ -230,6 +242,7 @@ def test_pkg_from_index(idx_t):
 
 @pytest.mark.parametrize("idx_t", [".yaml", ".json"])
 def test_pkg_glossary(idx_t):
+    print("test_pkg_glossary", idx_t)
     pkgdir = Path("testing/files/mini-ex")
     pkg = read_pkg(pkgdir / "datapackage.json")
     idx = read_pkg_index(pkgdir / f"index{idx_t}")
@@ -240,6 +253,7 @@ def test_pkg_glossary(idx_t):
 
 
 def test_pkg_from_files():
+    print("test_pkg_from_files")
     meta = {
         "name": "foobarbaz",
         "title": "Foo Bar Baz",
@@ -254,6 +268,7 @@ def test_pkg_from_files():
 
 
 def test_idxpath_from_pkgpath(tmp_path):
+    print("test_idxpath_from_pkgpath")
     idxpath = tmp_path / "index.json"
     with pytest.warns(RuntimeWarning, match=f".*{tmp_path.name}: no index file found"):
         assert idxpath_from_pkgpath(tmp_path) == ""
@@ -269,6 +284,7 @@ def test_idxpath_from_pkgpath(tmp_path):
 
 
 def test_write_pkg(pkg, tmp_path):
+    print("test_write_pkg")
     res = write_pkg(pkg, tmp_path)
     assert len(res) == 1
     assert res[0].exists()
@@ -278,6 +294,7 @@ def test_write_pkg(pkg, tmp_path):
 
 
 def test_write_pkg_idx_glossary(pkg, tmp_path):
+    print("test_write_pkg_idx_glossary")
     idx = read_pkg_index(f"{pkg.base_path}/index.json")
     glossary = pkg_glossary(pkg, idx)
 
