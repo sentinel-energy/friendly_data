@@ -20,4 +20,5 @@ setup(
     url="https://github.com/sentinel-energy/sentinel-achive",
     packages=find_packages(exclude=["doc", "testing", "tests", "dsts", "tmp"]),
     install_requires=requirements,
+    entry_points={"console_scripts": ["sentinel-archive = sark.cli:main"]},
 )
