@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Dict, Iterable
 
-from datapackage import Resource
+from frictionless import Resource
 from glom import glom
 import pandas as pd
 from pandas._libs.parsers import STR_NA_VALUES

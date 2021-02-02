@@ -276,7 +276,7 @@ def test_write_pkg(pkg, tmp_path):
 
 
 def test_write_pkg_idx_glossary(pkg, tmp_path):
-    idx = read_pkg_index(f"{pkg.base_path}/index.json")
+    idx = read_pkg_index(f"{pkg.basepath}/index.json")
     glossary = pkg_glossary(pkg, idx)
 
     res = write_pkg(pkg, tmp_path, idx=idx, glossary=glossary)

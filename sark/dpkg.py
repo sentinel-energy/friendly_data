@@ -8,7 +8,7 @@ from typing import cast, Dict, Iterable, List, Optional, Tuple
 from warnings import warn
 from zipfile import ZipFile
 
-from datapackage import Package
+from frictionless import Package
 from glom import Assign, glom, Invoke, Iter, Spec, T
 import pandas as pd
 from pkg_resources import resource_filename
@@ -37,11 +37,11 @@ def _ensure_posix(pkg):
     return pkg
 
 
-def create_pkg(meta: Dict, resources: Iterable[_path_t], base_path: _path_t = ""):
+def create_pkg(meta: Dict, resources: Iterable[_path_t], basepath: _path_t = ""):
     """Create a datapackage from metadata and resources.
 
     If `resources` point to files that exist, their schema are inferred and
-    added to the package.  If `base_path` is a non empty string, it is treated
+    added to the package.  If `basepath` is a non empty string, it is treated
     as the parent directory, and all resource file paths are checked relative
     to it.
 
@@ -52,9 +52,9 @@ def create_pkg(meta: Dict, resources: Iterable[_path_t], base_path: _path_t = ""
 
     resources : Iterable[Union[str, Path]]
         An iterator over different resources.  Resources are paths to files,
-        relative to `base_path`.
+        relative to `basepath`.
 
-    base_path : str (default: empty string)
+    basepath : str (default: empty string)
         Directory where the package files are located
 
     Returns
@@ -65,7 +65,7 @@ def create_pkg(meta: Dict, resources: Iterable[_path_t], base_path: _path_t = ""
     """
     # for an interesting discussion on type hints with unions, see:
     # https://stackoverflow.com/q/60235477/289784
-    pkg = Package(meta, base_path=str(base_path))
+    pkg = Package(meta, basepath=str(basepath))
     # TODO: filter out and handle non-tabular (custom) data
     existing = glom(meta.get("resources", []), Iter("path").map(Path).all())
     for res in resources:
@@ -73,7 +73,7 @@ def create_pkg(meta: Dict, resources: Iterable[_path_t], base_path: _path_t = ""
             # list of resources may be paths, but descriptor will always be strings
             continue
         if isinstance(res, (str, Path)):
-            full_path = Path(base_path) / res
+            full_path = Path(basepath) / res
             if not full_path.exists():
                 warn(f"{full_path}: skipped, doesn't exist", RuntimeWarning)
                 continue
@@ -107,8 +107,8 @@ def read_pkg(pkg_path: _path_t, extract_dir: Optional[_path_t] = None):
     pkg_path = Path(pkg_path)
     if pkg_path.suffix == ".json":
         with open(pkg_path) as pkg_json:
-            base_path = f"{Path(pkg_path).parent}"
-            pkg = Package(json.load(pkg_json), base_path=base_path)
+            basepath = f"{Path(pkg_path).parent}"
+            pkg = Package(json.load(pkg_json), basepath=basepath)
     elif pkg_path.suffix == ".zip":
         if extract_dir is None:
             extract_dir = pkg_path.parent
@@ -117,10 +117,10 @@ def read_pkg(pkg_path: _path_t, extract_dir: Optional[_path_t] = None):
         with ZipFile(pkg_path) as pkg_zip:
             pkg_zip.extractall(path=extract_dir)
             with open(extract_dir / "datapackage.json") as pkg_json:
-                pkg = Package(json.load(pkg_json), base_path=f"{extract_dir}")
+                pkg = Package(json.load(pkg_json), basepath=f"{extract_dir}")
     elif pkg_path.is_dir():
         with open(pkg_path / "datapackage.json") as pkg_json:
-            pkg = Package(json.load(pkg_json), base_path=str(pkg_path))
+            pkg = Package(json.load(pkg_json), basepath=str(pkg_path))
     else:
         raise ValueError(f"{pkg_path}: expecting a JSON or ZIP file")
     return _ensure_posix(pkg)
@@ -387,7 +387,7 @@ def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pd.DataFr
     """
     pkg_dir = Path(fpath).parent
     idx = read_pkg_index(fpath)
-    pkg = create_pkg(meta, idx["file"], base_path=f"{pkg_dir}")
+    pkg = create_pkg(meta, idx["file"], basepath=f"{pkg_dir}")
     for entry in idx.to_records():
         resource_name = Path(entry.file).stem
         _, update = index_levels(pkg_dir / entry.file, entry.idxcols)
@@ -482,7 +482,7 @@ def pkg_from_files(meta: Dict, idxpath: _path_t, fpaths: Iterable[_path_t]):
             lambda _p2: not idx_fpath.apply(_p2.samefile).any(), map(Path, fpaths)
         )  # accept only if not in index
     ]
-    pkg = create_pkg(pkg.descriptor, _fpaths, base_path=pkgdir)
+    pkg = create_pkg(pkg.descriptor, _fpaths, basepath=pkgdir)
     return pkgdir, pkg, idx
 
 

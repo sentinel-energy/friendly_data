@@ -16,7 +16,7 @@ def test_check_pkg():
     pkgdir = Path("testing/files/random")
     pkg_meta = {"name": "test", "licenses": get_license("CC0-1.0")}
     csvs = [f.relative_to(pkgdir) for f in (pkgdir / "data").glob("*.csv")]
-    pkg = create_pkg(pkg_meta, csvs, base_path=pkgdir)
+    pkg = create_pkg(pkg_meta, csvs, basepath=pkgdir)
     # mark column VBN as required in sample-bad.csv
     glom(
         pkg.descriptor,

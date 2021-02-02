@@ -162,9 +162,9 @@ def add(pkgpath: str, *fpaths: str):
 
     """
     pkg = read_pkg(pkgpath)
-    pkgdir = Path(pkg.base_path)
+    pkgdir = Path(pkg.basepath)
     _fpaths = [p.relative_to(pkgdir) for p in map(Path, fpaths)]
-    pkg = create_pkg(pkg.descriptor, _fpaths, base_path=pkg.base_path)
+    pkg = create_pkg(pkg.descriptor, _fpaths, basepath=pkg.basepath)
     pkgjson = pkgdir / "datapackage.json"
     dwim_file(pkgjson, pkg.descriptor)
     return f"Package metadata: {pkgjson}"
