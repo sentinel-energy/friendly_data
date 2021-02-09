@@ -1,10 +1,11 @@
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Iterable
 
 from datapackage import Resource
 from glom import glom
 import pandas as pd
 from pandas._libs.parsers import STR_NA_VALUES
+import xarray as xr
 
 from sark._types import _path_t
 from sark.helpers import consume, import_from
@@ -145,3 +146,47 @@ def to_df(resource: Resource, noexcept: bool = False, **kwargs) -> pd.DataFrame:
         parse_dates=date_cols,
         **kwargs,
     )
+
+
+def to_da(resource: Resource, noexcept: bool = False, **kwargs) -> xr.DataArray:
+    """Reads a data package resource as an `xarray.DataArray`
+
+    Additional keyword arguments are passed on to :class:`xarray.Dataset`.  See
+    :func:`sark.converters.to_df` for more details.
+
+    """
+    df = to_df(resource, noexcept)
+    return xr.DataArray(df, **kwargs)
+
+
+def to_dst(resource: Resource, noexcept: bool = False, **kwargs) -> xr.Dataset:
+    """Reads a data package resource as an `xarray.DataArray`
+
+    Additional keyword arguments are passed on to :class:`xarray.Dataset`.  See
+    :func:`sark.converters.to_df` for more details.
+
+    """
+    df = to_df(resource, noexcept)
+    return xr.Dataset({resource.name: df}, **kwargs)
+
+
+def to_mfdst(
+    resources: Iterable[Resource], noexcept: bool = False, **kwargs
+) -> xr.Dataset:
+    """Reads a list of data package resources as an `xarray.DataArray`
+
+    See :func:`sark.converters.to_df` for more details
+
+    Parameters
+    ----------
+    resources : List[`datapackage.Resource`]
+        List of data package resource objects
+    noexcept : bool (default: False)
+        Whether to suppress an exception
+    **kwargs
+        Additional keyword arguments that are passed on to
+        :class:`xarray.Dataset`
+
+    """
+    dfs = {res.name: to_df(res, noexcept) for res in resources}
+    return xr.Dataset(dfs, **kwargs)
