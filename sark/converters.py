@@ -70,11 +70,10 @@ def _schema(resource: Resource, type_map: Dict[str, str]) -> Dict[str, str]:
     )
 
 
-def to_df(resource: Resource, noexcept: bool = False) -> pd.DataFrame:
+def to_df(resource: Resource, noexcept: bool = False, **kwargs) -> pd.DataFrame:
     """Reads a data package resource as a `pandas.DataFrame`
 
-    FIXME: only considers 'name' and 'type' in the schema, other options like
-    'format', 'missingValues', etc are ignored.
+    FIXME: 'format' in the schema is ignored.
 
     Parameters
     ----------
@@ -82,6 +81,9 @@ def to_df(resource: Resource, noexcept: bool = False) -> pd.DataFrame:
         A data package resource object
     noexcept : bool (default: False)
         Whether to suppress an exception
+    **kwargs
+        Additional keyword arguments that are passed on to the reader:
+        :func:`pandas.read_csv`, :func:`pandas.read_excel`, etc
 
     Returns
     -------
@@ -132,10 +134,14 @@ def to_df(resource: Resource, noexcept: bool = False) -> pd.DataFrame:
     # set 'primaryKey' as index_col, a list is interpreted as a MultiIndex
     index_col = glom(resource, ("descriptor.schema.primaryKey"), default=False)
 
+    # don't let the user override the options we use
+    [kwargs.pop(k, None) for k in ("dtype", "na_values", "index_col", "parse_dates")]
+
     return reader(
         resource.source,
         dtype=schema,
         na_values=na_values,
         index_col=index_col,
         parse_dates=date_cols,
+        **kwargs,
     )
