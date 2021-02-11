@@ -7,6 +7,7 @@ from collections import deque
 from collections.abc import Sequence
 from functools import partial
 from importlib import import_module
+import sys
 from typing import Iterable
 
 from glom import Check, Match, SKIP
@@ -14,6 +15,10 @@ from glom import Check, Match, SKIP
 
 def import_from(module: str, name: str):
     return getattr(import_module(module), name)
+
+
+def is_windows() -> bool:
+    return sys.platform in ("win32", "cygwin")
 
 
 # def from_hints(fn: Callable, arg: str) -> Tuple:

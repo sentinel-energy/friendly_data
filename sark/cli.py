@@ -6,7 +6,6 @@ Commands to manage a data package.
 
 from pathlib import Path
 import re
-import sys
 from typing import Dict, List, Union
 
 from glom import glom, Iter
@@ -20,6 +19,7 @@ from sark.dpkg import pkg_glossary
 from sark.dpkg import read_pkg
 from sark.dpkg import read_pkg_index
 from sark.dpkg import write_pkg
+from sark.helpers import is_windows
 from sark.io import dwim_file
 from sark.metatools import _fetch_license, check_license
 
@@ -41,7 +41,7 @@ def license_prompt() -> _license_t:  # pragma: no cover, interactive function
                 else:
                     state -= 1
 
-    if sys.platform not in ("win32", "cygwin"):
+    if not is_windows():
         import readline
 
         readline.parse_and_bind("tab: complete")

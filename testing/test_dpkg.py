@@ -20,7 +20,7 @@ from sark.dpkg import read_pkg_index
 from sark.dpkg import registry
 from sark.dpkg import update_pkg
 from sark.dpkg import write_pkg
-from sark.helpers import match, select
+from sark.helpers import match, select, is_windows
 from sark.metatools import get_license
 
 from .conftest import expected_schema
@@ -31,9 +31,7 @@ class noop_map(dict):
         return key
 
 
-@pytest.mark.skipif(
-    sys.platform not in ("win32", "cygwin"), reason="only relevant for windows"
-)
+@pytest.mark.skipif(not is_windows(), reason="only relevant for windows")
 def test_ensure_posix():
     pkgdir = Path("testing/files/mini-ex")
     meta = {

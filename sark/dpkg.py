@@ -4,7 +4,6 @@
 from itertools import chain
 import json
 from pathlib import Path
-import sys
 from typing import cast, Dict, Iterable, List, Optional, Tuple
 from warnings import warn
 from zipfile import ZipFile
@@ -14,8 +13,8 @@ from glom import Assign, glom, Invoke, Iter, Spec, T
 import pandas as pd
 from pkg_resources import resource_filename
 
-from sark.helpers import match, select
 from sark.io import dwim_file, posixpathstr
+from sark.helpers import match, select, is_windows
 from sark._types import _path_t
 
 
@@ -28,7 +27,7 @@ def _ensure_posix(pkg):
     https://github.com/frictionlessdata/datapackage-py/issues/279
 
     """
-    if sys.platform in ("win32", "cygwin"):
+    if is_windows():
         to_posix = Spec(Invoke(posixpathstr).specs("path"))
         glom(
             pkg.descriptor,
