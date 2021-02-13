@@ -21,16 +21,17 @@ def posixpathstr(fpath: _path_t) -> str:
 
 
 @overload
-def dwim_file(fpath: Path) -> Union[Dict, List]:
+def dwim_file(fpath: _path_t) -> Union[Dict, List]:
     ...  # pragma: no cover, oveload
 
 
 @overload
-def dwim_file(fpath: Path, data) -> None:
+def dwim_file(fpath: _path_t, data) -> None:
     ...  # pragma: no cover, oveload
 
 
-def dwim_file(fpath: Path, data=None):
+def dwim_file(fpath: _path_t, data=None):
+    fpath = Path(fpath)
     mode = "r" if data is None else "w"
     if fpath.suffix in (".yaml", ".yml"):
         with open(fpath, mode=mode) as stream:
