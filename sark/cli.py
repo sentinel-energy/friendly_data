@@ -164,9 +164,9 @@ def add(pkgpath: str, *fpaths: str):
     pkg = read_pkg(pkgpath)
     pkgdir = Path(pkg.basepath)
     _fpaths = [p.relative_to(pkgdir) for p in map(Path, fpaths)]
-    pkg = create_pkg(pkg.descriptor, _fpaths, basepath=pkg.basepath)
+    pkg = create_pkg(pkg, _fpaths, basepath=pkg.basepath)
     pkgjson = pkgdir / "datapackage.json"
-    dwim_file(pkgjson, pkg.descriptor)
+    dwim_file(pkgjson, pkg)
     return f"Package metadata: {pkgjson}"
 
 
@@ -222,24 +222,21 @@ def update(
     }
     meta = _metadata([], **meta)  # type: ignore[arg-type]
     pkg = read_pkg(pkgpath)
-    pkg.descriptor.update(meta)
-    pkg.commit()
+    pkg.update(meta)
 
     if len(fpaths) == 0:
         files = write_pkg(pkg, pkgpath)
         return f"Package metadata: {files[0]}"
     else:
-        meta = {
-            k: v for k, v in pkg.descriptor.items() if k not in ("resources", "profile")
-        }
+        meta = {k: v for k, v in pkg.items() if k not in ("resources", "profile")}
         return _create(meta, idxpath_from_pkgpath(pkgpath), *fpaths)
 
 
 def _rm_from_pkg(pkgpath: _path_t, *fpaths: _path_t):
     pkg = read_pkg(pkgpath)
-    count = len(pkg.descriptor["resources"])
+    count = len(pkg["resources"])
     resources = glom(
-        pkg.descriptor,
+        pkg,
         (
             "resources",
             Iter().filter(lambda r: pkgpath / r["path"] not in map(Path, fpaths)).all(),
@@ -247,8 +244,7 @@ def _rm_from_pkg(pkgpath: _path_t, *fpaths: _path_t):
     )
     if count == len(resources):
         return None  # no changes
-    pkg.descriptor["resources"] = resources
-    pkg.commit()
+    pkg["resources"] = resources
     return pkg
 
 

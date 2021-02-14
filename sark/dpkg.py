@@ -8,7 +8,7 @@ from typing import cast, Dict, Iterable, List, Optional, Tuple
 from warnings import warn
 from zipfile import ZipFile
 
-from frictionless import Package
+from frictionless import Package, Resource
 from glom import Assign, glom, Invoke, Iter, Spec, T
 import pandas as pd
 from pkg_resources import resource_filename
@@ -29,15 +29,12 @@ def _ensure_posix(pkg):
     """
     if is_windows():
         to_posix = Spec(Invoke(posixpathstr).specs("path"))
-        glom(
-            pkg.descriptor,
-            ("resources", Iter().map(Assign("path", to_posix)).all()),
-        )
+        glom(pkg, ("resources", Iter().map(Assign("path", to_posix)).all()))
         pkg.commit()
     return pkg
 
 
-def create_pkg(meta: Dict, resources: Iterable[_path_t], basepath: _path_t = ""):
+def create_pkg(meta: Dict, fpaths: Iterable[_path_t], basepath: _path_t = ""):
     """Create a datapackage from metadata and resources.
 
     If `resources` point to files that exist, their schema are inferred and
@@ -50,7 +47,7 @@ def create_pkg(meta: Dict, resources: Iterable[_path_t], basepath: _path_t = "")
     meta : Dict
         A dictionary with package metadata.
 
-    resources : Iterable[Union[str, Path]]
+    fpaths : Iterable[Union[str, Path]]
         An iterator over different resources.  Resources are paths to files,
         relative to `basepath`.
 
@@ -65,21 +62,29 @@ def create_pkg(meta: Dict, resources: Iterable[_path_t], basepath: _path_t = "")
     """
     # for an interesting discussion on type hints with unions, see:
     # https://stackoverflow.com/q/60235477/289784
-    pkg = Package(meta, basepath=str(basepath))
+
     # TODO: filter out and handle non-tabular (custom) data
     existing = glom(meta.get("resources", []), Iter("path").map(Path).all())
-    for res in resources:
+    basepath = basepath if basepath else getattr(meta, "basepath", basepath)
+    pkg = Package(meta, basepath=str(basepath))
+
+    # TODO: should we handle adding resources by descriptor? Package.add_resource(..)
+    def keep(res: _path_t) -> bool:
         if Path(res) in existing:
-            # list of resources may be paths, but descriptor will always be strings
+            return False
+        full_path = Path(basepath) / res
+        if not full_path.exists():
+            warn(f"{full_path}: skipped, doesn't exist", RuntimeWarning)
+            return False
+        return True
+
+    for p in fpaths:
+        if not keep(p):
             continue
-        if isinstance(res, (str, Path)):
-            full_path = Path(basepath) / res
-            if not full_path.exists():
-                warn(f"{full_path}: skipped, doesn't exist", RuntimeWarning)
-                continue
-            pkg.infer(f"{res}")
-        else:  # pragma: no cover, adding with Dict (undocumented feature)
-            pkg.add_resource(res)
+        res = Resource(path=str(p), basepath=str(basepath))
+        res.infer()
+        pkg.add_resource(res)
+
     return _ensure_posix(pkg)
 
 
@@ -164,9 +169,8 @@ def update_pkg(pkg: Package, resource: str, schema_update: Dict, fields: bool = 
         Return the `Package.valid` flag; `True` if the update was valid.
 
     """
-    desc = pkg.descriptor
-    assert "resources" in desc, "Package should have at least one resource"
-    res, *_ = [res for res in desc["resources"] if res["name"] == resource]
+    assert "resources" in pkg, "Package should have at least one resource"
+    res, *_ = [res for res in pkg["resources"] if res["name"] == resource]
     if fields:
         for field in res["schema"]["fields"]:
             if field["name"] in schema_update:
@@ -177,8 +181,7 @@ def update_pkg(pkg: Package, resource: str, schema_update: Dict, fields: bool = 
         # prevents from adding additional keys
         assert set(schema_update) - {"primaryKey", "missingValues"} == set()
         res["schema"].update(schema_update)
-    pkg.commit()
-    return pkg.valid
+    return pkg.metadata_valid
 
 
 def read_pkg_index(fpath: _path_t) -> pd.DataFrame:
@@ -396,7 +399,7 @@ def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pd.DataFr
         # set of value columns
         cols = (
             glom(
-                pkg.descriptor,
+                pkg,
                 (
                     "resources",
                     Iter()
@@ -431,7 +434,7 @@ def pkg_glossary(pkg: Package, idx: pd.DataFrame) -> pd.DataFrame:
 
     """
     _levels = lambda row: glom(
-        pkg.descriptor,
+        pkg,
         (
             "resources",
             Iter()
@@ -482,7 +485,7 @@ def pkg_from_files(meta: Dict, idxpath: _path_t, fpaths: Iterable[_path_t]):
             lambda _p2: not idx_fpath.apply(_p2.samefile).any(), map(Path, fpaths)
         )  # accept only if not in index
     ]
-    pkg = create_pkg(pkg.descriptor, _fpaths, basepath=pkgdir)
+    pkg = create_pkg(pkg, _fpaths, basepath=pkgdir)
     return pkgdir, pkg, idx
 
 
@@ -556,7 +559,7 @@ def write_pkg(
     """
     pkgdir = Path(pkgdir)
     files = [pkgdir / "datapackage.json"]
-    dwim_file(files[-1], pkg.descriptor)
+    dwim_file(files[-1], pkg)
 
     if isinstance(idx, pd.DataFrame):
         files.append(pkgdir / "index.json")

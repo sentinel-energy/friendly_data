@@ -1,69 +1,52 @@
-from collections import defaultdict
 from copy import deepcopy
 import json
 from pathlib import Path
 
-from glom import Assign, glom, Iter, T
+from glom import glom, Iter
+import pandas as pd
+import pandas.testing as tm
 import pytest  # noqa: F401
 
-from sark.dpkg import create_pkg
-from sark.helpers import flatten_list, consume, select
-from sark.metatools import get_license
+from sark.dpkg import read_pkg
+from sark.helpers import consume
 from sark.validate import check_pkg, check_schema, summarise_errors
 
 
 def test_check_pkg():
-    pkgdir = Path("testing/files/random")
-    pkg_meta = {"name": "test", "licenses": get_license("CC0-1.0")}
-    csvs = [f.relative_to(pkgdir) for f in (pkgdir / "data").glob("*.csv")]
-    pkg = create_pkg(pkg_meta, csvs, basepath=pkgdir)
-    # mark column VBN as required in sample-bad.csv
-    glom(
-        pkg.descriptor,
-        (
-            "resources",
-            Iter().filter(select(T["name"], equal_to="sample-bad")).first(),
-            "schema.fields",
-            Iter().filter(select(T["name"], equal_to="VBN")).first(),
-            Assign("constraints", {"required": True}),
-        ),
-    )
-    pkg.commit()
+    pkgdir = Path("testing/files/random-bad")
+    pkg = read_pkg(pkgdir / "datapackage.json")
+    # errors:
+    #            filename  row  col              error
+    # 0      mini-bad.csv   12              extra-cell
+    # 1      mini-bad.csv   22  SRB         type-error
+    # 2  sample-bad-1.csv   10  VBN   constraint-error
+    # 3  sample-bad-1.csv   22  QWE         type-error
+    # 4  sample-bad-1.csv   23  MPQ       missing-cell
+    # 5  sample-bad-1.csv   24  RTY         type-error
+    # 6  sample-bad-2.csv    7  IUY   constraint-error
+    # 7  sample-bad-2.csv    8  APO   constraint-error
+    # 8  sample-bad-2.csv    8       primary-key-error
+    # 9  sample-bad-2.csv   10       primary-key-error
 
-    reports = check_pkg(pkg)
-
+    report = check_pkg(pkg)
     # only errors in files w/ bad data
-    assert all(
-        map(
-            lambda fp: "bad" in fp,
-            glom(reports, ([("tables", ["source"])], Iter().flatten())),
-        )
+    assert glom(report, (Iter().map(lambda f: "bad" in f["path"]).all(), all))
+
+    summary = summarise_errors(report)
+    errcount = summary[["filename", "error"]].groupby("error").count()
+    assert errcount.sum()[0] == 10  # total errors
+
+    expected = pd.DataFrame(
+        [
+            ("constraint-error", 3),
+            ("extra-cell", 1),
+            ("missing-cell", 1),
+            ("primary-key-error", 2),
+            ("type-error", 3),
+        ],
+        columns=["error", "filename"],
     )
-
-    counter = defaultdict(int)
-
-    def _proc(err):
-        counter[err["code"]] += 1
-        return err["row-number"], err["column-number"]
-
-    # extract cell numbers with errors
-    err_row_cols = tuple(
-        flatten_list(glom(reports, [("tables", [("errors", [_proc])])]))
-    )
-
-    # incorrect type: (99, 2) int -> float, and (101, 3) bool -> string
-    assert counter["type-or-format-error"] == 2
-
-    # required but absent (NA): (11, 9)
-    assert counter["required-constraint"] == 1
-
-    # missing value (cell missing, not just empty): (100, 10)
-    assert counter["missing-value"] == 1
-
-    # match cells numbers with errors
-    assert (11, 9, 99, 2, 100, 10, 101, 3) == err_row_cols
-
-    assert not summarise_errors(reports).empty
+    tm.assert_frame_equal(errcount.reset_index(), expected)
 
 
 def test_check_schema():

@@ -40,7 +40,7 @@ def test_ensure_posix():
     # NOTE: count windows path separators in the resource path, should be 0 as the
     # spec requires resource paths to be POSIX paths
     npathsep = glom(
-        pkg.descriptor, ("resources", Iter().map("path").map(T.count("\\")).all(), sum)
+        pkg, ("resources", Iter().map("path").map(T.count("\\")).all(), sum)
     )
     assert npathsep == 0
 
@@ -55,21 +55,29 @@ def test_pkg_creation():
     pkg_meta = {"name": "test", "licenses": get_license("CC0-1.0")}
     csvs = [f.relative_to(pkgdir) for f in (pkgdir / "data").glob("sample-ok-?.csv")]
     pkg = create_pkg(pkg_meta, csvs, pkgdir)
-    for resource in pkg.resources:
-        assert _schema(resource, noop_map()) == expected_schema(resource)
+    for resource in pkg["resources"]:
+        # match datapackage field type for datetime
+        ts_cols = [
+            field.name
+            for field in resource.schema.fields
+            if "datetime" in field["type"]
+        ]
+        expected = expected_schema(resource)
+        expected.update((col, "datetime") for col in ts_cols)
+        assert _schema(resource, noop_map()) == expected
 
 
 def test_pkg_read():
     pkgdir = Path("testing/files/random")
     dpkg_json = pkgdir / "datapackage.json"
     pkg = read_pkg(dpkg_json)
-    assert all(Path(res.source).exists() for res in pkg.resources)
+    assert all(Path(res.source).exists() for res in pkg["resources"])
 
 
 def test_zippkg_read(rnd_pkg, tmp_path_factory):
     with tmp_path_factory.mktemp("ziptest-") as tmpdir:
         zipfile = tmpdir / "testpackage.zip"
-        rnd_pkg.save(f"{zipfile}")
+        rnd_pkg.to_zip(f"{zipfile}")
 
         # unzip to current dir
         _ = read_pkg(zipfile)
@@ -93,7 +101,7 @@ def test_pkg_update(rnd_pkg):
     update = {"time": {"name": "time", "type": "string", "format": "default"}}
     assert update_pkg(rnd_pkg, resource_name, update)
     res, *_ = glom(
-        rnd_pkg.descriptor,
+        rnd_pkg,
         (
             "resources",
             [select(T["name"], equal_to=resource_name)],
@@ -110,7 +118,7 @@ def test_pkg_update(rnd_pkg):
     }
     assert update_pkg(rnd_pkg, resource_name, update)
     res = glom(
-        rnd_pkg.descriptor,
+        rnd_pkg,
         (
             "resources",
             [select(T["name"], equal_to=resource_name)],
@@ -125,7 +133,7 @@ def test_pkg_update(rnd_pkg):
     update = {"primaryKey": ["lvl", "TRE", "IUY"]}
     assert update_pkg(rnd_pkg, resource_name, update, fields=False)
     res = glom(
-        rnd_pkg.descriptor,
+        rnd_pkg,
         (
             "resources",
             [select(T["name"], equal_to=resource_name)],
@@ -215,8 +223,8 @@ def test_pkg_from_index(idx_t):
     idxpath = Path("testing/files/mini-ex/index").with_suffix(idx_t)
     pkgdir, pkg, _ = pkg_from_index(meta, idxpath)
     assert pkgdir == idxpath.parent
-    assert len(pkg.descriptor["resources"]) == 5  # number of datasets
-    indices = glom(pkg.descriptor, ("resources", Iter().map("schema.primaryKey").all()))
+    assert len(pkg["resources"]) == 5  # number of datasets
+    indices = glom(pkg, ("resources", Iter().map("schema.primaryKey").all()))
     assert len(indices) == 5
     # FIXME: not sure what else to check
 
@@ -243,7 +251,7 @@ def test_pkg_from_files():
     files = chain(pkgdir.glob("inputs/*"), pkgdir.glob("outputs/*"))
     _, pkg, idx = pkg_from_files(meta, pkgdir / "index.json", files)
     # files not in index: inheritance.csv, and loc_coordinates.csv
-    assert len(pkg.descriptor["resources"]) - len(idx) == 2
+    assert len(pkg["resources"]) - len(idx) == 2
 
 
 def test_idxpath_from_pkgpath(tmp_path):

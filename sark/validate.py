@@ -4,27 +4,22 @@ Tools to check if a data resource is consistent with its schema
 
 """
 
-from collections import defaultdict
-from typing import Callable, Dict, List, Set, Tuple, Union
+from typing import Callable, Dict, List, Set, Tuple
 
-from glom import Fold, glom, Invoke, Iter, T
-from goodtables import validate
+from frictionless import validate_package as validate
+from glom import Coalesce, glom, Iter, T
 import pandas as pd
 
 from sark.helpers import select
 
 
-def check_pkg(pkg, _filter: Callable = lambda res: True) -> List[Dict]:
+def check_pkg(pkg) -> List[Dict]:
     """Validate all resources in a datapackage
 
     Parameters
     ----------
     pkg : Package
         The datapackage descriptor dictionary
-    _filter : Callable
-        A predicate function that maybe passed to filter out data resources.
-        The function is called with the data resource descriptor dictionary as
-        argument, if it returns `False` the resource is skipped
 
     Returns
     -------
@@ -32,52 +27,71 @@ def check_pkg(pkg, _filter: Callable = lambda res: True) -> List[Dict]:
         A dictionary with a summary of the validation checks.
 
     """
-    return glom(
-        pkg.resources,
-        Iter()
-        .filter(_filter)
-        .map(Invoke(validate).specs(T.source, schema=T.schema.descriptor))
-        .filter(lambda r: r["error-count"] > 0)
-        .all(),
-    )
-
-
-def summarise_errors(reports: List[Dict]) -> Union[pd.DataFrame, None]:
-    counts: Callable[[], Dict]
-    counts = lambda: defaultdict(lambda: dict(count=0, row=[], col=[]))
-
-    def accumulate(res, err):
-        stats = res[err["code"]]
-        stats["count"] += 1
-        stats["row"].append(err["row-number"])
-        stats["col"].append(err["column-number"])
-        return res
-
-    summary = glom(
-        reports,
+    # noinfer -> original in newer versions
+    report = validate(pkg, basepath=pkg.basepath, noinfer=True)
+    count = glom(report, "stats.errors")
+    if not count:
+        return list()
+    res = glom(
+        report,
         (
-            [
-                (
-                    "tables",
-                    [
-                        {
-                            "source": T["source"].rsplit("/", 1)[-1],
-                            "errors": ("errors", Fold(T, counts, accumulate), dict),
-                        }
-                    ],
-                )
-            ],
-            Iter().flatten().all(),
+            "tables",
+            Iter()
+            .filter(T["stats"]["errors"])
+            .map(
+                {
+                    "path": T["path"],
+                    "position": (
+                        T["errors"],
+                        [
+                            {
+                                "row": T["rowNumber"],
+                                "col": Coalesce(T["fieldName"], default=""),
+                            }
+                        ],
+                    ),
+                    "errors": (
+                        T["errors"],
+                        [
+                            {
+                                "error": T["code"],
+                                "remark": T["note"],
+                            }
+                        ],
+                    ),
+                }
+            )
+            .all(),
         ),
     )
-    # transform nested dict as records of dataframe
-    rows = []
-    for row in summary:
-        for err, stats in row.pop("errors").items():
-            _count = stats.pop("count")
-            for i, j in zip(stats["row"], stats["col"]):
-                rows += [{**row, "error": err, "count": _count, "row": i, "col": j}]
-    return pd.DataFrame(rows).set_index(["source", "error"]) if rows else None
+    return res
+
+
+def summarise_errors(report: List[Dict]) -> pd.DataFrame:
+    """Summarise the dict/json error report as a `pandas.DataFrame`
+
+    Parameters
+    ----------
+    report : List[Dict]
+        List of errors as returned by :function:`sark.validate.check_pkg`
+
+    Returns
+    -------
+    pandas.DataFrame
+        Summary dataframe; example::
+
+               filename  row  col       error  remark
+            0   bad.csv   12       extra-cell     ...
+            1   bad.csv   22  SRB  type-error     ...
+
+    """
+    df = pd.DataFrame(report)
+    errors: pd.DataFrame = df["errors"].explode(ignore_index=True).apply(pd.Series)
+    df = df.explode("position").reset_index(drop=True).drop("errors", axis=1)
+    fnames: pd.DataFrame = df["path"].str.rsplit("/").apply(pd.Series).iloc[:, -1]
+    fnames.name = "filename"
+    position: pd.Series = df["position"].apply(pd.Series)
+    return pd.concat([fnames, position, errors], axis=1)
 
 
 def check_schema(
@@ -95,9 +109,9 @@ def check_schema(
     Parameters
     ----------
     ref : Dict[str, str]
-        Reference schema descriptor dictionary
+        Reference schema dictionary
     dst : Dict[str, str]
-        Schema descriptor dictionary from the dataset being validated
+        Schema dictionary from the dataset being validated
     remap : Dict[str, str] (optional)
        Column/field names that are to be remapped before checking.
 

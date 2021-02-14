@@ -18,13 +18,12 @@ def test_pkg_to_df(rnd_pkg):
         from_impl = expected_schema(df, type_map={})
         # read from file; strings are read as `object`, remap to `string`
         raw = expected_schema(resource, type_map={"object": "string", "int64": "Int64"})
-        # impl marks columns as timestamps based on the schema.  similarly
-        # as per the schema, remap timestamp columns as timestamps
+        # impl marks columns as timestamps based on the schema.  so remap
+        # timestamp columns as datetime64[ns] as per the schema
         ts_cols = [
             field.name for field in resource.schema.fields if "datetime" in field.type
         ]
         raw.update((col, "datetime64[ns]") for col in ts_cols)
-        print(resource.name)
         assert from_impl == raw
 
         if not ts_cols:  # no timestamps, skip
@@ -37,8 +36,7 @@ def test_pkg_to_df(rnd_pkg):
     # resource w/ a index
     resource = rnd_pkg.resources[0]
     field_names = [field.name for field in resource.schema.fields]
-    glom(resource.descriptor, Assign("schema.primaryKey", field_names[0]))
-    resource.commit()
+    glom(resource, Assign("schema.primaryKey", field_names[0]))
     df = to_df(resource)
     # compare columns
     assert list(df.columns) == field_names[1:]
@@ -46,8 +44,7 @@ def test_pkg_to_df(rnd_pkg):
     assert df.index.name == resource.schema.fields[0].name
 
     # resource w/ a MultiIndex
-    glom(resource.descriptor, Assign("schema.primaryKey", field_names[:2]))
-    resource.commit()
+    glom(resource, Assign("schema.primaryKey", field_names[:2]))
     df = to_df(resource)
     # compare columns
     assert list(df.columns) == field_names[2:]
@@ -58,19 +55,17 @@ def test_pkg_to_df(rnd_pkg):
     resource = rnd_pkg.resources[1]
     # set new NA value: "sit" from "Lorem ipsum dolor sit amet consectetur
     # adipiscing", TRE - 2nd column
-    glom(resource.descriptor, Assign("schema.missingValues", ["", "sit"]))
-    resource.commit()
+    glom(resource, Assign("schema.missingValues", ["", "sit"]))
     df = to_df(resource)
     assert df.isna().any(axis=None)
 
     # unsupported resource type
     resource = rnd_pkg.resources[0]
     update = {
-        "path": resource.descriptor["path"].replace("csv", "txt"),
-        "mediatype": resource.descriptor["mediatype"].replace("csv", "plain"),
+        "path": resource["path"].replace("csv", "txt"),
+        "mediatype": resource["mediatype"].replace("csv", "plain"),
     }
-    resource.descriptor.update(update)
-    resource.commit()
+    resource.update(update)
     with pytest.raises(ValueError, match="unsupported source.+"):  # default behaviour
         df = to_df(resource)
     assert to_df(resource, noexcept=True).empty  # suppress exceptions

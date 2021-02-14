@@ -54,21 +54,8 @@ def _schema(resource: Resource, type_map: Dict[str, str]) -> Dict[str, str]:
         Dictionary with column names as key, and types as values
 
     """
-    return dict(
-        glom(
-            resource,  # target
-            (  # spec
-                "schema.fields",  # Resource & Schema properties
-                [  # fields inside a list
-                    (
-                        "descriptor",  # Field property
-                        # string names -> string dtypes understood by pandas
-                        lambda t: (t["name"], type_map[t["type"]]),
-                    )
-                ],
-            ),
-        )
-    )
+    remap_types = lambda t: (t["name"], type_map[t["type"]])
+    return glom(resource, ("schema.fields", [remap_types], dict))
 
 
 def to_df(resource: Resource, noexcept: bool = False, **kwargs) -> pd.DataFrame:
@@ -99,12 +86,6 @@ def to_df(resource: Resource, noexcept: bool = False, **kwargs) -> pd.DataFrame:
         If the source type the resource is pointing to isn't supported
 
     """
-    if not resource.local:  # pragma: no cover, not implemented
-        if noexcept:
-            return pd.DataFrame()
-        else:
-            raise ValueError(f"{resource.source}: not a local resource")
-
     pd_readers = {
         "csv": "read_csv",
         "xls": "read_excel",
@@ -126,14 +107,14 @@ def to_df(resource: Resource, noexcept: bool = False, **kwargs) -> pd.DataFrame:
 
     # missing values, NOTE: pandas accepts a list of "additional" tokens to be
     # treated as missing values.
-    na_values = glom(resource, ("descriptor.schema.missingValues", set)) - STR_NA_VALUES
+    na_values = glom(resource, ("schema.missingValues", set)) - STR_NA_VALUES
     # FIXME: check if empty set is the same as None
 
     # FIXME: how to handle constraints? e.g. 'required', 'unique', 'enum', etc
     # see: https://specs.frictionlessdata.io/table-schema/#constraints
 
     # set 'primaryKey' as index_col, a list is interpreted as a MultiIndex
-    index_col = glom(resource, ("descriptor.schema.primaryKey"), default=False)
+    index_col = glom(resource, ("schema.primaryKey"), default=False)
 
     # don't let the user override the options we use
     [kwargs.pop(k, None) for k in ("dtype", "na_values", "index_col", "parse_dates")]
