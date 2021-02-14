@@ -1,13 +1,10 @@
-datapackage
 fire
+frictionless
 glom>=19.10
-goodtables
 numexpr
 numpy
 pandas>=1.0
 pyyaml
 requests
-tableschema
-tabulator
 xarray
 git+git://github.com/sentinel-energy/sentinel-archive-registry#egg=SENTINEL-archive-registry

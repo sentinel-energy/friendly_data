@@ -22,7 +22,7 @@ class MyMock(MagicMock):
 
 
 sys.path.insert(0, "../")
-mocked_modules = ["datapackage", "glom", "goodtables", "pandas"]
+mocked_modules = ["frictionless", "glom", "pandas"]
 sys.modules.update((mod, MyMock(name=mod)) for mod in mocked_modules)
 
 # -- Project information -----------------------------------------------------
