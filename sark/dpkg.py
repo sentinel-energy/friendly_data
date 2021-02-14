@@ -30,7 +30,6 @@ def _ensure_posix(pkg):
     if is_windows():
         to_posix = Spec(Invoke(posixpathstr).specs("path"))
         glom(pkg, ("resources", Iter().map(Assign("path", to_posix)).all()))
-        pkg.commit()
     return pkg
 
 
