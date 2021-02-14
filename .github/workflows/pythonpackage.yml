@@ -87,7 +87,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          sed -i -e 's/\(frictionless\).\+/\1/' requirements.txt
+          ./bin/dev-filter-reqs.py requirements.txt
           pip install -r requirements.txt
           pip install -r requirements-dev.txt
           pip install -e .
