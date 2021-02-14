@@ -13,7 +13,7 @@ from glom import Assign, glom, Invoke, Iter, Spec, T
 import pandas as pd
 from pkg_resources import resource_filename
 
-from sark.io import dwim_file, posixpathstr
+from sark.io import dwim_file, path_not_in, posixpathstr, relpaths
 from sark.helpers import match, select, is_windows
 from sark._types import _path_t
 
@@ -478,13 +478,9 @@ def pkg_from_files(meta: Dict, idxpath: _path_t, fpaths: Iterable[_path_t]):
 
     """
     pkgdir, pkg, idx = pkg_from_index(meta, idxpath)
-    idx_fpath = idx["file"].apply(lambda f: pkgdir / f)  # convert to full path
-    _fpaths = [
-        _p1.relative_to(pkgdir)  # convert path to relative to pkgdir
-        for _p1 in filter(
-            lambda _p2: not idx_fpath.apply(_p2.samefile).any(), map(Path, fpaths)
-        )  # accept only if not in index
-    ]
+    # convert to full path
+    idx_fpath = cast(Iterable[_path_t], idx["file"].apply(pkgdir.__truediv__))
+    _fpaths = relpaths(pkgdir, filter(lambda p: path_not_in(idx_fpath, p), fpaths))
     pkg = create_pkg(pkg, _fpaths, basepath=pkgdir)
     return pkgdir, pkg, idx
 

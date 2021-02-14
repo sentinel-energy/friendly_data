@@ -2,8 +2,23 @@ from pathlib import Path
 import pytest
 import requests
 
-from sark.io import dwim_file
+from sark.io import dwim_file, relpaths, path_in, path_not_in
 from sark.metatools import ODLS
+
+
+def test_relpaths():
+    basepath = Path("testing/files/random")
+    pattern = "data/*.csv"
+    res = relpaths(basepath, pattern)
+    assert len(res)
+    assert all(map(lambda p: isinstance(p, str), res))
+    assert all(map(lambda p: str(basepath) not in p, res))
+
+
+def test_path_et_al():
+    pkgdir = Path("testing/files/mini-ex")
+    assert path_in(pkgdir.glob("inputs/*.csv"), pkgdir / "inputs/names.csv")
+    assert path_not_in(pkgdir.glob("inputs/*.csv"), pkgdir / "index.json")
 
 
 @pytest.mark.parametrize("ext", [".yaml", ".yml", ".json"])

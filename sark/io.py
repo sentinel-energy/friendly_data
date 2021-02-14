@@ -8,12 +8,28 @@ import json
 from pathlib import Path
 import tempfile
 import time
-from typing import Dict, List, overload, Tuple, Union
+from typing import Dict, Iterable, List, overload, Tuple, Union
 
 import requests
 import yaml
 
 from sark._types import _path_t
+
+
+def relpaths(basepath: _path_t, pattern: Union[str, Iterable[_path_t]]) -> List[str]:
+    if isinstance(pattern, str):
+        basepath = Path(basepath)
+        return [str(p.relative_to(basepath)) for p in basepath.glob(pattern)]
+    else:  # iterable of "paths"
+        return [str(p.relative_to(basepath)) for p in map(Path, pattern)]
+
+
+def path_in(fpaths: Iterable[_path_t], testfile: _path_t) -> bool:
+    return any(p.samefile(testfile) for p in map(Path, fpaths))
+
+
+def path_not_in(fpaths: Iterable[_path_t], testfile: _path_t) -> bool:
+    return not path_in(fpaths, testfile)
 
 
 def posixpathstr(fpath: _path_t) -> str:

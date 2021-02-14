@@ -21,6 +21,7 @@ from sark.dpkg import registry
 from sark.dpkg import update_pkg
 from sark.dpkg import write_pkg
 from sark.helpers import match, select, is_windows
+from sark.io import relpaths
 from sark.metatools import get_license
 
 from .conftest import expected_schema, noop_map
@@ -36,7 +37,7 @@ def test_ensure_posix():
         "keywords": ["foo", "bar", "baz"],
     }
     files = chain(pkgdir.glob("inputs/*"), pkgdir.glob("outputs/*"))
-    pkg = create_pkg(meta, [f.relative_to(pkgdir) for f in files], pkgdir)
+    pkg = create_pkg(meta, relpaths(pkgdir, files), pkgdir)
     # NOTE: count windows path separators in the resource path, should be 0 as the
     # spec requires resource paths to be POSIX paths
     npathsep = glom(
@@ -53,8 +54,7 @@ def test_source_type_heuristics():
 def test_pkg_creation():
     pkgdir = Path("testing/files/random")
     pkg_meta = {"name": "test", "licenses": get_license("CC0-1.0")}
-    csvs = [f.relative_to(pkgdir) for f in (pkgdir / "data").glob("sample-ok-?.csv")]
-    pkg = create_pkg(pkg_meta, csvs, pkgdir)
+    pkg = create_pkg(pkg_meta, relpaths(pkgdir, "data/sample-ok-?.csv"), pkgdir)
     for resource in pkg["resources"]:
         # match datapackage field type for datetime
         ts_cols = [

@@ -20,7 +20,7 @@ from sark.dpkg import read_pkg
 from sark.dpkg import read_pkg_index
 from sark.dpkg import write_pkg
 from sark.helpers import is_windows
-from sark.io import dwim_file
+from sark.io import dwim_file, path_not_in, relpaths
 from sark.metatools import _fetch_license, check_license
 
 
@@ -163,7 +163,7 @@ def add(pkgpath: str, *fpaths: str):
     """
     pkg = read_pkg(pkgpath)
     pkgdir = Path(pkg.basepath)
-    _fpaths = [p.relative_to(pkgdir) for p in map(Path, fpaths)]
+    _fpaths = relpaths(pkgdir, fpaths)
     pkg = create_pkg(pkg, _fpaths, basepath=pkg.basepath)
     pkgjson = pkgdir / "datapackage.json"
     dwim_file(pkgjson, pkg)
@@ -251,9 +251,7 @@ def _rm_from_pkg(pkgpath: _path_t, *fpaths: _path_t):
 def _rm_from_idx(pkgpath: _path_t, *fpaths: _path_t) -> pd.DataFrame:
     pkgpath = Path(pkgpath)
     idx = read_pkg_index(idxpath_from_pkgpath(pkgpath))
-    to_rm = idx["file"].apply(
-        lambda entry: not any(p.samefile(pkgpath / entry) for p in map(Path, fpaths))
-    )
+    to_rm = idx["file"].apply(lambda entry: path_not_in(fpaths, pkgpath / entry))
     return idx[to_rm]
 
 
@@ -263,9 +261,7 @@ def _rm_from_glossary(pkgpath: _path_t, *fpaths: _path_t) -> Union[None, pd.Data
         return None
     glossary = pd.read_json(jsonpath)
     to_rm = glossary["file"].apply(
-        lambda entry: not any(
-            p.samefile(jsonpath.parent / entry) for p in map(Path, fpaths)
-        )
+        lambda entry: path_not_in(fpaths, jsonpath.parent / entry)
     )
     return glossary[to_rm]
 
