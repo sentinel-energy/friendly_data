@@ -10,7 +10,11 @@ from sark.io import HttpCache
 from sark.metatools import ODLS
 
 
-# values as per noop
+class noop_map(dict):
+    def __missing__(self, key):
+        return key
+
+
 default_type_map = {
     "object": "string",
     "float64": "number",
@@ -21,15 +25,15 @@ default_type_map = {
 
 
 def expected_schema(df, type_map=default_type_map):
+    type_map = noop_map(type_map)
     # handle a resource and a path
     if not isinstance(df, pd.DataFrame):
         try:
             df = pd.read_csv(df.source)
         except AttributeError:
             df = pd.read_csv(df)  # path
-    # datapackage.Package.infer(..) relies on tableschema.Schema.infer(..),
-    # which infers datetime as string
-    return df.dtypes.astype(str).map(lambda t: type_map.get(t, t)).to_dict()
+    # noop if a key (type) is not in `type_map`, remains unaltered
+    return df.dtypes.astype(str).map(type_map).to_dict()
 
 
 @pytest.fixture

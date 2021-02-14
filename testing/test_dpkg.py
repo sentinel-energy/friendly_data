@@ -23,12 +23,7 @@ from sark.dpkg import write_pkg
 from sark.helpers import match, select, is_windows
 from sark.metatools import get_license
 
-from .conftest import expected_schema
-
-
-class noop_map(dict):
-    def __getitem__(self, key):
-        return key
+from .conftest import expected_schema, noop_map
 
 
 @pytest.mark.skipif(not is_windows(), reason="only relevant for windows")
