@@ -8,6 +8,7 @@ from pandas._libs.parsers import STR_NA_VALUES
 import xarray as xr
 
 from sark._types import _path_t
+from sark.dpkg import fullpath
 from sark.helpers import consume, import_from
 
 # TODO: compressed files
@@ -93,7 +94,7 @@ def to_df(resource: Resource, noexcept: bool = False, **kwargs) -> pd.DataFrame:
         # "sqlite": "read_sql",
     }
     try:
-        reader = import_from("pandas", pd_readers[_source_type(resource.source)])
+        reader = import_from("pandas", pd_readers[_source_type(resource["path"])])
     except ValueError:
         if noexcept:
             return pd.DataFrame()
@@ -120,7 +121,7 @@ def to_df(resource: Resource, noexcept: bool = False, **kwargs) -> pd.DataFrame:
     [kwargs.pop(k, None) for k in ("dtype", "na_values", "index_col", "parse_dates")]
 
     return reader(
-        resource.source,
+        fullpath(resource),
         dtype=schema,
         na_values=na_values,
         index_col=index_col,

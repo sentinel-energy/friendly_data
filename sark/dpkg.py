@@ -34,6 +34,10 @@ def _ensure_posix(pkg):
     return pkg
 
 
+def fullpath(resource: Resource) -> Path:
+    return Path(resource.basepath) / resource["path"]
+
+
 def create_pkg(meta: Dict, fpaths: Iterable[_path_t], basepath: _path_t = ""):
     """Create a datapackage from metadata and resources.
 

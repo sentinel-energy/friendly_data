@@ -10,6 +10,7 @@ import pytest
 
 from sark.converters import _schema, _source_type
 from sark.dpkg import create_pkg
+from sark.dpkg import fullpath
 from sark.dpkg import index_levels
 from sark.dpkg import idxpath_from_pkgpath
 from sark.dpkg import pkg_from_files
@@ -71,7 +72,7 @@ def test_pkg_read():
     pkgdir = Path("testing/files/random")
     dpkg_json = pkgdir / "datapackage.json"
     pkg = read_pkg(dpkg_json)
-    assert all(Path(res.source).exists() for res in pkg["resources"])
+    assert all(fullpath(res).exists() for res in pkg["resources"])
 
 
 def test_zippkg_read(rnd_pkg, tmp_path_factory):

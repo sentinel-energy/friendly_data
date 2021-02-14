@@ -35,12 +35,12 @@ def check_pkg(pkg) -> List[Dict]:
     res = glom(
         report,
         (
-            "tables",
+            "tasks",
             Iter()
             .filter(T["stats"]["errors"])
             .map(
                 {
-                    "path": T["path"],
+                    "path": T["resource"]["path"],
                     "position": (
                         T["errors"],
                         [

@@ -5,6 +5,7 @@ import pandas as pd
 import pandas._testing as tm
 import pytest
 
+from sark.dpkg import fullpath
 from sark.dpkg import read_pkg
 from sark.io import HttpCache
 from sark.metatools import ODLS
@@ -29,7 +30,7 @@ def expected_schema(df, type_map=default_type_map):
     # handle a resource and a path
     if not isinstance(df, pd.DataFrame):
         try:
-            df = pd.read_csv(df.source)
+            df = pd.read_csv(fullpath(df))
         except AttributeError:
             df = pd.read_csv(df)  # path
     # noop if a key (type) is not in `type_map`, remains unaltered
