@@ -1,0 +1,168 @@
+{
+    "name": "foo-bar-baz",
+    "title": "Foo Bar Baz",
+    "license": "CC0-1.0",
+    "resources": [
+	{
+	    "path": "data/mini-bad.csv",
+	    "encoding": "utf-8",
+	    "schema": {
+		"fields": [
+		    {
+			"name": "time",
+			"type": "datetime"
+		    },
+		    {
+			"name": "NOR",
+			"type": "number"
+		    },
+		    {
+			"name": "SRB",
+			"type": "number"
+		    },
+		    {
+			"name": "CHE",
+			"type": "number"
+		    }
+		]
+	    },
+	    "name": "mini-bad",
+	    "profile": "tabular-data-resource",
+	    "scheme": "file",
+	    "format": "csv"
+	},
+	{
+	    "path": "data/sample-bad-1.csv",
+	    "encoding": "utf-8",
+	    "schema": {
+		"fields": [
+		    {
+			"name": "time",
+			"type": "datetime"
+		    },
+		    {
+			"name": "QWE",
+			"type": "integer"
+		    },
+		    {
+			"name": "RTY",
+			"type": "boolean"
+		    },
+		    {
+			"name": "UIO",
+			"type": "string",
+			"constraints": {
+			    "enum": [
+				"zero",
+				"one",
+				"two",
+				"three"
+			    ]
+			}
+		    },
+		    {
+			"name": "ASD",
+			"type": "number"
+		    },
+		    {
+			"name": "FGH",
+			"type": "number"
+		    },
+		    {
+			"name": "JKL",
+			"type": "number"
+		    },
+		    {
+			"name": "ZXC",
+			"type": "number"
+		    },
+		    {
+			"name": "VBN",
+			"type": "number",
+			"constraints": {
+			    "required": true
+			}
+		    },
+		    {
+			"name": "MPQ",
+			"type": "string"
+		    }
+		]
+	    },
+	    "name": "sample-bad-1",
+	    "profile": "tabular-data-resource",
+	    "scheme": "file",
+	    "format": "csv"
+	},
+	{
+	    "path": "data/sample-bad-2.csv",
+	    "encoding": "utf-8",
+	    "schema": {
+		"fields": [
+		    {
+			"name": "lvl",
+			"type": "integer"
+		    },
+		    {
+			"name": "TRE",
+			"type": "string"
+		    },
+		    {
+			"name": "IUY",
+			"type": "string",
+			"constraints": {
+			    "enum": [
+				"consectetur",
+				"amet",
+				"adipiscing"
+			    ]
+			}
+		    },
+		    {
+			"name": "APO",
+			"type": "string",
+			"constraints": {
+			    "enum": [
+				"neque",
+				"elit",
+				"eros"
+			    ]
+			}
+		    },
+		    {
+			"name": "FDS",
+			"type": "number"
+		    },
+		    {
+			"name": "JHG",
+			"type": "number"
+		    },
+		    {
+			"name": "ZLK",
+			"type": "number"
+		    },
+		    {
+			"name": "VCX",
+			"type": "integer"
+		    },
+		    {
+			"name": "MNB",
+			"type": "integer"
+		    },
+		    {
+			"name": "remarks",
+			"type": "string"
+		    }
+		],
+		"primaryKey": [
+		    "lvl",
+		    "TRE"
+		]
+	    },
+	    "name": "sample-bad-2",
+	    "profile": "tabular-data-resource",
+	    "scheme": "file",
+	    "format": "csv"
+	}
+    ]
+}
