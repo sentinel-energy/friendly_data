@@ -1,6 +1,6 @@
 [
     {
-        "file":"inputs\/cost_energy_cap.csv",
+        "path":"inputs\/cost_energy_cap.csv",
         "name":"cost_energy_cap",
         "idxcols":"costs",
         "values":[
@@ -8,7 +8,7 @@
         ]
     },
     {
-        "file":"inputs\/cost_energy_cap.csv",
+        "path":"inputs\/cost_energy_cap.csv",
         "name":"cost_energy_cap",
         "idxcols":"locs",
         "values":[
@@ -20,7 +20,7 @@
         ]
     },
     {
-        "file":"inputs\/cost_energy_cap.csv",
+        "path":"inputs\/cost_energy_cap.csv",
         "name":"cost_energy_cap",
         "idxcols":"techs",
         "values":[
@@ -31,7 +31,7 @@
         ]
     },
     {
-        "file":"inputs\/energy_eff.csv",
+        "path":"inputs\/energy_eff.csv",
         "name":"energy_eff",
         "idxcols":"locs",
         "values":[
@@ -43,7 +43,7 @@
         ]
     },
     {
-        "file":"inputs\/energy_eff.csv",
+        "path":"inputs\/energy_eff.csv",
         "name":"energy_eff",
         "idxcols":"techs",
         "values":[
@@ -59,7 +59,7 @@
         ]
     },
     {
-        "file":"inputs\/names.csv",
+        "path":"inputs\/names.csv",
         "name":"names",
         "idxcols":"techs",
         "values":[
@@ -72,7 +72,7 @@
         ]
     },
     {
-        "file":"outputs\/capacity_factor.csv",
+        "path":"outputs\/capacity_factor.csv",
         "name":"capacity_factor",
         "idxcols":"carriers",
         "values":[
@@ -80,7 +80,7 @@
         ]
     },
     {
-        "file":"outputs\/capacity_factor.csv",
+        "path":"outputs\/capacity_factor.csv",
         "name":"capacity_factor",
         "idxcols":"locs",
         "values":[
@@ -92,7 +92,7 @@
         ]
     },
     {
-        "file":"outputs\/capacity_factor.csv",
+        "path":"outputs\/capacity_factor.csv",
         "name":"capacity_factor",
         "idxcols":"techs",
         "values":[
@@ -108,7 +108,7 @@
         ]
     },
     {
-        "file":"outputs\/capacity_factor.csv",
+        "path":"outputs\/capacity_factor.csv",
         "name":"capacity_factor",
         "idxcols":"timesteps",
         "values":[
@@ -116,7 +116,7 @@
         ]
     },
     {
-        "file":"outputs\/resource_area.csv",
+        "path":"outputs\/resource_area.csv",
         "name":"resource_area",
         "idxcols":"locs",
         "values":[
@@ -126,7 +126,7 @@
         ]
     },
     {
-        "file":"outputs\/resource_area.csv",
+        "path":"outputs\/resource_area.csv",
         "name":"resource_area",
         "idxcols":"techs",
         "values":[

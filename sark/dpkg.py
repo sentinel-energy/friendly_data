@@ -339,13 +339,13 @@ def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pd.DataFr
     YAML::
 
         >>> yaml_f = '''
-        ... - file: file1
+        ... - path: file1
         ...   name: dst1
         ...   idxcols: [cola, colb]
-        ... - file: file2
+        ... - path: file2
         ...   name: dst2
         ...   idxcols: [colx, coly, colz]
-        ... - file: file3
+        ... - path: file3
         ...   name: dst3
         ...   idxcols: [col]
         ... '''
@@ -355,7 +355,7 @@ def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pd.DataFr
         >>> json_f = '''
         ... [
         ...     {
-        ...         "file": "file1",
+        ...         "path": "file1",
         ...         "name": "dst1",
         ...         "idxcols": [
         ...             "cola",
@@ -363,7 +363,7 @@ def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pd.DataFr
         ...         ]
         ...     },
         ...     {
-        ...         "file": "file2",
+        ...         "path": "file2",
         ...         "name": "dst2",
         ...         "idxcols": [
         ...             "colx",
@@ -372,7 +372,7 @@ def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pd.DataFr
         ...         ]
         ...     },
         ...     {
-        ...         "file": "file3",
+        ...         "path": "file3",
         ...         "name": "dst3",
         ...         "idxcols": [
         ...             "col"
@@ -385,18 +385,18 @@ def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pd.DataFr
 
         >>> idx = read_pkg_index("testing/files/indices/index.json")
         >>> idx
-             file  name             idxcols
-        0   file1  dst1        (cola, colb)
-        1   file2  dst2  (colx, coly, colz)
-        2   file3  dst3              (col,)
+             path  name             idxcols
+        0   file1  dst1        [cola, colb]
+        1   file2  dst2  [colx, coly, colz]
+        2   file3  dst3               [col]
 
     """
     pkg_dir = Path(fpath).parent
     idx = read_pkg_index(fpath)
-    pkg = create_pkg(meta, idx["file"], basepath=f"{pkg_dir}")
+    pkg = create_pkg(meta, idx["path"], basepath=f"{pkg_dir}")
     for entry in idx.to_records():
-        resource_name = Path(entry.file).stem
-        _, update = index_levels(pkg_dir / entry.file, entry.idxcols)
+        resource_name = Path(entry.path).stem
+        _, update = index_levels(pkg_dir / entry.path, entry.idxcols)
         update_pkg(pkg, resource_name, update)
         update_pkg(pkg, resource_name, {"primaryKey": entry.idxcols}, fields=False)
         # set of value columns
@@ -406,7 +406,7 @@ def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pd.DataFr
                 (
                     "resources",
                     Iter()
-                    .filter(select("path", equal_to=entry.file))
+                    .filter(select("path", equal_to=entry.path))
                     .map("schema.fields")
                     .flatten()
                     .map("name")
@@ -441,7 +441,7 @@ def pkg_glossary(pkg: Package, idx: pd.DataFrame) -> pd.DataFrame:
         (
             "resources",
             Iter()
-            .filter(select("path", equal_to=row["file"]))
+            .filter(select("path", equal_to=row["path"]))
             .map("schema.fields")
             .flatten()
             .filter(
@@ -482,7 +482,7 @@ def pkg_from_files(meta: Dict, idxpath: _path_t, fpaths: Iterable[_path_t]):
     """
     pkgdir, pkg, idx = pkg_from_index(meta, idxpath)
     # convert to full path
-    idx_fpath = cast(Iterable[_path_t], idx["file"].apply(pkgdir.__truediv__))
+    idx_fpath = cast(Iterable[_path_t], idx["path"].apply(pkgdir.__truediv__))
     _fpaths = relpaths(pkgdir, filter(lambda p: path_not_in(idx_fpath, p), fpaths))
     pkg = create_pkg(pkg, _fpaths, basepath=pkgdir)
     return pkgdir, pkg, idx

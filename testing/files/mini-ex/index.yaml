@@ -1,26 +1,26 @@
-- file: inputs/cost_energy_cap.csv
+- path: inputs/cost_energy_cap.csv
   name: cost_energy_cap
   idxcols:
   - costs
   - locs
   - techs
-- file: inputs/energy_eff.csv
+- path: inputs/energy_eff.csv
   name: energy_eff
   idxcols:
   - locs
   - techs
-- file: inputs/names.csv
+- path: inputs/names.csv
   name: names
   idxcols:
     - techs
-- file: outputs/capacity_factor.csv
+- path: outputs/capacity_factor.csv
   name: capacity_factor
   idxcols:
   - carriers
   - locs
   - techs
   - timesteps
-- file: outputs/resource_area.csv
+- path: outputs/resource_area.csv
   name: resource_area
   idxcols:
   - locs

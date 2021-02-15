@@ -117,7 +117,7 @@ def test_update(tmp_pkgdir):
     )
 
     meta = {
-        "file": "inputs/inheritance.csv",
+        "path": "inputs/inheritance.csv",
         "name": "inheritance",
         "idxcols": ["techs"],
     }
@@ -126,12 +126,12 @@ def test_update(tmp_pkgdir):
     # file is read isn't deterministic
     [dwim_file(dest / f, idx) for f in ("index.yaml", "index.json")]
     with pytest.warns(RuntimeWarning):  # multiple index files in test pkg
-        assert update(dest, dest / meta["file"])
+        assert update(dest, dest / meta["path"])
     entry, *_ = glom(
         dwim_file(dest / "datapackage.json"),
         (
             "resources",
-            Iter().filter(lambda i: meta["file"] == i["path"]).all(),
+            Iter().filter(lambda i: meta["path"] == i["path"]).all(),
         ),
     )
     assert glom(entry, "schema.primaryKey") == meta["idxcols"]
@@ -143,10 +143,10 @@ def test_rm_from_et_al(tmp_pkgdir):
 
     with pytest.warns(RuntimeWarning):  # multiple indices
         idx = _rm_from_idx(dest, dstpath)
-    assert "inputs/names.csv" not in idx["file"].unique()
+    assert "inputs/names.csv" not in idx["path"].unique()
 
     glossary = _rm_from_glossary(dest, dstpath)
-    assert "inputs/names.csv" not in glossary["file"].unique()
+    assert "inputs/names.csv" not in glossary["path"].unique()
 
     (dest / "glossary.json").unlink()  # pkg w/o glossary
     assert _rm_from_glossary(dest, dstpath) is None

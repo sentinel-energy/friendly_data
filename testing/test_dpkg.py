@@ -150,7 +150,7 @@ def test_pkg_update(rnd_pkg):
 def test_read_pkg_index(ext):
     fpath = Path(f"testing/files/indices/index{ext}")
     idx = read_pkg_index(fpath)
-    np.testing.assert_array_equal(idx.columns, ["file", "name", "idxcols"])
+    np.testing.assert_array_equal(idx.columns, ["path", "name", "idxcols"])
     assert idx.shape == (3, 3)
     np.testing.assert_array_equal(idx["idxcols"].agg(len), [2, 3, 1])
 
@@ -236,9 +236,9 @@ def test_pkg_glossary(idx_t):
     pkg = read_pkg(pkgdir / "datapackage.json")
     idx = read_pkg_index(pkgdir / f"index{idx_t}")
     glossary = pkg_glossary(pkg, idx)
-    assert all(glossary.columns == ["file", "name", "idxcols", "values"])
+    assert all(glossary.columns == ["path", "name", "idxcols", "values"])
     assert glossary["values"].apply(lambda i: isinstance(i, list)).all()
-    assert len(glossary["file"].unique()) <= glossary.shape[0]
+    assert len(glossary["path"].unique()) <= glossary.shape[0]
 
 
 def test_pkg_from_files():

@@ -251,7 +251,7 @@ def _rm_from_pkg(pkgpath: _path_t, *fpaths: _path_t):
 def _rm_from_idx(pkgpath: _path_t, *fpaths: _path_t) -> pd.DataFrame:
     pkgpath = Path(pkgpath)
     idx = read_pkg_index(idxpath_from_pkgpath(pkgpath))
-    to_rm = idx["file"].apply(lambda entry: path_not_in(fpaths, pkgpath / entry))
+    to_rm = idx["path"].apply(lambda entry: path_not_in(fpaths, pkgpath / entry))
     return idx[to_rm]
 
 
@@ -260,7 +260,7 @@ def _rm_from_glossary(pkgpath: _path_t, *fpaths: _path_t) -> Union[None, pd.Data
     if not jsonpath.exists():
         return None
     glossary = pd.read_json(jsonpath)
-    to_rm = glossary["file"].apply(
+    to_rm = glossary["path"].apply(
         lambda entry: path_not_in(fpaths, jsonpath.parent / entry)
     )
     return glossary[to_rm]

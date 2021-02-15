@@ -1,9 +1,9 @@
-- file: file1
+- path: file1
   name: dst1
   idxcols: [cola, colb]
-- file: file2
+- path: file2
   name: dst2
   idxcols: [colx, coly, colz]
-- file: file3
+- path: file3
   name: dst3
   idxcols: [col]
