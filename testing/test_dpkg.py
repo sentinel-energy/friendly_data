@@ -68,6 +68,19 @@ def test_pkg_creation():
         assert _schema(resource, noop_map()) == expected
 
 
+def test_pkg_creation_skip_rows():
+    meta = {
+        "name": "foobarbaz",
+        "title": "Foo Bar Baz",
+        "keywords": ["foo", "bar", "baz"],
+        "license": ["CC0-1.0"],
+    }
+    resources = [{"path": "commented_dst.csv", "skip": 1}]
+    pkg = create_pkg(meta, resources, basepath="testing/files/skip_test")
+    expected = ["timesteps", "UK", "Ireland", "France"]
+    assert glom(pkg, ("resources.0.schema.fields", Iter("name").all())) == expected
+
+
 def test_pkg_read():
     pkgdir = Path("testing/files/random")
     dpkg_json = pkgdir / "datapackage.json"
@@ -228,6 +241,20 @@ def test_pkg_from_index(idx_t):
     indices = glom(pkg, ("resources", Iter().map("schema.primaryKey").all()))
     assert len(indices) == 5
     # FIXME: not sure what else to check
+
+
+def test_pkg_from_index_skip_rows():
+    meta = {
+        "name": "foobarbaz",
+        "title": "Foo Bar Baz",
+        "keywords": ["foo", "bar", "baz"],
+        "license": ["CC0-1.0"],
+    }
+    with pytest.warns(RuntimeWarning, match=".+: not in registry"):
+        _, pkg, idx = pkg_from_index(meta, "testing/files/skip_test/index.yaml")
+    assert "skip" in idx.columns
+    expected = ["timesteps", "UK", "Ireland", "France"]
+    assert glom(pkg, ("resources.0.schema.fields", Iter("name").all())) == expected
 
 
 @pytest.mark.parametrize("idx_t", [".yaml", ".json"])

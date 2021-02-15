@@ -108,7 +108,9 @@ def to_df(resource: Resource, noexcept: bool = False, **kwargs) -> pd.DataFrame:
 
     # missing values, NOTE: pandas accepts a list of "additional" tokens to be
     # treated as missing values.
-    na_values = glom(resource, ("schema.missingValues", set)) - STR_NA_VALUES
+    na_values = (
+        glom(resource, ("schema.missingValues", set), default=set()) - STR_NA_VALUES
+    )
     # FIXME: check if empty set is the same as None
 
     # FIXME: how to handle constraints? e.g. 'required', 'unique', 'enum', etc
@@ -117,8 +119,15 @@ def to_df(resource: Resource, noexcept: bool = False, **kwargs) -> pd.DataFrame:
     # set 'primaryKey' as index_col, a list is interpreted as a MultiIndex
     index_col = glom(resource, ("schema.primaryKey"), default=False)
 
+    # FIXME: skip_rows is 1-indexed, whereas skiprows is either an offset or
+    # 0-indexed (see FIXME in `_resource`)
+    skiprows = glom(resource, ("layout.skipRows", len), default=None)
+
     # don't let the user override the options we use
-    [kwargs.pop(k, None) for k in ("dtype", "na_values", "index_col", "parse_dates")]
+    [
+        kwargs.pop(k, None)
+        for k in ("dtype", "na_values", "index_col", "parse_dates", "skiprows")
+    ]
 
     return reader(
         fullpath(resource),
@@ -126,6 +135,7 @@ def to_df(resource: Resource, noexcept: bool = False, **kwargs) -> pd.DataFrame:
         na_values=na_values,
         index_col=index_col,
         parse_dates=date_cols,
+        skiprows=skiprows,
         **kwargs,
     )
 

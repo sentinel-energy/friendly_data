@@ -4,11 +4,11 @@
 from itertools import chain
 import json
 from pathlib import Path
-from typing import cast, Dict, Iterable, List, Optional, Tuple
+from typing import cast, Dict, Iterable, List, Optional, Tuple, TypeVar
 from warnings import warn
 from zipfile import ZipFile
 
-from frictionless import Package, Resource
+from frictionless import Layout, Package, Resource
 from glom import Assign, glom, Invoke, Iter, Spec, T
 import pandas as pd
 from pkg_resources import resource_filename
@@ -34,10 +34,58 @@ def _ensure_posix(pkg):
 
 
 def fullpath(resource: Resource) -> Path:
+    """Get full path of a resource
+
+    Parameters
+    ----------
+    resource : Resource
+        Resource object/dictionary
+
+    Returns
+    -------
+    Path
+        Full path to the resource
+
+    """
     return Path(resource.basepath) / resource["path"]
 
 
-def create_pkg(meta: Dict, fpaths: Iterable[_path_t], basepath: _path_t = ""):
+def _resource(spec: Dict, basepath: _path_t = "") -> Resource:
+    """Create a Resource object based on the dictionary
+
+    Parameters
+    ----------
+    spec : Dict
+        Dictionary with the structure::
+
+          {"path": "relpath/resource.csv", "skip": <nrows>}
+
+        "skip" is optional.
+
+    basepath : Union[str, Path]
+        Base path for resource object
+
+    Returns
+    -------
+    Resource
+
+    """
+    assert "path" in spec, f"Incomplete resource spec: {spec}"
+    opts = {}
+    if "skip" in spec:
+        # FIXME: `offset_rows` doesn't seem to work, so workaround with
+        # `skip_rows` (`frictionless` expects a 1-indexed array).  `pandas` on
+        # the other hand uses a 0-indexed list, which has to be accounted for
+        # in `to_df`
+        opts["layout"] = Layout(skip_rows=[i + 1 for i in range(spec["skip"])])
+    res = Resource(path=str(spec["path"]), basepath=str(basepath), **opts)
+    return res
+
+
+_res_t = TypeVar("_res_t", str, Path, Dict)
+
+
+def create_pkg(meta: Dict, fpaths: Iterable[_res_t], basepath: _path_t = ""):
     """Create a datapackage from metadata and resources.
 
     If `resources` point to files that exist, their schema are inferred and
@@ -81,12 +129,13 @@ def create_pkg(meta: Dict, fpaths: Iterable[_path_t], basepath: _path_t = ""):
             return False
         return True
 
-    for p in fpaths:
-        if not keep(p):
+    for res in fpaths:
+        spec = {"path": res} if isinstance(res, (str, Path)) else res
+        if not keep(spec["path"]):
             continue
-        res = Resource(path=str(p), basepath=str(basepath))
-        res.infer()
-        pkg.add_resource(res)
+        _res = _resource(spec, basepath=basepath)
+        _res.infer()
+        pkg.add_resource(_res)
 
     return _ensure_posix(pkg)
 
@@ -393,7 +442,11 @@ def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pd.DataFr
     """
     pkg_dir = Path(fpath).parent
     idx = read_pkg_index(fpath)
-    pkg = create_pkg(meta, idx["path"], basepath=f"{pkg_dir}")
+    if "skip" in idx.columns:
+        resources = idx[["path", "skip"]].to_dict("records")
+    else:
+        resources = idx["path"].to_list()
+    pkg = create_pkg(meta, resources, basepath=f"{pkg_dir}")
     for entry in idx.to_records():
         resource_name = Path(entry.path).stem
         _, update = index_levels(pkg_dir / entry.path, entry.idxcols)
