@@ -1,3 +1,4 @@
 sphinx
 numpydoc
 pyyaml
+git+git://github.com/sentinel-energy/sentinel-archive-registry#egg=SENTINEL-archive-registry

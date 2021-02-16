@@ -33,6 +33,7 @@ jobs:
         run: |
           wget https://code.orgmode.org/bzg/org-mode/raw/master/contrib/scripts/ditaa.jar -P doc
           java -Dfile.encoding=UTF-8 -jar doc/ditaa.jar doc/ecosystem.txt doc/ecosystem.png
+          python -m sark_registry > doc/registry.rst
           make -C doc latexpdf html
       - name: Publish pages
         uses: peaceiris/actions-gh-pages@v3
