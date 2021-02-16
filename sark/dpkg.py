@@ -532,8 +532,8 @@ def idxpath_from_pkgpath(pkgpath: _path_t) -> _path_t:
           the lexicographically first match
         - If an index file is not found, returns an empty string
 
-    Warnings
-    --------
+    Warns
+    -----
     RuntimeWarning
         - Warns if no index file is not found
         - Warns if multiple index files are found
