@@ -3,28 +3,41 @@
 Technical documentation of functions and classes provided by the
 different ``sark`` modules.
 
-Metadata tools
---------------
-
-.. automodule:: sark.metatools
-
 Datapackage tools
 -----------------
 
 .. automodule:: sark.dpkg
 
-Time series API
----------------
+Metadata tools
+--------------
 
-.. automodule:: sark.tseries
+.. automodule:: sark.metatools
+
+Converters
+----------
+
+.. automodule:: sark.converters
 
 Validation functions
 --------------------
 
 .. automodule:: sark.validate
 
+Command Line Interface
+----------------------
+
+.. automodule:: sark.cli
+
+Time series API
+---------------
+
+.. automodule:: sark.tseries
+
 Internal interfaces
 -------------------
+
+Internal functions and classes; useful if you are developing new
+features for ``sark``.
 
 .. automodule:: sark.io
 
