@@ -175,7 +175,7 @@ def to_dst(resource: Resource, noexcept: bool = False, **kwargs) -> xr.Dataset:
 
     """
     df = to_df(resource, noexcept)
-    return xr.Dataset({resource.name: df}, **kwargs)
+    return xr.Dataset({resource["name"]: df}, **kwargs)
 
 
 def to_mfdst(
@@ -196,5 +196,5 @@ def to_mfdst(
         :class:`xarray.Dataset`
 
     """
-    dfs = {res.name: to_df(res, noexcept) for res in resources}
+    dfs = {res["name"]: to_df(res, noexcept) for res in resources}
     return xr.Dataset(dfs, **kwargs)
