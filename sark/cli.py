@@ -22,6 +22,7 @@ from sark.dpkg import write_pkg
 from sark.helpers import is_windows
 from sark.io import dwim_file, path_not_in, relpaths
 from sark.metatools import _fetch_license, check_license
+import sark_registry as registry
 
 
 def sanitise(string: str) -> str:
@@ -303,7 +304,15 @@ def main():  # pragma: no cover, CLI entry point
     import fire
 
     os.environ["PAGER"] = "cat"
-    fire.Fire({"create": create, "add": add, "update": update, "remove": remove})
+    fire.Fire(
+        {
+            "create": create,
+            "add": add,
+            "update": update,
+            "remove": remove,
+            "registry": registry.help,
+        }
+    )
 
 
 if __name__ == "__main__":
