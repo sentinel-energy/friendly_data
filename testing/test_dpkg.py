@@ -1,8 +1,6 @@
-from contextlib import nullcontext as does_not_raise
 from itertools import chain
 from operator import contains
 from pathlib import Path
-import sys
 
 from glom import glom, Iter, T
 import numpy as np
@@ -18,7 +16,6 @@ from sark.dpkg import pkg_from_index
 from sark.dpkg import pkg_glossary
 from sark.dpkg import read_pkg
 from sark.dpkg import read_pkg_index
-from sark.dpkg import registry
 from sark.dpkg import update_pkg
 from sark.dpkg import write_pkg
 from sark.helpers import match, select, is_windows
@@ -177,31 +174,6 @@ def test_read_pkg_index_errors(tmp_path):
     idxfile = idxfile.with_suffix(".txt")
     with pytest.raises(RuntimeError, match=f".*{idxfile.name}:.+"):
         read_pkg_index(idxfile)
-
-
-@pytest.mark.parametrize(
-    "col, col_t, expectation",
-    [
-        ("locs", "idxcols", does_not_raise()),
-        ("storage", "cols", does_not_raise()),
-        (
-            "notinreg",
-            "cols",
-            pytest.warns(RuntimeWarning, match="notinreg: not in registry"),
-        ),
-        (
-            "timesteps",
-            "bad_col_t",
-            pytest.raises(ValueError, match="bad_col_t: unknown column type"),
-        ),
-    ],
-)
-def test_registry(col, col_t, expectation):
-    with expectation:
-        res = registry(col, col_t)
-        assert isinstance(res, dict)
-        if col == "notinreg":
-            assert res == {}
 
 
 @pytest.mark.parametrize(

@@ -16,6 +16,7 @@ from pkg_resources import resource_filename
 from sark.io import dwim_file, path_not_in, posixpathstr, relpaths
 from sark.helpers import match, select, is_windows
 from sark._types import _path_t
+import sark_registry as registry
 
 
 def _ensure_posix(pkg):
@@ -267,46 +268,6 @@ def read_pkg_index(fpath: _path_t) -> pd.DataFrame:
     return pd.DataFrame(idx)
 
 
-# FIXME: can't use Literal until we drop 3.7
-def registry(col: str, col_t: str) -> Dict:
-    """Retrieve the column schema from column schema registry: `sark_registry`
-
-    Parameters
-    ----------
-    col : str
-        Column name to look for
-
-    col_t : Literal["cols", "idxcols"]
-        A literal string specifying the kind of column; one of: "cols", or "idxcols"
-
-    Returns
-    -------
-    Dict
-        Column schema; an empty dictionary is returned in case there are no matches
-
-    Raises
-    ------
-    RuntimeError
-        When more than one matches are found
-    ValueError
-        When the schema file in the registry is unsupported; not one of: JSON, or YAML
-
-    """
-    if col_t not in ("cols", "idxcols"):
-        raise ValueError(f"{col_t}: unknown column type")
-
-    curdir = Path(resource_filename("sark_registry", col_t))
-    schema = list(
-        chain.from_iterable(curdir.glob(f"{col}.{fmt}") for fmt in ("json", "yaml"))
-    )
-    if len(schema) == 0:
-        warn(f"{col}: not in registry", RuntimeWarning)
-        return {}  # no match, unregistered column
-    if len(schema) > 1:  # pragma: no cover, bad registry
-        raise RuntimeError(f"{schema}: multiple matches, duplicates in registry")
-    return cast(Dict, dwim_file(curdir / schema[0]))
-
-
 def index_levels(_file: _path_t, idxcols: Iterable[str]) -> Tuple[_path_t, Dict]:
     """Read a dataset and determine the index levels
 
@@ -344,7 +305,7 @@ def index_levels(_file: _path_t, idxcols: Iterable[str]) -> Tuple[_path_t, Dict]
         by reading the dataset and determining the full set of values.
 
     """
-    coldict = {col: registry(col, "idxcols") for col in idxcols}
+    coldict = {col: registry.get(col, "idxcols") for col in idxcols}
     # select columns with an enum constraint where the enum values are empty
     select_cols = match({"constraints": {"enum": []}, str: str})
     cols = glom(coldict.values(), Iter().filter(select_cols).map("name").all())
@@ -469,7 +430,7 @@ def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pd.DataFr
             )
             - set(entry.idxcols)
         )
-        update_pkg(pkg, resource_name, {col: registry(col, "cols") for col in cols})
+        update_pkg(pkg, resource_name, {col: registry.get(col, "cols") for col in cols})
     return pkg_dir, pkg, idx
 
 
