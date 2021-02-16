@@ -1,4 +1,6 @@
-"""Metadata tools"""
+"""Functions useful to access and manipulate package metadata.
+
+"""
 
 import json
 import logging

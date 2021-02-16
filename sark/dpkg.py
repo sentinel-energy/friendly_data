@@ -1,4 +1,6 @@
-"""Datapackage"""
+"""Functions useful to interact with a data package.
+
+"""
 # PS: the coincidential module name is intentional ;)
 
 from itertools import chain
@@ -160,6 +162,11 @@ def read_pkg(pkg_path: _path_t, extract_dir: Optional[_path_t] = None):
     Returns
     -------
     Package
+
+    Raises
+    ------
+    ValueError
+        When an unsupported file format (not JSON or ZIP) is provided
 
     """
     pkg_path = Path(pkg_path)

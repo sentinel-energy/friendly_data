@@ -1,6 +1,4 @@
-"""Data resource validation
-
-Tools to check if a data resource is consistent with its schema
+"""Functions useful to validate a data package or parts of its schema.
 
 """
 
@@ -14,7 +12,23 @@ from sark.helpers import select
 
 
 def check_pkg(pkg) -> List[Dict]:
-    """Validate all resources in a datapackage
+    """Validate all resources in a datapackage for common errors.
+
+    Typical errors that are checked:
+     - ``blank-header``,
+     - ``extra-label``,
+     - ``missing-label``,
+     - ``blank-label``,
+     - ``duplicate-label``,
+     - ``incorrect-label``,
+     - ``blank-row``,
+     - ``primary-key-error``,
+     - ``foreign-key-error``,
+     - ``extra-cell``,
+     - ``missing-cell``,
+     - ``type-error``,
+     - ``constraint-error``,
+     - ``unique-error``
 
     Parameters
     ----------
@@ -73,7 +87,7 @@ def summarise_errors(report: List[Dict]) -> pd.DataFrame:
     Parameters
     ----------
     report : List[Dict]
-        List of errors as returned by :function:`sark.validate.check_pkg`
+        List of errors as returned by :func:`sark.validate.check_pkg`
 
     Returns
     -------
@@ -189,7 +203,12 @@ def check_schema(
 
 def summarise_diff(
     diff: Tuple[bool, Set[str], Dict[str, Tuple[str, str]], List[Tuple]]
-):
+) -> str:
+    """Summarise the schema diff from :func:`sark.validate.check_schema`
+    results as a ``pandas.DataFrame``.
+
+    """
+
     status, missing, mismatch, pri = diff
     report = ""
     if status:

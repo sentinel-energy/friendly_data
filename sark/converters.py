@@ -1,3 +1,18 @@
+"""Functions useful to read a data package resource into common analysis
+frameworks like ``pandas``, ``xarray``, etc.  Currently supported:
+
+=============================  ======================================
+   Library                        Data Structure
+=============================  ======================================
+ ``pandas``                     :class:``pandas.DataFrame``
+ ``xarray`` (via ``pandas``)    :class:``xarray.DataArray``,
+                                :class:``xarray.Dataset``,
+                                multi-file :class:``xarray.Dataset``
+  ``pyam`` (IAMC)		*soon*
+=============================  ======================================
+
+"""
+
 from pathlib import Path
 from typing import Dict, Iterable
 
@@ -66,7 +81,7 @@ def to_df(resource: Resource, noexcept: bool = False, **kwargs) -> pd.DataFrame:
 
     Parameters
     ----------
-    resource : `datapackage.Resource`
+    resource : frictionless.Resource
         A data package resource object
     noexcept : bool (default: False)
         Whether to suppress an exception
@@ -77,7 +92,7 @@ def to_df(resource: Resource, noexcept: bool = False, **kwargs) -> pd.DataFrame:
     Returns
     -------
     pandas.DataFrame
-        NOTE: when `noexcept` is `True`, and there's an exception, an empty
+        NOTE: when ``noexcept`` is ``True``, and there's an exception, an empty
         dataframe is returned
 
     Raises

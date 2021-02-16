@@ -1,3 +1,9 @@
+"""Convenience functions useful to ingest different kinds of differently shaped
+time series data into the standard 1-D shape supported by the data package
+specification.
+
+"""
+
 from datetime import datetime
 from pathlib import Path
 from typing import List, TextIO, TypeVar, Union

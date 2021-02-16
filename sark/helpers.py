@@ -1,7 +1,4 @@
-"""
-Helpers
--------
-"""
+"""Collection of helper functions"""
 
 from collections import deque
 from collections.abc import Sequence
@@ -14,10 +11,12 @@ from glom import Check, Match, SKIP
 
 
 def import_from(module: str, name: str):
+    """Import ``name`` from ``module``."""
     return getattr(import_module(module), name)
 
 
 def is_windows() -> bool:
+    """Check if we are on Windows"""
     return sys.platform in ("win32", "cygwin")
 
 

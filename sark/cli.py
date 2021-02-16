@@ -1,6 +1,4 @@
-"""Command line utilities
-
-Commands to manage a data package.
+"""Functions that are run from the CLI to create, or edit a data package.
 
 """
 

@@ -1,6 +1,5 @@
-"""
-I/O
----
+"""Functions useful for I/O and file manipulation
+
 """
 
 from hashlib import sha256
@@ -17,6 +16,22 @@ from sark._types import _path_t
 
 
 def relpaths(basepath: _path_t, pattern: Union[str, Iterable[_path_t]]) -> List[str]:
+    """Convert a list of paths to relative paths
+
+    Parameters
+    ----------
+    basepath : Union[str, Path]
+        Path to use as the reference when calculating relative paths
+    pattern : Union[str, Iterable[Union[str, Path]]]
+        Either a pattern relative to ``basepath`` to generate a list of paths,
+        or a list of paths to convert.
+
+    Returns
+    -------
+    List[str]
+        List of relative paths (as ``str``-s)
+
+    """
     if isinstance(pattern, str):
         basepath = Path(basepath)
         return [str(p.relative_to(basepath)) for p in basepath.glob(pattern)]
@@ -25,14 +40,59 @@ def relpaths(basepath: _path_t, pattern: Union[str, Iterable[_path_t]]) -> List[
 
 
 def path_in(fpaths: Iterable[_path_t], testfile: _path_t) -> bool:
+    """Function to test if a path is in a list of paths.
+
+    The test checks if they are the same physical files or not, so the testfile
+    needs to exist on disk.
+
+    Parameters
+    ----------
+    fpaths : Iterable[Union[str, Path]]
+        List of paths to check
+    testfile : Union[str, Path]
+        Test file (must exist on disk)
+
+    Returns
+    -------
+    bool
+
+    """
     return any(p.samefile(testfile) for p in map(Path, fpaths))
 
 
 def path_not_in(fpaths: Iterable[_path_t], testfile: _path_t) -> bool:
+    """Function to test if a path is absent from a list of paths.
+
+    Opposite of :func:`sark.io.path_in`
+
+    Parameters
+    ----------
+    fpaths : Iterable[Union[str, Path]]
+        List of paths to check
+    testfile : Union[str, Path]
+        Test file (must exist on disk)
+
+    Returns
+    -------
+    bool
+
+    """
     return not path_in(fpaths, testfile)
 
 
 def posixpathstr(fpath: _path_t) -> str:
+    """Given a path object, return a POSIX compatible path string
+
+    Parameters
+    ----------
+    fpath : Unioin[str, Path]
+        Path object
+
+    Returns
+    -------
+    str
+
+    """
     return str(Path(fpath).as_posix())
 
 
@@ -47,6 +107,28 @@ def dwim_file(fpath: _path_t, data) -> None:
 
 
 def dwim_file(fpath: _path_t, data=None):
+    """Do What I Mean with file
+
+    Depending on the function arguments, either read the contents of a file, or
+    write data to the file.  The file type is guessed from the extension;
+    supported formats: JSON and YAML.
+
+    Parameters
+    ----------
+    fpath : Union[str, Path]
+        File path to read or write to
+
+    data : Union[None, Any]
+        Data, when writing to a file.
+
+    Returns
+    -------
+    Union[None, Union[Dict, List]]
+        - If writing to a file, nothing (``None``) is returned
+        - If reading from a file, depending on the contents, either a list or
+          dictionary are returned
+
+    """
     fpath = Path(fpath)
     mode = "r" if data is None else "w"
     if fpath.suffix in (".yaml", ".yml"):
