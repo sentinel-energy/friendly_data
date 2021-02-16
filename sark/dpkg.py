@@ -509,7 +509,7 @@ def pkg_glossary(pkg: Package, idx: pd.DataFrame) -> pd.DataFrame:
     return glossary.assign(values=glossary.apply(_levels, axis=1))
 
 
-def pkg_from_files(meta: Dict, idxpath: _path_t, fpaths: Iterable[_path_t]):
+def pkg_from_files(meta: Dict, fpath: _path_t, fpaths: Iterable[_path_t]):
     """Create a package from an index file and other files
 
     Parameters
@@ -517,9 +517,10 @@ def pkg_from_files(meta: Dict, idxpath: _path_t, fpaths: Iterable[_path_t]):
     meta : Dict
         A dictionary with package metadata.
 
-    idxpath : Union[str, Path]
-        Path to the index file.  Note the index file has to be at the top level
-        directory of the datapackage.  See :func:`sark.dpkg.read_pkg_index`
+    fpath : Union[str, Path]
+        Path to the package directory or index file.  Note the index file has
+        to be at the top level directory of the datapackage.  See
+        :func:`sark.dpkg.read_pkg_index`
 
     fpaths : List[Union[str, Path]]
         A list of paths to datasets/resources not in the index.  If any of the
@@ -533,11 +534,18 @@ def pkg_from_files(meta: Dict, idxpath: _path_t, fpaths: Iterable[_path_t]):
         schema.
 
     """
-    pkgdir, pkg, idx = pkg_from_index(meta, idxpath)
-    # convert to full path
-    idx_fpath = cast(Iterable[_path_t], idx["path"].apply(pkgdir.__truediv__))
-    _fpaths = relpaths(pkgdir, filter(lambda p: path_not_in(idx_fpath, p), fpaths))
-    pkg = create_pkg(pkg, _fpaths, basepath=pkgdir)
+    fpath = Path(fpath)
+    idxpath = idxpath_from_pkgpath(fpath) if fpath.is_dir() else fpath
+    if idxpath:
+        pkgdir, pkg, idx = pkg_from_index(meta, idxpath)
+        # convert to full path
+        idx_fpath = cast(Iterable[_path_t], idx["path"].apply(pkgdir.__truediv__))
+        _fpaths = relpaths(pkgdir, filter(lambda p: path_not_in(idx_fpath, p), fpaths))
+        pkg = create_pkg(pkg, _fpaths, basepath=pkgdir)
+    else:
+        pkgdir = fpath
+        pkg = create_pkg(meta, relpaths(pkgdir, fpaths), basepath=pkgdir)
+        idx = None
     return pkgdir, pkg, idx
 
 

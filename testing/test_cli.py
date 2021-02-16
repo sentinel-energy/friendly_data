@@ -83,6 +83,13 @@ def test_create(tmp_pkgdir):
     assert _create({"name": "foo", "license": "CC0-1.0"}, dest / "index.yaml", *files)
     assert (dest / "datapackage.json").exists() and (dest / "glossary.json").exists()
 
+    # with package directory only
+    (dest / "datapackage.json").unlink()
+    (dest / "glossary.json").unlink()
+    with pytest.warns(RuntimeWarning, match="multiple indices.+"):
+        assert _create({"name": "foo", "license": "CC0-1.0"}, dest, *files)
+    assert (dest / "datapackage.json").exists() and (dest / "glossary.json").exists()
+
 
 def test_add(tmp_pkgdir):
     _, dest = tmp_pkgdir

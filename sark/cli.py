@@ -108,8 +108,8 @@ def create(
     Parameters
     ----------
     idxpath : str
-        Path to the index file.  Note the index file has to be at the top
-        level directory of the datapackage.
+        Path to the index file or package directory with the index file.  Note
+        the index file has to be at the top level directory of the datapackage.
 
     fpaths : Tuple[str]
         List of datasets/resources not in the index.  If any of them point to a

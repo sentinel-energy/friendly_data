@@ -276,10 +276,31 @@ def test_pkg_from_files():
         "license": ["CC0-1.0"],
     }
     pkgdir = Path("testing/files/mini-ex")
-    files = chain(pkgdir.glob("inputs/*"), pkgdir.glob("outputs/*"))
+    files = list(chain(pkgdir.glob("inputs/*"), pkgdir.glob("outputs/*")))
+    # with index file
     _, pkg, idx = pkg_from_files(meta, pkgdir / "index.json", files)
     # files not in index: inheritance.csv, and loc_coordinates.csv
     assert len(pkg["resources"]) - len(idx) == 2
+
+    # with directory containing index file
+    with pytest.warns(RuntimeWarning, match="multiple indices:.+"):
+        _pkgdir, pkg, idx = pkg_from_files(meta, pkgdir, files)
+    assert _pkgdir == pkgdir
+    assert len(pkg["resources"]) - len(idx) == 2
+
+
+def test_pkg_from_files_no_index():
+    meta = {
+        "name": "foobarbaz",
+        "title": "Foo Bar Baz",
+        "keywords": ["foo", "bar", "baz"],
+        "license": ["CC0-1.0"],
+    }
+    pkgdir = Path("testing/files/random")
+    with pytest.warns(RuntimeWarning, match=".+no index file.+"):
+        _, pkg, idx = pkg_from_files(meta, pkgdir, pkgdir.glob("data/*"))
+    assert idx is None
+    assert len(pkg["resources"]) == 3
 
 
 def test_idxpath_from_pkgpath(tmp_path):
