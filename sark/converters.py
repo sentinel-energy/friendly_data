@@ -19,7 +19,6 @@ from typing import Dict, Iterable
 from frictionless import Resource
 from glom import glom
 import pandas as pd
-from pandas._libs.parsers import STR_NA_VALUES
 import xarray as xr
 
 from sark._types import _path_t
@@ -102,6 +101,8 @@ def to_df(resource: Resource, noexcept: bool = False, **kwargs) -> pd.DataFrame:
         If the source type the resource is pointing to isn't supported
 
     """
+    from pandas._libs.parsers import STR_NA_VALUES
+
     pd_readers = {
         "csv": "read_csv",
         "xls": "read_excel",
