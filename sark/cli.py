@@ -311,7 +311,3 @@ def main():  # pragma: no cover, CLI entry point
             "registry": registry_doc,
         }
     )
-
-
-if __name__ == "__main__":
-    main()
