@@ -26,6 +26,7 @@ jobs:
             texlive-latex-recommended \
             texlive-fonts-recommended \
             texlive-latex-extra \
+            texlive-xetex \
             latexmk
           python -m pip install --upgrade pip
           pip install -r requirements-docs.txt
