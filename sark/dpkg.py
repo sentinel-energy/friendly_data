@@ -488,7 +488,7 @@ def pkg_from_files(meta: Dict, fpath: _path_t, fpaths: Iterable[_path_t]):
     fpath : Union[str, Path]
         Path to the package directory or index file.  Note the index file has
         to be at the top level directory of the datapackage.  See
-        :func:`sark.dpkg.read_pkg_index`
+        :func:`~sark.dpkg.read_pkg_index`
 
     fpaths : List[Union[str, Path]]
         A list of paths to datasets/resources not in the index.  If any of the

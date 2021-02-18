@@ -160,7 +160,7 @@ def to_da(resource: Resource, noexcept: bool = False, **kwargs) -> xr.DataArray:
     """Reads a data package resource as an `xarray.DataArray`
 
     Additional keyword arguments are passed on to :class:`xarray.Dataset`.  See
-    :func:`sark.converters.to_df` for more details.
+    :func:`~sark.converters.to_df` for more details on the other arguments.
 
     """
     df = to_df(resource, noexcept)
@@ -171,7 +171,7 @@ def to_dst(resource: Resource, noexcept: bool = False, **kwargs) -> xr.Dataset:
     """Reads a data package resource as an `xarray.DataArray`
 
     Additional keyword arguments are passed on to :class:`xarray.Dataset`.  See
-    :func:`sark.converters.to_df` for more details.
+    :func:`~sark.converters.to_df` for more details on the other arguments.
 
     """
     df = to_df(resource, noexcept)
@@ -183,7 +183,7 @@ def to_mfdst(
 ) -> xr.Dataset:
     """Reads a list of data package resources as an `xarray.DataArray`
 
-    See :func:`sark.converters.to_df` for more details
+    See :func:`~sark.converters.to_df` for more details.
 
     Parameters
     ----------

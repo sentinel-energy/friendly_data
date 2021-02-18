@@ -63,7 +63,7 @@ def path_in(fpaths: Iterable[_path_t], testfile: _path_t) -> bool:
 def path_not_in(fpaths: Iterable[_path_t], testfile: _path_t) -> bool:
     """Function to test if a path is absent from a list of paths.
 
-    Opposite of :func:`sark.io.path_in`
+    Opposite of :func:`~sark.io.path_in`.
 
     Parameters
     ----------
