@@ -1,14 +1,22 @@
-Using a ``datapackage`` from Python
--------------------------------------
+Working with a data package using ``sark``
+==========================================
 
-The Python libraryprovides a convenient way to create, modify, and
-read datapackages.  Some of the API is described below with code
-examples for illustration.
+There are two parts to working with SENTINEL archive.  The files
+containing the metadata and datasets, and the set of conventions that
+need to be followed.  We will start by understanding the conventions,
+so that working with the files later on will make sense.
 
+Following which, we will look at how to work with the files.  There
+are two ways of doing that: using the command line interface (CLI),
+and from a Python program using the Python API.
 
-.. toctree::
-   :maxdepth: 2
+.. contents:: Table of Contents
+   :depth: 2
+   :local:
+   :backlinks: top
 
-   tutorial/metadata
-   tutorial/archive
-   tutorial/pandas
+.. include:: tutorial/registry-intro.rst
+.. include:: tutorial/example.rst
+.. include:: tutorial/metadata.rst
+.. include:: tutorial/archive.rst
+.. include:: tutorial/converters.rst

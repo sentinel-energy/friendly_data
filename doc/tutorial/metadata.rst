@@ -1,9 +1,45 @@
 Metadata
-========
+--------
 
-To create a ``datapackage.json`` file, you need not write it from
-scratch.  A datapackage can be created within Python with the
-following::
+One of the advantages of using a data package is to be able to attach
+a significant amount of metadata to your datasets.  The CLI interface
+makes this relatively straightforward.  You can create a dataset by
+calling::
+
+  $ sentinel-archive create --name my-pkg --license CC0-1.0 \
+        --keywords 'mymodel renewables energy' \
+	path/to/pkgdir/index.yaml path/to/pkgdir/data/*.csv
+
+There are other options as well, and some of them are mandatory, like
+``--name`` or ``--license``.  The command above will create a dataset
+with all the ``CSV`` files that match the command line glob.  If there
+are corresponding entries in the index file, it will be used to enrich
+the generic structure information (schema) that is inferred by
+sampling the data in the datasets.  For datasets without an entry in
+the index, the inferred schema is retained.  The dataset schemas, and
+metadata is stored in a ``JSON`` file:
+``path/to/pkgdir/datapackage.json``.  You can also use a configuration
+file to provide the metadata like this::
+
+  $ sentinel-archive create --metadata conf.yaml \
+        pkgdir/index.yaml pkgdir/data/*.csv
+
+The configuration file could look like this::
+
+  name: mypkg
+  license: CC0-1.0
+  keywords:
+    - mymodel
+    - renewables
+    - energy
+  description: |
+    This is a test, let's see how this goes.
+
+You can of course use ``YAML`` and ``JSON`` files interchangeably
+except for the ``datapackage.json``.
+
+You can do everything mentioned above and much more, using the Python
+API. e.g.::
 
     from sark.dpkg import create_pkg
     from sark.metatools import get_license
@@ -17,26 +53,37 @@ following::
     }
     pkg = create_pkg(pkg_meta, Path("data").glob("*.csv"))
 
-In the above snippet the dictionary ``pkg_meta`` sets the metadata,
-whereas all *CSV* files in the subdirectory ``data/`` are added to the
-datapackage as data resources.  As the files are read, a basic
-*schema* is guessed.  You may inspect the contents of the datapackage
-by looking at ``pkg.descriptor``.
+Consult the API documentation for more details.
 
-Schema
-======
+Updating existing packages
+++++++++++++++++++++++++++
 
-The schema can be specialised further by updating the metadata for
-each field.  To illustrate with an example, say we have a time series
-dataset called "electricity-consumption", and the first column in the
-file contains timestamps, or ``datetime`` values.  The heuristics that
-infers the schema detects the column as a ``string`` (plain text).  To
-rectify this, we can use the snippet below::
+You can also modify existing data packages using something like::
+
+  $ sentinel-archive update --license Apache-2.0 path/to/pkg 
+
+Here you can see the package is being relicensed under the Apache
+version 2.0 license.  You could also add a new dataset, or update an
+existing dataset by updating the index file before executing the
+command.  You can find more documentation about the CLI by using the
+``--help`` flag.
+
+::
+
+   $ sentinel-archive --help
+   $ sentinel-archive update --help
+
+When using the Python API, there is complete freedom on how you want
+to update the schema.  To illustrate with an example, say we have a
+time series dataset called ``electricity-consumption``, and the first
+column in the file contains timestamps, or ``datetime`` values.
+However the time format is non-standar.  To explicitly specify this,
+we can use the snippet below::
 
     from sark.dpkg import update_pkg
 
     update_fields = {
-        "time": {"name": "time", "type": "datetime", "format": "default"},
+        "time": {"name": "time", "type": "datetime", "format": "%b %d, %Y"},
     }
     success = update_pkg(pkg, "electricity-consumption"), update_fields)
 
@@ -58,9 +105,9 @@ interpreted as ``numbers``::
 Missing values & primary keys
 +++++++++++++++++++++++++++++
 
-If for instance there is a need to add to the default list of values
-that are treated as missing values, or to specify a set of fields as
-primary keys, use the following::
+If for instance there is a need to add to the default list of missing
+values, or to update the set of fields of primary keys, you could use
+the following::
 
     update = {
         "primaryKey": ["lvl", "TRE", "IUY"],
