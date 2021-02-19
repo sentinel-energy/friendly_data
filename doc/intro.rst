@@ -1,14 +1,9 @@
-Our objectives are to develop a standard model and data specification
-through which the models in SENTINEL can be linked together, including
-inputs and outputs, and to classify the models according to this
-specification.
-
-The primary purpose of the interface framework is to allow data to
-flow between very different types of models, in a way that can be
-automated. This is challenging because not only do different models
-use different data formats, but also, metadata may or may not exist,
-and conventions on units or variable naming differ between different
-models and research communities.
+Our objective is to develop a standard through which models in the
+SENTINEL ecosystem can interact easily.  To that goal, out approach is
+to build a framework that facilitates the flow of data between models
+in a way that can be automated. This is challenging because different
+models use different data formats, unit conventions, or variable
+naming schemes, etc.
 
 .. figure:: ecosystem.png
    :width: 90%
@@ -18,11 +13,17 @@ models and research communities.
    modelling frameworks can be interlinked, and a suit of independent
    software tools to work with data can be developed.
 
-To address this, we develop a flexible data standard that can form the
-glue between different models, allowing them to be used together, and
-a user interface that makes it easier for modelling teams to actually
-make use of this data format.  All software described here is
-available as open source software under the version 2 of the `Apache
-software license`_.
+To address this, we are developing a flexible data standard that can
+be the common medium of exchange between different models, allowing
+for sharing of results and linking.  The *SENTINEL archive* package,
+or ``sark``, implements this framework.  It provides a Command Line
+Interface to create and manage data archives (or packages) that can be
+easily exchanged between different models in SENTINEL.  It also
+provides a Python API to do the same operations and more from within a
+computer program.  As the Python language has a very rich ecosystem of
+tools for data analysis and visualisation, this opens the the door to
+a very powerful analysis environment for collaborative research.  This
+framework is available as open source software under the version 2 of
+the `Apache software license`_.
 
 .. _`Apache software license`: https://www.apache.org/licenses/LICENSE-2.0
