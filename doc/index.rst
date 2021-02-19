@@ -1,17 +1,16 @@
 Welcome to SENTINEL archive's documentation!
 ============================================
 
-.. toctree::
-   :hidden:
-
-   overview
-   hands-on
-
 .. include:: intro.rst
 
-.. include:: overview.rst
+The SENTINEL archive data format
+--------------------------------
 
-.. include:: hands-on.rst
+.. toctree::
+   :maxdepth: 1
+
+   Overview of the format <overview>
+   hands-on
 
 Download the hands-on overview as a :download:`PDF<_build/latex/sentinel-data-format.pdf>`.
 
