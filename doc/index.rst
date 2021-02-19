@@ -15,15 +15,20 @@ Welcome to SENTINEL archive's documentation!
 
 Download the hands-on overview as a :download:`PDF<_build/latex/sentinel-data-format.pdf>`.
 
+.. _registry:
+
 Registry
 --------
 
 .. toctree::
    :maxdepth: 1
 
-   registry
+   api/registry
+   api/index-file
 
-.. registry.rst is auto-generated during a CI run
+.. api/registry is auto-generated during a CI run
+
+.. _apidocs:
 
 API documentation
 -----------------
