@@ -32,7 +32,7 @@ def check_pkg(pkg) -> List[Dict]:
 
     Parameters
     ----------
-    pkg : Package
+    pkg : frictionless.Package
         The datapackage descriptor dictionary
 
     Returns

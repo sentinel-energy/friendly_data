@@ -58,7 +58,7 @@ def _schema(resource: Resource, type_map: Dict[str, str]) -> Dict[str, str]:
 
     Parameters
     ----------
-    resource
+    resource : frictionless.Resource
         A resource descriptor
     type_map : Dict[str, str]
         A dictionary that maps datapackage type names to pandas types.
@@ -187,7 +187,7 @@ def to_mfdst(
 
     Parameters
     ----------
-    resources : List[`datapackage.Resource`]
+    resources : List[frictionless.Resource]
         List of data package resource objects
     noexcept : bool (default: False)
         Whether to suppress an exception
