@@ -4,9 +4,8 @@ on:
   push:
     branches:
       - master
-    paths:
-      - "doc/**"
-      - "sark/**"
+    paths-ignore:
+      - "testing/**"
   # schedule:
   #   - cron: '0 0 * * *'
 
