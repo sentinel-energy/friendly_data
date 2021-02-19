@@ -11,6 +11,18 @@ frameworks like ``pandas``, ``xarray``, etc.  Currently supported:
   ``pyam`` (IAMC)		*soon*
 =============================  ======================================
 
+Type mapping between the frictionless specification and pandas types:
+
+=============  =================
+ schema type    ``pandas`` type
+=============  =================
+``boolean``     ``bool``
+``datetime``    ``datetime64``
+``integer``     ``Int64``
+``number``      ``float``
+``string``      ``string``
+============   ===============
+
 """
 
 from pathlib import Path
