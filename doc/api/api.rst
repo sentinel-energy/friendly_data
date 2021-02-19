@@ -13,6 +13,11 @@ Metadata tools
 
 .. automodule:: sark.metatools
 
+Registry API
+------------
+
+.. automodule:: sark_registry
+
 Converters
 ----------
 
@@ -38,6 +43,8 @@ Internal interfaces
 
 Internal functions and classes; useful if you are developing new
 features for ``sark``.
+
+----
 
 .. automodule:: sark.io
 
