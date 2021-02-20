@@ -6,9 +6,9 @@ discussion to tabular datasets like tables with one or more columns
 (including time series).  When working with tables it is common to
 agree on a convention on how to identify rows uniquely.  Typically
 this is done by designating a column (or a set of columns) as the
-index (or primary key).  And like the index in a book, indices are
-required to be unique.  We follow the same principle here, and
-categorise any column either as an index-column, or a regular (value)
+index (or primary key).  And like the index in a book, index entries
+are required to be unique.  We follow the same principle here, and
+categorise a column either as an index column, or a regular (value)
 column.  Within the ``sark`` framework we refer to them as ``idxcols``
 and ``cols`` respectively.
 
@@ -27,21 +27,21 @@ index-column.
 In the beginning the registry will be evolving with time, and proposal
 for inclusion of new columns to suit your models, or renaming existing
 columns, or any other relavant changes are welcome.  The goal is to
-reach a consensus as to what conventions suits most of the SENTINEL
+reach a consensus as to what conventions suit most of the SENTINEL
 partners the best.
 
-Besides naming and categorisation, the registry also has type
+Besides naming and classifying columns, the registry also has type
 information; e.g. ``timesteps`` is of type ``datetime`` (timestamp
 with date), GPS coordinates are pairs of ``loc_coordinates``, so it is
 a fractional number (``number``), ``techs`` on the other hand are
-names of technologies, so they are strings.  It can also have contain
-information on constraints, e.g. ``capacity_factor`` is a ``number``
-between ``0`` and ``1``, or ``techs`` can take one of a set of
-predefined values.  Now you might notice that, while everyone will
-agree on the constraint on ``capacity_factor``, the contraint on
-``techs`` will be different for different models.  So this element is
-configurable, and the ``sark`` implementation infers the valid set by
-sampling the dataset during package creation.
+names of technologies, so they are strings.  It can also include
+constraints, e.g. ``capacity_factor`` is a ``number`` between ``0``
+and ``1``, or ``techs`` can take one of a set of predefined values.
+Now you might notice that, while everyone will agree with the
+constraint on ``capacity_factor``, the constraint on ``techs`` will be
+different for different models.  So this element is configurable, and
+the ``sark`` implementation infers the valid set by sampling the
+dataset during package creation.
 
 To review the current set of columns in the registry, please consult
 the complete registry :ref:`documentation <registry>`.  Any changes or
