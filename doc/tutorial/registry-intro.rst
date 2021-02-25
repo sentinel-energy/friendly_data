@@ -12,6 +12,16 @@ categorise a column either as an index column, or a regular (value)
 column.  Within the ``sark`` framework we refer to them as ``idxcols``
 and ``cols`` respectively.
 
+.. figure:: _static/images/registry-flow-create.png
+   :width: 90%
+   :align: center
+
+   Schematic representation of a data package, composed of multiple
+   datasets, where metadata for various columns are taken from the
+   registry.  *Note*: the last column in the last dataset is not
+   present in the registry, denoting that there is flexibility to
+   deviate from the accepted consensus when necessary.
+
 While a table (dataset/data resource) in a data package can have any
 number of columns of either kind, it is often helpful during analysis
 to designate an index.  ``sark`` implements this by having an external
@@ -23,6 +33,14 @@ site or location (``loc_coordinates``), or something much more generic
 like ``timesteps`` indicating the timesteps of a demand profile.
 Among the aforementioned columns, ``timesteps`` is the only
 index-column.
+
+.. figure:: _static/images/registry-flow-update.png
+   :width: 90%
+   :align: center
+
+   Updates to the registry undergoes a review process to gain
+   consensus in the community.  This should limit duplication of
+   effort, and over time formalise the terminology.
 
 In the beginning the registry will be evolving with time, and proposal
 for inclusion of new columns to suit your models, or renaming existing
