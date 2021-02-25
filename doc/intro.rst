@@ -5,7 +5,7 @@ in a way that can be automated. This is challenging because different
 models use different data formats, unit conventions, or variable
 naming schemes, etc.
 
-.. figure:: ecosystem.png
+.. figure:: _static/images/ecosystem.png
    :width: 90%
    :align: center
 
