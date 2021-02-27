@@ -1,0 +1,9 @@
+.. contents::
+
+{% for title, entries in sections %}
+{{ title }}
+{{ '-' * title|length }}
+{% for entry in entries %}
+{{ entry }}
+{% endfor %}
+{% endfor %}

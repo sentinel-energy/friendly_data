@@ -1,0 +1,15 @@
+**{{ name }}** ({{ type }})
+{% if constraints is not undefined %}
+    .. list-table:: constraints
+       :widths: auto
+       :align: left
+
+       {% for key, val in constraints.items() %}
+       * - {{ key }}
+       {% if val is sequence %}
+         - {{ ", ".join(val) if val else "..." }}
+       {% else %}
+         - {{ val }}
+       {% endif %}
+       {% endfor %}
+{% endif %}

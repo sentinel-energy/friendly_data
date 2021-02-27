@@ -20,7 +20,7 @@ from sark.dpkg import write_pkg
 from sark.helpers import is_windows
 from sark.io import dwim_file, path_not_in, relpaths
 from sark.metatools import _fetch_license, check_license
-from sark.doctools import registry_doc
+from sark.doc import page
 
 
 def sanitise(string: str) -> str:
@@ -308,6 +308,6 @@ def main():  # pragma: no cover, CLI entry point
             "add": add,
             "update": update,
             "remove": remove,
-            "registry": registry_doc,
+            "registry": page,
         }
     )

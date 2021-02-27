@@ -1,6 +1,7 @@
 fire
 frictionless>=4.0.2,<4.1
 glom>=19.10
+jinja2
 numexpr
 numpy
 pandas>=1.0

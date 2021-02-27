@@ -1,4 +1,5 @@
 frictionless
+jinja2
 sphinx
 numpydoc
 pyyaml
