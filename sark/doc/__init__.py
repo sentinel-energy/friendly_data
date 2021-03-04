@@ -1,3 +1,5 @@
+from typing import Dict
+
 from jinja2 import Environment, FileSystemLoader
 from pkg_resources import resource_filename
 
@@ -10,8 +12,8 @@ def get_template(name: str):
     return env.get_template(name)
 
 
-def entry(schema) -> str:
-    return get_template("entry.rst.template").render(schema)
+def entry(schema: Dict, f: str) -> str:
+    return get_template("entry.rst.template").render({"file": f, **schema})
 
 
 def page() -> str:
@@ -20,7 +22,7 @@ def page() -> str:
         "idxcols": "Index columns - ``idxcols``",
     }
     contents = [
-        (col_types[col_t], [entry(schema) for schema in schemas])
-        for col_t, schemas in registry.getall().items()
+        (col_types[col_t], [entry(schema, f) for schema, f in schemas])
+        for col_t, schemas in registry.getall(with_file=True).items()
     ]
     return get_template("page.rst.template").render({"sections": contents})

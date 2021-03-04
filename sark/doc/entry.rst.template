@@ -1,6 +1,11 @@
-**{{ name }}** ({{ type }})
+{#
+🖉: U+1F589
+#}
+**{{ name }}** ({{ type }}) `🖉`__
 {% if constraints is not undefined %}
-    .. list-table:: constraints
+    constraints:
+
+    .. list-table::
        :widths: auto
        :align: left
 
@@ -13,3 +18,5 @@
        {% endif %}
        {% endfor %}
 {% endif %}
+    .. __: https://github.com/sentinel-energy/sentinel-archive-registry/edit/master/sark_registry/{{ file }}
+
