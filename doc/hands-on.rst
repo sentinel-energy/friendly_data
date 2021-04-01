@@ -1,5 +1,5 @@
-Working with a data package using ``sark``
-==========================================
+Hands-on tutorial
+=================
 
 There are two parts to working with SENTINEL archive.  The files
 containing the metadata and datasets, and the set of conventions that
