@@ -3,8 +3,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from sark.converters import to_df, _schema, _source_type
-from sark.dpkg import pkg_from_index
+from friendly_data.converters import to_df, _schema, _source_type
+from friendly_data.dpkg import pkg_from_index
 
 from .conftest import expected_schema
 

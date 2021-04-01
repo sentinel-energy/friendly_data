@@ -8,7 +8,7 @@ from frictionless import validate_package as validate
 from glom import Coalesce, glom, Iter, T
 import pandas as pd
 
-from sark.helpers import select
+from friendly_data.helpers import select
 
 
 def check_pkg(pkg) -> List[Dict]:
@@ -87,7 +87,7 @@ def summarise_errors(report: List[Dict]) -> pd.DataFrame:
     Parameters
     ----------
     report : List[Dict]
-        List of errors as returned by :func:`sark.validate.check_pkg`
+        List of errors as returned by :func:`friendly_data.validate.check_pkg`
 
     Returns
     -------
@@ -204,7 +204,7 @@ def check_schema(
 def summarise_diff(
     diff: Tuple[bool, Set[str], Dict[str, Tuple[str, str]], List[Tuple]]
 ) -> str:
-    """Summarise the schema diff from :func:`sark.validate.check_schema`
+    """Summarise the schema diff from :func:`friendly_data.validate.check_schema`
     results as a ``pandas.DataFrame``.
 
     """

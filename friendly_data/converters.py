@@ -33,9 +33,9 @@ from glom import glom
 import pandas as pd
 import xarray as xr
 
-from sark._types import _path_t
-from sark.dpkg import fullpath
-from sark.helpers import consume, import_from
+from friendly_data._types import _path_t
+from friendly_data.dpkg import fullpath
+from friendly_data.helpers import consume, import_from
 
 # TODO: compressed files
 _source_ts = ["csv", "xls", "xlsx"]  # "sqlite"
@@ -172,7 +172,7 @@ def to_da(resource: Resource, noexcept: bool = False, **kwargs) -> xr.DataArray:
     """Reads a data package resource as an `xarray.DataArray`
 
     Additional keyword arguments are passed on to :class:`xarray.Dataset`.  See
-    :func:`~sark.converters.to_df` for more details on the other arguments.
+    :func:`~friendly_data.converters.to_df` for more details on the other arguments.
 
     """
     df = to_df(resource, noexcept)
@@ -183,7 +183,7 @@ def to_dst(resource: Resource, noexcept: bool = False, **kwargs) -> xr.Dataset:
     """Reads a data package resource as an `xarray.DataArray`
 
     Additional keyword arguments are passed on to :class:`xarray.Dataset`.  See
-    :func:`~sark.converters.to_df` for more details on the other arguments.
+    :func:`~friendly_data.converters.to_df` for more details on the other arguments.
 
     """
     df = to_df(resource, noexcept)
@@ -195,7 +195,7 @@ def to_mfdst(
 ) -> xr.Dataset:
     """Reads a list of data package resources as an `xarray.DataArray`
 
-    See :func:`~sark.converters.to_df` for more details.
+    See :func:`~friendly_data.converters.to_df` for more details.
 
     Parameters
     ----------

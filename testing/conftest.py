@@ -5,10 +5,10 @@ import pandas as pd
 import pandas._testing as tm
 import pytest
 
-from sark.dpkg import fullpath
-from sark.dpkg import read_pkg
-from sark.io import HttpCache
-from sark.metatools import ODLS
+from friendly_data.dpkg import fullpath
+from friendly_data.dpkg import read_pkg
+from friendly_data.io import HttpCache
+from friendly_data.metatools import ODLS
 
 
 class noop_map(dict):

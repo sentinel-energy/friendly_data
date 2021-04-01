@@ -15,10 +15,10 @@ from glom import Assign, glom, Invoke, Iter, Spec, T
 import pandas as pd
 from pkg_resources import resource_filename
 
-from sark.io import dwim_file, path_not_in, posixpathstr, relpaths
-from sark.helpers import match, select, is_windows
-from sark._types import _path_t
-import sark_registry as registry
+from friendly_data.io import dwim_file, path_not_in, posixpathstr, relpaths
+from friendly_data.helpers import match, select, is_windows
+from friendly_data._types import _path_t
+import friendly_data_registry as registry
 
 
 def _ensure_posix(pkg):
@@ -263,7 +263,7 @@ def read_pkg_index(fpath: _path_t) -> pd.DataFrame:
     ValueError
         If the file type is correct (YAML/JSON), but does not return a list
     RuntimeError
-        If the file has an unknown extension (raised by :func:`sark.io.dwim_file`)
+        If the file has an unknown extension (raised by :func:`friendly_data.io.dwim_file`)
 
     """
     idx = dwim_file(Path(fpath))
@@ -488,7 +488,7 @@ def pkg_from_files(meta: Dict, fpath: _path_t, fpaths: Iterable[_path_t]):
     fpath : Union[str, Path]
         Path to the package directory or index file.  Note the index file has
         to be at the top level directory of the datapackage.  See
-        :func:`~sark.dpkg.read_pkg_index`
+        :func:`~friendly_data.dpkg.read_pkg_index`
 
     fpaths : List[Union[str, Path]]
         A list of paths to datasets/resources not in the index.  If any of the

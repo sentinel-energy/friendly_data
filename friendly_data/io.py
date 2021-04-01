@@ -12,7 +12,7 @@ from typing import Dict, Iterable, List, overload, Tuple, Union
 import requests
 import yaml
 
-from sark._types import _path_t
+from friendly_data._types import _path_t
 
 
 def relpaths(basepath: _path_t, pattern: Union[str, Iterable[_path_t]]) -> List[str]:
@@ -63,7 +63,7 @@ def path_in(fpaths: Iterable[_path_t], testfile: _path_t) -> bool:
 def path_not_in(fpaths: Iterable[_path_t], testfile: _path_t) -> bool:
     """Function to test if a path is absent from a list of paths.
 
-    Opposite of :func:`~sark.io.path_in`.
+    Opposite of :func:`~friendly_data.io.path_in`.
 
     Parameters
     ----------
@@ -148,8 +148,8 @@ def dwim_file(fpath: _path_t, data=None):
 
 
 def get_cachedir() -> Path:
-    """Create the directory ``$TMPDIR/sark-cache`` and return the Path object"""
-    cachedir = Path(tempfile.gettempdir()) / "sark-cache"
+    """Create the directory ``$TMPDIR/friendly_data_cache`` and return the Path object"""
+    cachedir = Path(tempfile.gettempdir()) / "friendly_data_cache"
     cachedir.mkdir(exist_ok=True)
     return cachedir
 
@@ -163,7 +163,7 @@ class HttpCache:
     are compatible with the URL template.
 
     After fetching a resource, it is cached in a file under
-    ``$TMPDIR/sark-cache/``.  The file name is of the form
+    ``$TMPDIR/friendly_data_cache/``.  The file name is of the form
     ``http-<checksum-of-url-template>-<checksum-of-url>``.  The cache is
     updated every 24 hours.  A user may also force a cache cleanup by calling
     the :meth:`remove()` method.

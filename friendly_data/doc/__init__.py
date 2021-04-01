@@ -3,11 +3,13 @@ from typing import Dict
 from jinja2 import Environment, FileSystemLoader
 from pkg_resources import resource_filename
 
-import sark_registry as registry
+import friendly_data_registry as registry
 
 
 def get_template(name: str):
-    loader = FileSystemLoader(searchpath=resource_filename("sark", "doc"))
+    loader = FileSystemLoader(
+        searchpath=resource_filename("friendly_data_registry", "doc")
+    )
     env = Environment(loader=loader, trim_blocks=True, lstrip_blocks=True)
     return env.get_template(name)
 

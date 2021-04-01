@@ -2,8 +2,8 @@ from pathlib import Path
 import pytest
 import requests
 
-from sark.io import dwim_file, relpaths, path_in, path_not_in
-from sark.metatools import ODLS
+from friendly_data.io import dwim_file, relpaths, path_in, path_not_in
+from friendly_data.metatools import ODLS
 
 
 def test_relpaths():

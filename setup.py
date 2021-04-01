@@ -1,4 +1,4 @@
-"""SENTINEL archive
+"""Frictionless Energy Data
 
 """
 
@@ -14,11 +14,11 @@ requirements = list(
 )
 
 setup(
-    name="SENTINEL-archive",
+    name="friendly_data",
     version="0.1.dev0",
     description="A datapackage implementation for the SENTINEL project.",
-    url="https://github.com/sentinel-energy/sentinel-achive",
+    url="https://github.com/sentinel-energy/friendly_data",
     packages=find_packages(exclude=["doc", "testing", "tests", "dsts", "tmp"]),
     install_requires=requirements,
-    entry_points={"console_scripts": ["sentinel-archive = sark.cli:main"]},
+    entry_points={"console_scripts": ["friendly_data = friendly_data.cli:main"]},
 )

@@ -9,18 +9,18 @@ from typing import Dict, List, Union
 from glom import glom, Iter
 import pandas as pd
 
-from sark._types import _license_t, _path_t
-from sark.dpkg import create_pkg
-from sark.dpkg import idxpath_from_pkgpath
-from sark.dpkg import pkg_from_files
-from sark.dpkg import pkg_glossary
-from sark.dpkg import read_pkg
-from sark.dpkg import read_pkg_index
-from sark.dpkg import write_pkg
-from sark.helpers import is_windows
-from sark.io import dwim_file, path_not_in, relpaths
-from sark.metatools import _fetch_license, check_license
-from sark.doc import page
+from friendly_data._types import _license_t, _path_t
+from friendly_data.dpkg import create_pkg
+from friendly_data.dpkg import idxpath_from_pkgpath
+from friendly_data.dpkg import pkg_from_files
+from friendly_data.dpkg import pkg_glossary
+from friendly_data.dpkg import read_pkg
+from friendly_data.dpkg import read_pkg_index
+from friendly_data.dpkg import write_pkg
+from friendly_data.helpers import is_windows
+from friendly_data.io import dwim_file, path_not_in, relpaths
+from friendly_data.metatools import _fetch_license, check_license
+from friendly_data.doc import page
 
 
 def sanitise(string: str) -> str:

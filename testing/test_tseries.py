@@ -3,7 +3,7 @@ from io import StringIO
 import pandas._testing as tm
 import pytest  # noqa: F401
 
-from sark.tseries import read_timeseries, from_table, from_multicol
+from friendly_data.tseries import read_timeseries, from_table, from_multicol
 
 
 @pytest.mark.parametrize("zero_idx", [True, False])

@@ -7,9 +7,9 @@ import pandas as pd
 import pandas.testing as tm
 import pytest  # noqa: F401
 
-from sark.dpkg import read_pkg
-from sark.helpers import consume
-from sark.validate import check_pkg, check_schema, summarise_errors
+from friendly_data.dpkg import read_pkg
+from friendly_data.helpers import consume
+from friendly_data.validate import check_pkg, check_schema, summarise_errors
 
 
 def test_check_pkg():

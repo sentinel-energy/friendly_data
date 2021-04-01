@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from sark.metatools import (
+from friendly_data.metatools import (
     ODLS,
     get_license,
     check_license,

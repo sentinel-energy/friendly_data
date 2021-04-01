@@ -6,7 +6,7 @@ from pkg_resources import resource_filename
 
 import pytest
 
-import sark_registry as registry
+import friendly_data_registry as registry
 
 
 @pytest.mark.parametrize(
@@ -39,7 +39,7 @@ def test_getall():
     expected = ["cols", "idxcols"]
     assert sorted(res) == expected
     for col_t in expected:
-        curdir = Path(resource_filename("sark_registry", col_t))
+        curdir = Path(resource_filename("friendly_data_registry", col_t))
         schemas = list(
             chain.from_iterable(curdir.glob(f"*.{fmt}") for fmt in ("json", "yaml"))
         )

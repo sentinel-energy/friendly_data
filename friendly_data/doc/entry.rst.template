@@ -24,5 +24,5 @@
        {% endif %}
        {% endfor %}
 {% endif %}
-    .. __: https://github.com/sentinel-energy/sentinel-archive-registry/edit/master/sark_registry/{{ file }}
+    .. __: https://github.com/sentinel-energy/sentinel-archive-registry/edit/master/friendly_data_registry/{{ file }}
 

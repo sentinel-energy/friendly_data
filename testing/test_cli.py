@@ -5,15 +5,15 @@ from typing import cast, List
 from glom import glom, Iter
 import pytest
 
-from sark.cli import _metadata, remove
-from sark.cli import _create
-from sark.cli import _rm_from_idx
-from sark.cli import _rm_from_glossary
-from sark.cli import _rm_from_pkg
-from sark.cli import add
-from sark.cli import update
-from sark.dpkg import read_pkg
-from sark.io import dwim_file
+from friendly_data.cli import _metadata, remove
+from friendly_data.cli import _create
+from friendly_data.cli import _rm_from_idx
+from friendly_data.cli import _rm_from_glossary
+from friendly_data.cli import _rm_from_pkg
+from friendly_data.cli import add
+from friendly_data.cli import update
+from friendly_data.dpkg import read_pkg
+from friendly_data.io import dwim_file
 
 
 def test_metadata():

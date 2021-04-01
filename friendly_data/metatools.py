@@ -7,8 +7,8 @@ import logging
 from operator import contains
 from typing import Dict, List, Tuple
 
-from sark.io import HttpCache
-from sark._types import _license_t
+from friendly_data.io import HttpCache
+from friendly_data._types import _license_t
 
 logger = logging.getLogger()
 

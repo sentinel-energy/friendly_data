@@ -6,21 +6,21 @@ from glom import glom, Iter, T
 import numpy as np
 import pytest
 
-from sark.converters import _schema, _source_type
-from sark.dpkg import create_pkg
-from sark.dpkg import fullpath
-from sark.dpkg import index_levels
-from sark.dpkg import idxpath_from_pkgpath
-from sark.dpkg import pkg_from_files
-from sark.dpkg import pkg_from_index
-from sark.dpkg import pkg_glossary
-from sark.dpkg import read_pkg
-from sark.dpkg import read_pkg_index
-from sark.dpkg import update_pkg
-from sark.dpkg import write_pkg
-from sark.helpers import match, select, is_windows
-from sark.io import relpaths
-from sark.metatools import get_license
+from friendly_data.converters import _schema, _source_type
+from friendly_data.dpkg import create_pkg
+from friendly_data.dpkg import fullpath
+from friendly_data.dpkg import index_levels
+from friendly_data.dpkg import idxpath_from_pkgpath
+from friendly_data.dpkg import pkg_from_files
+from friendly_data.dpkg import pkg_from_index
+from friendly_data.dpkg import pkg_glossary
+from friendly_data.dpkg import read_pkg
+from friendly_data.dpkg import read_pkg_index
+from friendly_data.dpkg import update_pkg
+from friendly_data.dpkg import write_pkg
+from friendly_data.helpers import match, select, is_windows
+from friendly_data.io import relpaths
+from friendly_data.metatools import get_license
 
 from .conftest import expected_schema, noop_map
 
