@@ -9,7 +9,7 @@ this is done by designating a column (or a set of columns) as the
 index (or primary key).  And like the index in a book, index entries
 are required to be unique.  We follow the same principle here, and
 categorise a column either as an index column, or a regular (value)
-column.  Within the ``sark`` framework we refer to them as ``idxcols``
+column.  Within the ``friendly_data`` framework we refer to them as ``idxcols``
 and ``cols`` respectively.
 
 .. figure:: _static/images/registry-flow-create.png
@@ -24,7 +24,7 @@ and ``cols`` respectively.
 
 While a table (dataset/data resource) in a data package can have any
 number of columns of either kind, it is often helpful during analysis
-to designate an index.  ``sark`` implements this by having an external
+to designate an index.  ``friendly_data`` implements this by having an external
 registry that records all columns that are generally useful in the
 context of SENTINEL models, and categorising these columns as one or
 the other.  These could be something like ``capacity_factor`` or a cap
@@ -58,7 +58,7 @@ and ``1``, or ``techs`` can take one of a set of predefined values.
 Now you might notice that, while everyone will agree with the
 constraint on ``capacity_factor``, the constraint on ``techs`` will be
 different for different models.  So this element is configurable, and
-the ``sark`` implementation infers the valid set by sampling the
+the ``friendly_data`` implementation infers the valid set by sampling the
 dataset during package creation.
 
 To review the current set of columns in the registry, please consult

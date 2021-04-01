@@ -16,7 +16,7 @@ naming schemes, etc.
 To address this, we are developing a flexible data standard that can
 be the common medium of exchange between different models, allowing
 for sharing of results and linking.  The *SENTINEL archive* package,
-or ``sark``, implements this framework.  It provides a Command Line
+or ``friendly_data``, implements this framework.  It provides a Command Line
 Interface to create and manage data archives (or packages) that can be
 easily exchanged between different models in SENTINEL.  It also
 provides a Python API to do the same operations and more from within a

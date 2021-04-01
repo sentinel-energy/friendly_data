@@ -31,7 +31,7 @@ jobs:
           pip install -r requirements-docs.txt
       - name: Build docs
         run: |
-          python -m sark.doc > doc/api/registry.rst
+          python -m friendly_data.doc > doc/api/registry.rst
           make -C doc html
           # make -C doc latexpdf html
       - name: Publish pages

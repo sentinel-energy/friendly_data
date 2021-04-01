@@ -41,8 +41,8 @@ except for the ``datapackage.json``.
 You can do everything mentioned above and much more, using the Python
 API. e.g.::
 
-    from sark.dpkg import create_pkg
-    from sark.metatools import get_license
+    from friendly_data.dpkg import create_pkg
+    from friendly_data.metatools import get_license
 
     pkg_meta = {
         "name": "dataset_for_xyz",
@@ -80,7 +80,7 @@ column in the file contains timestamps, or ``datetime`` values.
 However the time format is non-standar.  To explicitly specify this,
 we can use the snippet below::
 
-    from sark.dpkg import update_pkg
+    from friendly_data.dpkg import update_pkg
 
     update_fields = {
         "time": {"name": "time", "type": "datetime", "format": "%b %d, %Y"},

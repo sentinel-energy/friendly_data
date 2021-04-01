@@ -2,13 +2,13 @@ Reading into ``pandas`` or ``xarray``
 -------------------------------------
 
 A datapackage can be read into Python by using the ``frictionless``
-library.  However, ``sark`` provides alternative more direct and
+library.  However, ``friendly_data`` provides alternative more direct and
 performant converters for popular data analysis libraries like
 ``pandas``, ``xarray``, etc.
 
 ::
 
-    from sark.converters import to_df
+    from friendly_data.converters import to_df
 
     pkg = ... # read datapackage from disk
 

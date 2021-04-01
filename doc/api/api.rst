@@ -1,53 +1,53 @@
 .. contents::
 
 Technical documentation of functions and classes provided by the
-different ``sark`` modules.
+different ``friendly_data`` modules.
 
 Datapackage tools
 -----------------
 
-.. automodule:: sark.dpkg
+.. automodule:: friendly_data.dpkg
 
 Metadata tools
 --------------
 
-.. automodule:: sark.metatools
+.. automodule:: friendly_data.metatools
 
 Registry API
 ------------
 
-.. automodule:: sark_registry
+.. automodule:: friendly_data_registry
 
 Converters
 ----------
 
-.. automodule:: sark.converters
+.. automodule:: friendly_data.converters
 
 Validation functions
 --------------------
 
-.. automodule:: sark.validate
+.. automodule:: friendly_data.validate
 
 Command Line Interface
 ----------------------
 
-.. automodule:: sark.cli
+.. automodule:: friendly_data.cli
 
 Time series API
 ---------------
 
-.. automodule:: sark.tseries
+.. automodule:: friendly_data.tseries
 
 Internal interfaces
 -------------------
 
 Internal functions and classes; useful if you are developing new
-features for ``sark``.
+features for ``friendly_data``.
 
 ----
 
-.. automodule:: sark.io
+.. automodule:: friendly_data.io
 
 ----
 
-.. automodule:: sark.helpers
+.. automodule:: friendly_data.helpers

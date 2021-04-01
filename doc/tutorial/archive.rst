@@ -8,7 +8,7 @@ references in the package metadata are relative to the package
 directory, so the ``JSON`` file needs to be in the top directory of
 the package.  From Python you can do something like this::
 
-    from sark.dpkg import write_pkg
+    from friendly_data.dpkg import write_pkg
 
     write_pkg(pkg, "path/to/pkgdir")
 
