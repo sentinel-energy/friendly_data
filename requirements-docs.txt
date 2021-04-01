@@ -4,4 +4,4 @@ sphinx
 sphinx-rtd-theme
 numpydoc
 pyyaml
-git+git://github.com/sentinel-energy/sentinel-archive-registry#egg=SENTINEL-archive-registry
+git+git://github.com/sentinel-energy/sentinel-archive-registry#egg=friendly_data_registry
