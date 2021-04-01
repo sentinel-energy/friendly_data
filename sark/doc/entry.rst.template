@@ -1,7 +1,11 @@
 {#
 🖉: U+1F589
 #}
-**{{ name }}** ({{ type }}) `🖉`__
+**{{ name }}** ({{ type }}) `[edit] 🖉`__: {{ title }}
+{% if description is not undefined %}
+    {{ description }}
+
+{% endif %}
 {% if constraints is not undefined %}
     constraints:
 
@@ -11,7 +15,9 @@
 
        {% for key, val in constraints.items() %}
        * - {{ key }}
-       {% if val is sequence %}
+       {% if val is string %}
+         - ``{{ val }}``
+       {% elif val is sequence %}
          - {{ ", ".join(val) if val else "..." }}
        {% else %}
          - {{ val }}
