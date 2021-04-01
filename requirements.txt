@@ -8,4 +8,4 @@ pandas>=1.0
 pyyaml
 requests
 xarray
-git+git://github.com/sentinel-energy/sentinel-archive-registry#egg=friendly_data_registry
+git+git://github.com/sentinel-energy/friendly_data_registry#egg=friendly_data_registry
