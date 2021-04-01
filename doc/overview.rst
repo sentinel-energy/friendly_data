@@ -1,5 +1,5 @@
-The SENTINEL archive data format
---------------------------------
+Overview
+========
 
 SENTINEL partners work with a variety of models in diverse computing
 environments.  The *SENTINEL archive* data format [#]_ has been

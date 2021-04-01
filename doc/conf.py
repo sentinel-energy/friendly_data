@@ -13,6 +13,7 @@
 # import os
 import sys
 from unittest.mock import MagicMock
+import sphinx_rtd_theme
 
 
 class MyMock(MagicMock):
@@ -27,9 +28,9 @@ sys.modules.update((mod, MyMock(name=mod)) for mod in mocked_modules)
 
 # -- Project information -----------------------------------------------------
 
-project = "SENTINEL archive"
-copyright = "2021, SENTINEL collaboration"
-author = "SENTINEL collaboration"
+project = "friendly_data"
+copyright = "2021, SENTINEL Project"
+author = "SENTINEL Project"
 
 # The full version, including alpha/beta/rc tags
 release = "0.1.dev0"
@@ -48,6 +49,7 @@ extensions = [
     "sphinx.ext.extlinks",
     "numpydoc",
     # "sphinx_search.extension",
+    "sphinx_rtd_theme",
 ]
 
 autodoc_default_options = {"members": None}
@@ -67,7 +69,7 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "sphinxdoc"
+html_theme = "sphinx_rtd_theme"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
