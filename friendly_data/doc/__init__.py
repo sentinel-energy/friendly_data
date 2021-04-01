@@ -7,9 +7,7 @@ import friendly_data_registry as registry
 
 
 def get_template(name: str):
-    loader = FileSystemLoader(
-        searchpath=resource_filename("friendly_data_registry", "doc")
-    )
+    loader = FileSystemLoader(searchpath=resource_filename("friendly_data", "doc"))
     env = Environment(loader=loader, trim_blocks=True, lstrip_blocks=True)
     return env.get_template(name)
 
