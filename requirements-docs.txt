@@ -1,7 +1,7 @@
 frictionless
+friendly-data-registry
 jinja2
 sphinx
 sphinx-rtd-theme
 numpydoc
 pyyaml
-git+git://github.com/sentinel-energy/friendly_data_registry#egg=friendly_data_registry

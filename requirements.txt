@@ -1,5 +1,6 @@
 fire
 frictionless>=4.0.2,<4.1
+friendly-data-registry
 glom>=19.10
 jinja2
 numexpr
@@ -8,4 +9,3 @@ pandas>=1.0
 pyyaml
 requests
 xarray
-git+git://github.com/sentinel-energy/friendly_data_registry#egg=friendly_data_registry
