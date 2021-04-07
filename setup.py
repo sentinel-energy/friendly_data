@@ -15,8 +15,8 @@ requirements = list(
 
 setup(
     name="friendly_data",
-    version="0.1.dev0",
-    description="A datapackage implementation for the SENTINEL project.",
+    version="0.1.dev1",
+    description="A frictionless data package implementation for energy system data.",
     url="https://github.com/sentinel-energy/friendly_data",
     packages=find_packages(exclude=["doc", "testing", "tests", "dsts", "tmp"]),
     install_requires=requirements,
