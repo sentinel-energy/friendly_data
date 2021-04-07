@@ -85,7 +85,7 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install dependencies (requirements: ${{ matrix.req-version }})
+      - name: Install dependencies (latest ${{ matrix.req-version }})
         run: |
           python -m pip install --upgrade pip
           git apply ./dev/requirements-${{ matrix.req-version }}.patch
