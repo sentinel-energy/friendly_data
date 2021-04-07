@@ -19,6 +19,10 @@ help:
 %: Makefile
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
-_static/images/ecosystem.png:
-	wget https://code.orgmode.org/bzg/org-mode/raw/master/contrib/scripts/ditaa.jar
-	java -Dfile.encoding=UTF-8 -jar ditaa.jar ecosystem.txt $@
+# disable catch-all for dependency in the rule below
+ecosystem.txt:
+	:
+
+_static/images/ecosystem.png: ecosystem.txt
+	wget --no-clobber https://code.orgmode.org/bzg/org-mode/raw/master/contrib/scripts/ditaa.jar
+	java -Dfile.encoding=UTF-8 -jar ditaa.jar $< $@
