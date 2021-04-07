@@ -3,7 +3,7 @@ index ccc2476..b13bd5f 100644
 --- a/requirements-docs.txt
 +++ b/requirements-docs.txt
 @@ -1,7 +1,7 @@
- frictionless
+ frictionless>=4.0.2,<4.1
 -friendly-data-registry
  jinja2
  sphinx
