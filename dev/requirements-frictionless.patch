@@ -1,0 +1,21 @@
+diff --git a/requirements-docs.txt b/requirements-docs.txt
+index a045b10..ccc2476 100644
+--- a/requirements-docs.txt
++++ b/requirements-docs.txt
+@@ -1,4 +1,4 @@
+-frictionless>=4.0.2,<4.1
++frictionless
+ friendly-data-registry
+ jinja2
+ sphinx
+diff --git a/requirements.txt b/requirements.txt
+index 9b15e7a..a8c11c5 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -1,5 +1,5 @@
+ fire
+-frictionless>=4.0.2,<4.1
++frictionless
+ friendly-data-registry
+ glom>=19.10
+ jinja2

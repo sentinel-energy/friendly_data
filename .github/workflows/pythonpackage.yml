@@ -75,6 +75,7 @@ jobs:
       matrix:
         python-version: [3.9]
         os: [ubuntu-latest, windows-latest, macOS-latest]
+        req-version: [frictionless, registry]
 
     runs-on: ${{ matrix.os }}
     continue-on-error: true
@@ -84,10 +85,10 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
+      - name: Install dependencies (requirements: ${{ matrix.req-version }})
         run: |
           python -m pip install --upgrade pip
-          python ./dev/filter-reqs.py requirements.txt
+          git apply ./dev/requirements-${{ matrix.req-version }}.patch
           pip install -r requirements.txt
           pip install -r requirements-dev.txt
           pip install -e .
