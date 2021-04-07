@@ -30,14 +30,14 @@ use the same workflow.  Read more in the documentation_.
 .. _documentation:
    https://sentinel-energy.github.io/friendly_data/
 
-.. |unittests| image:: https://github.com/sentinel-energy/sentinel-archive/workflows/Unit%20tests/badge.svg
-   :target: https://github.com/sentinel-energy/sentinel-archive/actions?query=workflow%3A%22Unit+tests%22
+.. |unittests| image:: https://github.com/sentinel-energy/friendly_data/workflows/Unit%20tests/badge.svg
+   :target: https://github.com/sentinel-energy/friendly_data/actions?query=workflow%3A%22Unit+tests%22
 
-.. |coverage| image:: https://codecov.io/gh/sentinel-energy/sentinel-archive/branch/master/graph/badge.svg
-  :target: https://codecov.io/gh/sentinel-energy/sentinel-archive
+.. |coverage| image:: https://codecov.io/gh/sentinel-energy/friendly_data/branch/master/graph/badge.svg
+  :target: https://codecov.io/gh/sentinel-energy/friendly_data
 
-.. |docs| image:: https://github.com/sentinel-energy/sentinel-archive/workflows/Publish%20docs/badge.svg
-  :target: https://github.com/sentinel-energy/sentinel-archive/actions?query=workflow%3A%22Publish+docs%22
+.. |docs| image:: https://github.com/sentinel-energy/friendly_data/workflows/Publish%20docs/badge.svg
+  :target: https://github.com/sentinel-energy/friendly_data/actions?query=workflow%3A%22Publish+docs%22
 
 
 Installation
