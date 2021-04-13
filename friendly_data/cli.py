@@ -15,7 +15,7 @@ from friendly_data.dpkg import idxpath_from_pkgpath
 from friendly_data.dpkg import pkg_from_files
 from friendly_data.dpkg import pkg_glossary
 from friendly_data.dpkg import read_pkg
-from friendly_data.dpkg import read_pkg_index
+from friendly_data.dpkg import pkgindex
 from friendly_data.dpkg import write_pkg
 from friendly_data.helpers import is_windows
 from friendly_data.io import dwim_file, path_not_in, relpaths
@@ -238,7 +238,7 @@ def _rm_from_pkg(pkgpath: _path_t, *fpaths: _path_t):
         pkg,
         (
             "resources",
-            Iter().filter(lambda r: pkgpath / r["path"] not in map(Path, fpaths)).all(),
+            Iter().filter(lambda r: path_not_in(fpaths, pkgpath / r["path"])).all(),
         ),
     )
     if count == len(resources):
@@ -247,11 +247,12 @@ def _rm_from_pkg(pkgpath: _path_t, *fpaths: _path_t):
     return pkg
 
 
-def _rm_from_idx(pkgpath: _path_t, *fpaths: _path_t) -> pd.DataFrame:
+def _rm_from_idx(pkgpath: _path_t, *fpaths: _path_t) -> pkgindex:
     pkgpath = Path(pkgpath)
-    idx = read_pkg_index(idxpath_from_pkgpath(pkgpath))
-    to_rm = idx["path"].apply(lambda entry: path_not_in(fpaths, pkgpath / entry))
-    return idx[to_rm]
+    idx = pkgindex.from_file(idxpath_from_pkgpath(pkgpath))
+    return glom(
+        idx, Iter().filter(lambda r: path_not_in(fpaths, pkgpath / r["path"])).all()
+    )
 
 
 def _rm_from_glossary(pkgpath: _path_t, *fpaths: _path_t) -> Union[None, pd.DataFrame]:

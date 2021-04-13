@@ -150,7 +150,7 @@ def test_rm_from_et_al(tmp_pkgdir):
 
     with pytest.warns(RuntimeWarning):  # multiple indices
         idx = _rm_from_idx(dest, dstpath)
-    assert "inputs/names.csv" not in idx["path"].unique()
+    assert "inputs/names.csv" not in glom(idx, ["path"])
 
     glossary = _rm_from_glossary(dest, dstpath)
     assert "inputs/names.csv" not in glossary["path"].unique()
@@ -167,9 +167,11 @@ def test_remove(tmp_pkgdir):
     _, dest = tmp_pkgdir
     with pytest.warns(RuntimeWarning):  # multiple indices
         msg = remove(dest, dest / "inputs/names.csv")  # pkg w/ glossary
-    assert msg and msg.count("json") == 3
+    assert msg and msg.count("json") == 2
+    assert msg and msg.count("yaml") == 1
 
     (dest / "glossary.json").unlink()  # pkg w/o glossary
     with pytest.warns(RuntimeWarning):  # multiple indices
         msg = remove(dest, dest / "inputs/energy_eff.csv")
-    assert msg and msg.count("json") == 2
+    assert msg and msg.count("json") == 1
+    assert msg and msg.count("yaml") == 1

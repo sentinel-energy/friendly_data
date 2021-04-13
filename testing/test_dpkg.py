@@ -15,7 +15,8 @@ from friendly_data.dpkg import pkg_from_files
 from friendly_data.dpkg import pkg_from_index
 from friendly_data.dpkg import pkg_glossary
 from friendly_data.dpkg import read_pkg
-from friendly_data.dpkg import read_pkg_index
+from friendly_data.dpkg import pkgindex
+from friendly_data.dpkg import _idx_key_map
 from friendly_data.dpkg import update_pkg
 from friendly_data.dpkg import write_pkg
 from friendly_data.helpers import match, select, is_windows
@@ -157,23 +158,25 @@ def test_pkg_update(rnd_pkg):
 
 
 @pytest.mark.parametrize("ext", [".yaml", ".yml", ".json"])
-def test_read_pkg_index(ext):
+def test_pkgindex(ext):
     fpath = Path(f"testing/files/indices/index{ext}")
-    idx = read_pkg_index(fpath)
-    np.testing.assert_array_equal(idx.columns, ["path", "name", "idxcols"])
-    assert idx.shape == (3, 3)
-    np.testing.assert_array_equal(idx["idxcols"].agg(len), [2, 3, 1])
+    idx = pkgindex.from_file(fpath)
+    assert isinstance(idx, list)
+    assert len(idx) == 3
+    assert sum(map(len, idx.records(["path"]))) == len(idx)
+    assert sum(map(len, idx.records(["path", "idxcols"]))) == len(idx) * 2
+    assert sum(map(len, idx.records(["path", "idxcols", "skip"]))) == len(idx) * 3
 
 
 def test_read_pkg_index_errors(tmp_path):
     idxfile = tmp_path / "index.yaml"
     idxfile.touch()
     with pytest.raises(ValueError, match=f".*{idxfile.name}: bad index file"):
-        read_pkg_index(idxfile)
+        pkgindex.from_file(idxfile)
 
     idxfile = idxfile.with_suffix(".txt")
     with pytest.raises(RuntimeError, match=f".*{idxfile.name}:.+"):
-        read_pkg_index(idxfile)
+        pkgindex.from_file(idxfile)
 
 
 @pytest.mark.parametrize(
@@ -224,7 +227,6 @@ def test_pkg_from_index_skip_rows():
     }
     with pytest.warns(RuntimeWarning, match=".+: not in registry"):
         _, pkg, idx = pkg_from_index(meta, "testing/files/skip_test/index.yaml")
-    assert "skip" in idx.columns
     expected = ["timesteps", "UK", "Ireland", "France"]
     assert glom(pkg, ("resources.0.schema.fields", Iter("name").all())) == expected
 
@@ -233,7 +235,7 @@ def test_pkg_from_index_skip_rows():
 def test_pkg_glossary(idx_t):
     pkgdir = Path("testing/files/mini-ex")
     pkg = read_pkg(pkgdir / "datapackage.json")
-    idx = read_pkg_index(pkgdir / f"index{idx_t}")
+    idx = pkgindex.from_file(pkgdir / f"index{idx_t}")
     glossary = pkg_glossary(pkg, idx)
     assert all(glossary.columns == ["path", "name", "idxcols", "values"])
     assert glossary["values"].apply(lambda i: isinstance(i, list)).all()
@@ -300,7 +302,7 @@ def test_write_pkg(pkg, tmp_path):
 
 
 def test_write_pkg_idx_glossary(pkg, tmp_path):
-    idx = read_pkg_index(f"{pkg.basepath}/index.json")
+    idx = pkgindex.from_file(f"{pkg.basepath}/index.json")
     glossary = pkg_glossary(pkg, idx)
 
     res = write_pkg(pkg, tmp_path, idx=idx, glossary=glossary)

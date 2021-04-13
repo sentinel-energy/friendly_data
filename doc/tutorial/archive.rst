@@ -20,4 +20,4 @@ You can also write an updated index - which is nothing other than a
 
     write_pkg(pkg, "path/to/pkgdir", idx_df)
 
-The index is always saved as ``index.json``.
+The index is always saved as ``index.yaml``.

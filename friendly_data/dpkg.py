@@ -3,17 +3,16 @@
 """
 # PS: the coincidential module name is intentional ;)
 
-from itertools import chain
 import json
 from pathlib import Path
-from typing import cast, Dict, Iterable, List, Optional, Tuple, TypeVar
+from typing import Dict, Iterable, List, Optional, Tuple, TypeVar, Union
 from warnings import warn
 from zipfile import ZipFile
 
 from frictionless import Layout, Package, Resource
-from glom import Assign, glom, Invoke, Iter, Spec, T
+from glom import Assign, Coalesce, glom, Invoke, Iter, Spec, T
+from glom import Match, Optional as optmatch, Or
 import pandas as pd
-from pkg_resources import resource_filename
 
 from friendly_data.io import dwim_file, path_not_in, posixpathstr, relpaths
 from friendly_data.helpers import match, select, is_windows
@@ -75,7 +74,7 @@ def _resource(spec: Dict, basepath: _path_t = "") -> Resource:
     """
     assert "path" in spec, f"Incomplete resource spec: {spec}"
     opts = {}
-    if "skip" in spec:
+    if spec.get("skip"):
         # FIXME: `offset_rows` doesn't seem to work, so workaround with
         # `skip_rows` (`frictionless` expects a 1-indexed array).  `pandas` on
         # the other hand uses a 0-indexed list, which has to be accounted for
@@ -101,7 +100,7 @@ def create_pkg(meta: Dict, fpaths: Iterable[_res_t], basepath: _path_t = ""):
     meta : Dict
         A dictionary with package metadata.
 
-    fpaths : Iterable[Union[str, Path]]
+    fpaths : Iterable[Union[str, Path, Dict]]
         An iterator over different resources.  Resources are paths to files,
         relative to `basepath`.
 
@@ -244,35 +243,112 @@ def update_pkg(pkg: Package, resource: str, schema_update: Dict, fields: bool = 
     return pkg.metadata_valid
 
 
-def read_pkg_index(fpath: _path_t) -> pd.DataFrame:
-    """Read the index of files incuded in the datapackage
+# set of keys that are accepted in a data package
+_idx_key_map = {
+    "path": str,
+    "idxcols": [str],
+    "name": str,
+    "skip": int,
+    "alias": {str: str},
+    "sheet": Or(int, str),
+}
 
-    Parameters
-    ----------
-    fpath : Union[str, Path]
-        Index file path or a stream object
+_idx_optional_keys = ["idxcols", "name", "skip", "alias", "sheet"]
 
-    Returns
-    -------
-    pd.DataFrame
-        A dataframe with the columns: 'file', 'name', and 'idxcols'; 'idxcols'
-        is a tuple.
 
-    Raises
-    ------
-    ValueError
-        If the file type is correct (YAML/JSON), but does not return a list
-    RuntimeError
-        If the file has an unknown extension (raised by :func:`friendly_data.io.dwim_file`)
+class pkgindex(list):
+    """Data package index
+
+    It is a list of dictionaries, where each dictionary is the respective
+    record for a file.  A record may have the following keys:
+
+    - "path": path to the file,
+    - "idxcols": list of column names that are to be included in the dataset
+      index (optional),
+    - "name": dataset name (optional),
+    - "skip": lines to skip when reading the dataset (optional, CSV only),
+    - "alias": a mapping of column name aliases (optional),
+    - "sheet": sheet name or position (0-indexed) to use as dataset (optional,
+      Excel only)
 
     """
-    idx = dwim_file(Path(fpath))
-    if not isinstance(idx, list):
-        raise ValueError(f"{fpath}: bad index file")
 
-    # # convert list (idxcols) into tuples, easier to query in DataFrame
-    # glom(idx, [Assign("idxcols", Spec((T["idxcols"], tuple)))])
-    return pd.DataFrame(idx)
+    _record = Match(
+        {
+            optmatch(k, default=None) if k in _idx_optional_keys else k: v
+            for k, v in _idx_key_map.items()
+        }
+    )
+
+    @classmethod
+    def from_file(cls, fpath: _path_t):
+        """Read the index of files included in the data package
+
+        Parameters
+        ----------
+        fpath : Union[str, Path]
+            Index file path or a stream object
+
+        Returns
+        -------
+        List[Dict]
+
+        Raises
+        ------
+        ValueError
+            If the file type is correct (YAML/JSON), but does not return a list
+        RuntimeError
+            If the file has an unknown extension (raised by :func:`friendly_data.io.dwim_file`)
+
+        """
+        idx = dwim_file(Path(fpath))
+        if not isinstance(idx, list):
+            raise ValueError(f"{fpath}: bad index file")
+        return pkgindex(idx)
+
+    def records(self, keys: List[str]) -> Iterable[Dict]:
+        """Return an iterable of index records.
+
+        Each record is guaranteed to have all the keys requested.  If a value
+        wasn't specified in the index file, it is set to ``None``.
+
+        Parameters
+        ----------
+        keys : List[str]
+            List of keys that are requested in each record.
+
+        Returns
+        -------
+        Iterable[Dict]
+
+        Raises
+        ------
+        glom.MatchError
+            If `keys` has an unsupported value
+
+        """
+        glom(keys, [Match(Or(*_idx_key_map.keys()))])
+        filter_keys = {k: k for k in keys}
+        return glom(self, Iter(self._record).map(filter_keys).all())
+
+    def get(self, key: str) -> List:
+        """Get the value of `key` from all records as a list.
+
+        If `key` is absent, the corresponding value is set to ``None``.
+
+        Parameters
+        ----------
+        key : str
+            Key to retrieve
+
+        Returns
+        -------
+        List
+            List of records with values corresponding to `key`.
+
+        """
+        glom(key, Match(Or(*_idx_key_map.keys())))
+        return glom(self, [Coalesce(key, default=None)])
 
 
 def index_levels(_file: _path_t, idxcols: Iterable[str]) -> Tuple[_path_t, Dict]:
@@ -329,7 +405,7 @@ def index_levels(_file: _path_t, idxcols: Iterable[str]) -> Tuple[_path_t, Dict]
     return _file, coldict
 
 
-def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pd.DataFrame]:
+def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pkgindex]:
     """Read an index file, and create a datapackage with the provided metadata.
 
     The index can be in either YAML, or JSON format.  It is a list of dataset
@@ -409,17 +485,14 @@ def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pd.DataFr
 
     """
     pkg_dir = Path(fpath).parent
-    idx = read_pkg_index(fpath)
-    if "skip" in idx.columns:
-        resources = idx[["path", "skip"]].to_dict("records")
-    else:
-        resources = idx["path"].to_list()
+    idx = pkgindex.from_file(fpath)
+    resources = idx.records(["path", "skip"])
     pkg = create_pkg(meta, resources, basepath=f"{pkg_dir}")
-    for entry in idx.to_records():
-        resource_name = Path(entry.path).stem
-        _, update = index_levels(pkg_dir / entry.path, entry.idxcols)
+    for entry in idx.records(["path", "idxcols"]):
+        resource_name = Path(entry["path"]).stem
+        _, update = index_levels(pkg_dir / entry["path"], entry["idxcols"])
         update_pkg(pkg, resource_name, update)
-        update_pkg(pkg, resource_name, {"primaryKey": entry.idxcols}, fields=False)
+        update_pkg(pkg, resource_name, {"primaryKey": entry["idxcols"]}, fields=False)
         # set of value columns
         cols = (
             glom(
@@ -427,7 +500,7 @@ def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pd.DataFr
                 (
                     "resources",
                     Iter()
-                    .filter(select("path", equal_to=entry.path))
+                    .filter(select("path", equal_to=entry["path"]))
                     .map("schema.fields")
                     .flatten()
                     .map("name")
@@ -435,13 +508,13 @@ def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pd.DataFr
                     set,
                 ),
             )
-            - set(entry.idxcols)
+            - set(entry["idxcols"])
         )
         update_pkg(pkg, resource_name, {col: registry.get(col, "cols") for col in cols})
     return pkg_dir, pkg, idx
 
 
-def pkg_glossary(pkg: Package, idx: pd.DataFrame) -> pd.DataFrame:
+def pkg_glossary(pkg: Package, idx: pkgindex) -> pd.DataFrame:
     """Generate glossary from the package and the package index.
 
     Parameters
@@ -473,7 +546,8 @@ def pkg_glossary(pkg: Package, idx: pd.DataFrame) -> pd.DataFrame:
             .all(),
         ),
     )
-    glossary = idx.explode("idxcols").reset_index(drop=True)
+    cols = ["path", "name", "idxcols"]
+    glossary = pd.DataFrame(idx.records(cols)).explode("idxcols").reset_index(drop=True)
     return glossary.assign(values=glossary.apply(_levels, axis=1))
 
 
@@ -488,7 +562,7 @@ def pkg_from_files(meta: Dict, fpath: _path_t, fpaths: Iterable[_path_t]):
     fpath : Union[str, Path]
         Path to the package directory or index file.  Note the index file has
         to be at the top level directory of the datapackage.  See
-        :func:`~friendly_data.dpkg.read_pkg_index`
+        :func:`~friendly_data.dpkg.pkgindex.from_file`
 
     fpaths : List[Union[str, Path]]
         A list of paths to datasets/resources not in the index.  If any of the
@@ -504,10 +578,11 @@ def pkg_from_files(meta: Dict, fpath: _path_t, fpaths: Iterable[_path_t]):
     """
     fpath = Path(fpath)
     idxpath = idxpath_from_pkgpath(fpath) if fpath.is_dir() else fpath
+    idx: Union[pkgindex, None]
     if idxpath:
         pkgdir, pkg, idx = pkg_from_index(meta, idxpath)
         # convert to full path
-        idx_fpath = cast(Iterable[_path_t], idx["path"].apply(pkgdir.__truediv__))
+        idx_fpath = map(pkgdir.__truediv__, glom(idx, ["path"]))
         _fpaths = relpaths(pkgdir, filter(lambda p: path_not_in(idx_fpath, p), fpaths))
         pkg = create_pkg(pkg, _fpaths, basepath=pkgdir)
     else:
@@ -560,7 +635,7 @@ def write_pkg(
     pkg: Package,
     pkgdir: _path_t,
     *,
-    idx: Optional[pd.DataFrame] = None,
+    idx: Union[pkgindex, List, None] = None,
     glossary: Optional[pd.DataFrame] = None,
 ) -> List[Path]:
     """Write a data package to path
@@ -573,7 +648,7 @@ def write_pkg(
     pkgdir: Union[str, Path]
         Path to write to
 
-    idx : pandas.DataFrame (optional)
+    idx : Union[pkgindex, List] (optional)
         Package index written to `pkgdir/index.json`
 
     glossary : pandas.DataFrame (optional)
@@ -589,9 +664,9 @@ def write_pkg(
     files = [pkgdir / "datapackage.json"]
     dwim_file(files[-1], pkg)
 
-    if isinstance(idx, pd.DataFrame):
-        files.append(pkgdir / "index.json")
-        dwim_file(files[-1], idx.to_dict(orient="records"))
+    if isinstance(idx, (pkgindex, list)):
+        files.append(pkgdir / "index.yaml")
+        dwim_file(files[-1], list(idx))
 
     if isinstance(glossary, pd.DataFrame):
         files.append(pkgdir / "glossary.json")
