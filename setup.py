@@ -22,5 +22,6 @@ setup(
     url="https://github.com/sentinel-energy/friendly_data",
     packages=find_packages(exclude=["doc", "testing", "tests", "dsts", "tmp"]),
     install_requires=requirements,
+    package_data={"friendly_data": ["py.typed"]},
     entry_points={"console_scripts": ["friendly_data = friendly_data.cli:main"]},
 )
