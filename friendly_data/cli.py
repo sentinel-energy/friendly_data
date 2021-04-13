@@ -260,10 +260,10 @@ def _rm_from_glossary(pkgpath: _path_t, *fpaths: _path_t) -> Union[None, pd.Data
     if not jsonpath.exists():
         return None
     glossary = pd.read_json(jsonpath)
-    to_rm = glossary["path"].apply(
+    keep = glossary["path"].apply(
         lambda entry: path_not_in(fpaths, jsonpath.parent / entry)
     )
-    return glossary[to_rm]
+    return glossary[keep]
 
 
 def remove(pkgpath: str, *fpaths: str) -> str:

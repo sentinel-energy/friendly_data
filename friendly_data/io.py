@@ -57,7 +57,7 @@ def path_in(fpaths: Iterable[_path_t], testfile: _path_t) -> bool:
     bool
 
     """
-    return any(p.samefile(testfile) for p in map(Path, fpaths))
+    return any(map(Path(testfile).samefile, fpaths))
 
 
 def path_not_in(fpaths: Iterable[_path_t], testfile: _path_t) -> bool:
@@ -98,12 +98,12 @@ def posixpathstr(fpath: _path_t) -> str:
 
 @overload
 def dwim_file(fpath: _path_t) -> Union[Dict, List]:
-    ...  # pragma: no cover, oveload
+    ...  # pragma: no cover, overload
 
 
 @overload
 def dwim_file(fpath: _path_t, data) -> None:
-    ...  # pragma: no cover, oveload
+    ...  # pragma: no cover, overload
 
 
 def dwim_file(fpath: _path_t, data=None):
