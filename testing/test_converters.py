@@ -73,15 +73,9 @@ def test_pkg_to_df(rnd_pkg):
     assert to_df(resource, noexcept=True).empty  # suppress exceptions
 
 
-def test_pkg_to_df_skip_rows():
-    meta = {
-        "name": "foobarbaz",
-        "title": "Foo Bar Baz",
-        "keywords": ["foo", "bar", "baz"],
-        "license": ["CC0-1.0"],
-    }
+def test_pkg_to_df_skip_rows(pkg_meta):
     with pytest.warns(RuntimeWarning, match=".+: not in registry"):
-        _, pkg, __ = pkg_from_index(meta, "testing/files/skip_test/index.yaml")
+        _, pkg, __ = pkg_from_index(pkg_meta, "testing/files/skip_test/index.yaml")
     df = to_df(pkg["resources"][0])
     expected = ["UK", "Ireland", "France"]
     np.testing.assert_array_equal(df.columns, expected)

@@ -27,16 +27,10 @@ from .conftest import expected_schema
 
 
 @pytest.mark.skipif(not is_windows(), reason="only relevant for windows")
-def test_ensure_posix():
+def test_ensure_posix(pkg_meta):
     pkgdir = Path("testing/files/mini-ex")
-    meta = {
-        "name": "foobarbaz",
-        "title": "Foo Bar Baz",
-        "licenses": "CC0-1.0",
-        "keywords": ["foo", "bar", "baz"],
-    }
     files = chain(pkgdir.glob("inputs/*"), pkgdir.glob("outputs/*"))
-    pkg = create_pkg(meta, relpaths(pkgdir, files), pkgdir)
+    pkg = create_pkg(pkg_meta, relpaths(pkgdir, files), pkgdir)
     # NOTE: count windows path separators in the resource path, should be 0 as the
     # spec requires resource paths to be POSIX paths
     npathsep = glom(
@@ -66,15 +60,9 @@ def test_pkg_creation():
         assert _schema(resource, noop_map()) == expected
 
 
-def test_pkg_creation_skip_rows():
-    meta = {
-        "name": "foobarbaz",
-        "title": "Foo Bar Baz",
-        "keywords": ["foo", "bar", "baz"],
-        "license": ["CC0-1.0"],
-    }
+def test_pkg_creation_skip_rows(pkg_meta):
     resources = [{"path": "commented_dst.csv", "skip": 1}]
-    pkg = create_pkg(meta, resources, basepath="testing/files/skip_test")
+    pkg = create_pkg(pkg_meta, resources, basepath="testing/files/skip_test")
     expected = ["timesteps", "UK", "Ireland", "France"]
     assert glom(pkg, ("resources.0.schema.fields", Iter("name").all())) == expected
 
@@ -215,15 +203,9 @@ def test_index_levels(csvfile, idxcols, ncatcols):
 
 
 @pytest.mark.parametrize("idx_t", [".yaml", ".json"])
-def test_pkg_from_index(idx_t):
-    meta = {
-        "name": "foobarbaz",
-        "title": "Foo Bar Baz",
-        "keywords": ["foo", "bar", "baz"],
-        "license": ["CC0-1.0"],
-    }
+def test_pkg_from_index(idx_t, pkg_meta):
     idxpath = Path("testing/files/mini-ex/index").with_suffix(idx_t)
-    pkgdir, pkg, _ = pkg_from_index(meta, idxpath)
+    pkgdir, pkg, _ = pkg_from_index(pkg_meta, idxpath)
     assert pkgdir == idxpath.parent
     assert len(pkg["resources"]) == 5  # number of datasets
     indices = glom(pkg, ("resources", Iter().map("schema.primaryKey").all()))
@@ -231,15 +213,9 @@ def test_pkg_from_index(idx_t):
     # FIXME: not sure what else to check
 
 
-def test_pkg_from_index_skip_rows():
-    meta = {
-        "name": "foobarbaz",
-        "title": "Foo Bar Baz",
-        "keywords": ["foo", "bar", "baz"],
-        "license": ["CC0-1.0"],
-    }
+def test_pkg_from_index_skip_rows(pkg_meta):
     with pytest.warns(RuntimeWarning, match=".+: not in registry"):
-        _, pkg, idx = pkg_from_index(meta, "testing/files/skip_test/index.yaml")
+        _, pkg, idx = pkg_from_index(pkg_meta, "testing/files/skip_test/index.yaml")
     expected = ["timesteps", "UK", "Ireland", "France"]
     assert glom(pkg, ("resources.0.schema.fields", Iter("name").all())) == expected
 
@@ -255,37 +231,25 @@ def test_pkg_glossary(idx_t):
     assert len(glossary["path"].unique()) <= glossary.shape[0]
 
 
-def test_pkg_from_files():
-    meta = {
-        "name": "foobarbaz",
-        "title": "Foo Bar Baz",
-        "keywords": ["foo", "bar", "baz"],
-        "license": ["CC0-1.0"],
-    }
+def test_pkg_from_files(pkg_meta):
     pkgdir = Path("testing/files/mini-ex")
     files = list(chain(pkgdir.glob("inputs/*"), pkgdir.glob("outputs/*")))
     # with index file
-    _, pkg, idx = pkg_from_files(meta, pkgdir / "index.json", files)
+    _, pkg, idx = pkg_from_files(pkg_meta, pkgdir / "index.json", files)
     # files not in index: inheritance.csv, and loc_coordinates.csv
     assert len(pkg["resources"]) - len(idx) == 2
 
     # with directory containing index file
     with pytest.warns(RuntimeWarning, match="multiple indices:.+"):
-        _pkgdir, pkg, idx = pkg_from_files(meta, pkgdir, files)
+        _pkgdir, pkg, idx = pkg_from_files(pkg_meta, pkgdir, files)
     assert _pkgdir == pkgdir
     assert len(pkg["resources"]) - len(idx) == 2
 
 
-def test_pkg_from_files_no_index():
-    meta = {
-        "name": "foobarbaz",
-        "title": "Foo Bar Baz",
-        "keywords": ["foo", "bar", "baz"],
-        "license": ["CC0-1.0"],
-    }
+def test_pkg_from_files_no_index(pkg_meta):
     pkgdir = Path("testing/files/random")
     with pytest.warns(RuntimeWarning, match=".+no index file.+"):
-        _, pkg, idx = pkg_from_files(meta, pkgdir, pkgdir.glob("data/*"))
+        _, pkg, idx = pkg_from_files(pkg_meta, pkgdir, pkgdir.glob("data/*"))
     assert idx is None
     assert len(pkg["resources"]) == 3
 

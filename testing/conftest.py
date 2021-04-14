@@ -55,6 +55,16 @@ def clean_odls_cache():
 
 
 @pytest.fixture
+def pkg_meta():
+    return {
+        "name": "foobarbaz",
+        "title": "Foo Bar Baz",
+        "licenses": "CC0-1.0",
+        "keywords": ["foo", "bar", "baz"],
+    }
+
+
+@pytest.fixture
 def tmp_pkgdir(tmp_path):
     src = Path("testing/files/mini-ex")
     dest = tmp_path / "pkg"
