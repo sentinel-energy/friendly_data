@@ -1,0 +1,9 @@
+- path: file1
+  name: dst1
+  idxcols: [cola, colb]
+- path: file2
+  name: dst2
+  skip: 3
+- path: file3
+  aliases: {col1: cola, col2: colb}
+  idxcols: [col1]

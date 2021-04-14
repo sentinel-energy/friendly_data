@@ -12,6 +12,7 @@ from zipfile import ZipFile
 from frictionless import Layout, Package, Resource
 from glom import Assign, Coalesce, glom, Invoke, Iter, Spec, T
 from glom import Match, Optional as optmatch, Or
+from glom.matching import MatchError
 import pandas as pd
 
 from friendly_data.io import dwim_file, path_not_in, posixpathstr, relpaths
@@ -273,13 +274,6 @@ class pkgindex(list):
 
     """
 
-    _record = Match(
-        {
-            optmatch(k, default=None) if k in _idx_optional_keys else k: v
-            for k, v in _idx_key_map.items()
-        }
-    )
-
     @classmethod
     def from_file(cls, fpath: _path_t):
         """Read the index of files included in the data package
@@ -304,7 +298,21 @@ class pkgindex(list):
         idx = dwim_file(Path(fpath))
         if not isinstance(idx, list):
             raise ValueError(f"{fpath}: bad index file")
-        return pkgindex(idx)
+        return pkgindex(pkgindex._validate(idx))
+
+    @classmethod
+    def _validate(cls, idx: List[Dict]) -> List[Dict]:
+        record_match = Match(
+            {
+                optmatch(k, default=None) if k in _idx_optional_keys else k: v
+                for k, v in _idx_key_map.items()
+            }
+        )
+        try:
+            return glom(idx, Iter(record_match).all())
+        except MatchError as err:
+            print(f"{err.args[1]}: bad key in index file")
+            raise
 
     def records(self, keys: List[str]) -> Iterable[Dict]:
         """Return an iterable of index records.
@@ -329,7 +337,7 @@ class pkgindex(list):
         """
         glom(keys, [Match(Or(*_idx_key_map.keys()))])
         filter_keys = {k: k for k in keys}
-        return glom(self, Iter(self._record).map(filter_keys).all())
+        return glom(self, Iter().map(filter_keys).all())
 
     def get(self, key: str) -> List:
         """Get the value of `key` from all records as a list.

@@ -3,6 +3,7 @@ from operator import contains
 from pathlib import Path
 
 from glom import glom, Iter, T
+from glom.matching import MatchError
 import numpy as np
 import pytest
 
@@ -166,8 +167,21 @@ def test_pkgindex(ext):
     assert sum(map(len, idx.records(["path", "idxcols"]))) == len(idx) * 2
     assert sum(map(len, idx.records(["path", "idxcols", "skip"]))) == len(idx) * 3
 
+    with pytest.raises(MatchError):
+        idx.records(["path", "indexcols"])  # bad key: indexcols -> idxcols
 
-def test_read_pkg_index_errors(tmp_path):
+
+def test_pkgindex_bad_file(capsys):
+    fpath = Path(f"testing/files/indices/badindex.yaml")
+    with pytest.raises(MatchError):
+        # a bad key in the index file will trigger this error; aliases -> alias
+        pkgindex.from_file(fpath)
+
+    captured = capsys.readouterr()
+    assert "aliases: bad key in index file" in captured.out
+
+
+def test_pkgindex_errors(tmp_path):
     idxfile = tmp_path / "index.yaml"
     idxfile.touch()
     with pytest.raises(ValueError, match=f".*{idxfile.name}: bad index file"):
