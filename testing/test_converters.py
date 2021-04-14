@@ -80,3 +80,9 @@ def test_pkg_to_df_skip_rows(pkg_meta):
     expected = ["UK", "Ireland", "France"]
     np.testing.assert_array_equal(df.columns, expected)
     assert isinstance(df.index, pd.DatetimeIndex)
+
+
+def test_pkg_to_df_aliased_cols(pkg_meta):
+    _, pkg, __ = pkg_from_index(pkg_meta, "testing/files/alias_test/index.yaml")
+    df = to_df(pkg["resources"][0])
+    assert "resource_area" in df.columns

@@ -29,7 +29,7 @@ from pathlib import Path
 from typing import Dict, Iterable
 
 from frictionless import Resource
-from glom import glom
+from glom import glom, Iter, T
 import pandas as pd
 import xarray as xr
 
@@ -157,6 +157,17 @@ def to_df(resource: Resource, noexcept: bool = False, **kwargs) -> pd.DataFrame:
         for k in ("dtype", "na_values", "index_col", "parse_dates", "skiprows")
     ]
 
+    alias = glom(
+        resource,
+        (
+            "schema.fields",
+            Iter()
+            .filter(lambda i: "alias" in i)
+            .map(({1: "name", 2: "alias"}, T.values()))
+            .all(),
+            dict,
+        ),
+    )
     return reader(
         fullpath(resource),
         dtype=schema,
@@ -165,7 +176,7 @@ def to_df(resource: Resource, noexcept: bool = False, **kwargs) -> pd.DataFrame:
         parse_dates=date_cols,
         skiprows=skiprows,
         **kwargs,
-    )
+    ).rename(columns=alias)
 
 
 def to_da(resource: Resource, noexcept: bool = False, **kwargs) -> xr.DataArray:

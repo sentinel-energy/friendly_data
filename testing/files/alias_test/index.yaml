@@ -1,0 +1,6 @@
+- path: resource_area_size.csv
+  name: resource_area_size
+  idxcols:
+  - locs
+  - techs
+  alias: {resource_area_size: resource_area}

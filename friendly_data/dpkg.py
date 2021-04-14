@@ -16,7 +16,7 @@ from glom.matching import MatchError
 import pandas as pd
 
 from friendly_data.io import dwim_file, path_not_in, posixpathstr, relpaths
-from friendly_data.helpers import match, select, is_windows
+from friendly_data.helpers import match, noop_map, select, is_windows
 from friendly_data._types import _path_t
 import friendly_data_registry as registry
 
@@ -359,7 +359,41 @@ class pkgindex(list):
         return glom(self, [Coalesce(key, default=None)])
 
 
-def index_levels(_file: _path_t, idxcols: Iterable[str]) -> Tuple[_path_t, Dict]:
+# FIXME: fix col_t annotations when we drop Python 3.7
+def get_aliased_cols(cols: Iterable[str], col_t: str, alias: Dict[str, str]) -> Dict:
+    """Get aliased columns from the registry
+
+    Parameters
+    ----------
+    cols : Iterable[str]
+        List of columns to retrieve
+
+    col_t : Literal["cols", "idxcols"]
+        A literal string specifying the kind of column; one of: "cols", or "idxcols"
+
+    alias : Dict[str, str]
+        Dictionary of aliases; key is the column name in the dataset, and the
+        value is the column name in the registry that it is equivalent to.
+
+    Returns
+    -------
+    Dict
+        Schema for each column, the column name is the key, and the schema is
+        the value; see the doctring of :func:`friendly_data.dpkg.index_levels`
+        for more.
+
+    """
+    alias = noop_map(alias if isinstance(alias, dict) else {})
+    coldict = {col: {**registry.get(alias[col], col_t), "name": col} for col in cols}
+    for col in cols:
+        if col in alias:
+            coldict[col]["alias"] = alias[col]
+    return coldict
+
+
+def index_levels(
+    _file: _path_t, idxcols: Iterable[str], alias: Optional[Dict[str, str]] = None
+) -> Tuple[_path_t, Dict]:
     """Read a dataset and determine the index levels
 
     Parameters
@@ -396,7 +430,9 @@ def index_levels(_file: _path_t, idxcols: Iterable[str]) -> Tuple[_path_t, Dict]
         by reading the dataset and determining the full set of values.
 
     """
-    coldict = {col: registry.get(col, "idxcols") for col in idxcols}
+    coldict = get_aliased_cols(
+        idxcols, "idxcols", alias if isinstance(alias, dict) else {}
+    )
     # select columns with an enum constraint where the enum values are empty
     select_cols = match({"constraints": {"enum": []}, str: str})
     cols = glom(coldict.values(), Iter().filter(select_cols).map("name").all())
@@ -432,7 +468,7 @@ def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pkgindex]
     Returns
     -------
     Tuple[Path, Package, pandas.DataFrame]
-        The package directory, the `Package` object, and the index dataframe.
+        The package directory, the `Package` object, and the index.
 
     Examples
     --------
@@ -496,9 +532,11 @@ def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pkgindex]
     idx = pkgindex.from_file(fpath)
     resources = idx.records(["path", "skip"])
     pkg = create_pkg(meta, resources, basepath=f"{pkg_dir}")
-    for entry in idx.records(["path", "idxcols"]):
+    for entry in idx.records(["path", "idxcols", "alias"]):
         resource_name = Path(entry["path"]).stem
-        _, update = index_levels(pkg_dir / entry["path"], entry["idxcols"])
+        _, update = index_levels(
+            pkg_dir / entry["path"], entry["idxcols"], entry["alias"]
+        )
         update_pkg(pkg, resource_name, update)
         update_pkg(pkg, resource_name, {"primaryKey": entry["idxcols"]}, fields=False)
         # set of value columns
@@ -518,7 +556,8 @@ def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pkgindex]
             )
             - set(entry["idxcols"])
         )
-        update_pkg(pkg, resource_name, {col: registry.get(col, "cols") for col in cols})
+        coldict = get_aliased_cols(cols, "cols", entry["alias"])
+        update_pkg(pkg, resource_name, coldict)
     return pkg_dir, pkg, idx
 
 

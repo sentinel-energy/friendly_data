@@ -22,6 +22,7 @@ from friendly_data.dpkg import write_pkg
 from friendly_data.helpers import match, noop_map, select, is_windows
 from friendly_data.io import relpaths
 from friendly_data.metatools import get_license
+import friendly_data_registry as registry
 
 from .conftest import expected_schema
 
@@ -218,6 +219,21 @@ def test_pkg_from_index_skip_rows(pkg_meta):
         _, pkg, idx = pkg_from_index(pkg_meta, "testing/files/skip_test/index.yaml")
     expected = ["timesteps", "UK", "Ireland", "France"]
     assert glom(pkg, ("resources.0.schema.fields", Iter("name").all())) == expected
+
+
+def test_pkg_from_index_aliased_cols(pkg_meta):
+    _, pkg, idx = pkg_from_index(pkg_meta, "testing/files/alias_test/index.yaml")
+    ref = registry.get("resource_area", "cols")
+    col_schema, *_ = glom(
+        pkg,
+        (
+            "resources.0.schema.fields",
+            Iter(match({"alias": str, str: object})).all(),
+        ),
+    )
+    assert col_schema.pop("name") == "resource_area_size"
+    col_schema["name"] = col_schema.pop("alias")
+    assert col_schema == ref
 
 
 @pytest.mark.parametrize("idx_t", [".yaml", ".json"])
