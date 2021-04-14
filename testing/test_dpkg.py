@@ -16,14 +16,13 @@ from friendly_data.dpkg import pkg_from_index
 from friendly_data.dpkg import pkg_glossary
 from friendly_data.dpkg import read_pkg
 from friendly_data.dpkg import pkgindex
-from friendly_data.dpkg import _idx_key_map
 from friendly_data.dpkg import update_pkg
 from friendly_data.dpkg import write_pkg
-from friendly_data.helpers import match, select, is_windows
+from friendly_data.helpers import match, noop_map, select, is_windows
 from friendly_data.io import relpaths
 from friendly_data.metatools import get_license
 
-from .conftest import expected_schema, noop_map
+from .conftest import expected_schema
 
 
 @pytest.mark.skipif(not is_windows(), reason="only relevant for windows")

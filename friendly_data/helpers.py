@@ -37,6 +37,11 @@ def flatten_list(lst: Iterable) -> Iterable:
             yield el
 
 
+class noop_map(dict):
+    def __missing__(self, key):
+        return key
+
+
 def select(spec, **kwargs):
     """Wrap ``glom.Check`` with the default action set to ``glom.SKIP``.
 

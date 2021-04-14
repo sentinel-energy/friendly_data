@@ -9,12 +9,7 @@ from friendly_data.dpkg import fullpath
 from friendly_data.dpkg import read_pkg
 from friendly_data.io import HttpCache
 from friendly_data.metatools import ODLS
-
-
-class noop_map(dict):
-    def __missing__(self, key):
-        return key
-
+from friendly_data.helpers import noop_map
 
 default_type_map = {
     "object": "string",
