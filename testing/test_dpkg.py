@@ -310,12 +310,12 @@ def test_write_pkg(pkg, tmp_path):
     assert len(res) == 1
     assert res[0].exists()
 
-    assert not (tmp_path / "index.json").exists()
+    assert not (tmp_path / "index.yaml").exists()
     assert not (tmp_path / "glossary.json").exists()
 
 
 def test_write_pkg_idx_glossary(pkg, tmp_path):
-    idx = pkgindex.from_file(f"{pkg.basepath}/index.json")
+    idx = pkgindex.from_file(f"{pkg.basepath}/index.yaml")
     glossary = pkg_glossary(pkg, idx)
 
     res = write_pkg(pkg, tmp_path, idx=idx, glossary=glossary)
