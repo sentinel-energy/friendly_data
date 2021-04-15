@@ -38,6 +38,13 @@ def flatten_list(lst: Iterable) -> Iterable:
 
 
 class noop_map(dict):
+    """A noop mapping class
+
+    A dictionary subclass that falls back to noop on ``KeyError`` and returns
+    the key being looked up.
+
+    """
+
     def __missing__(self, key):
         return key
 

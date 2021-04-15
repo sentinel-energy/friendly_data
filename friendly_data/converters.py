@@ -21,7 +21,7 @@ Type mapping between the frictionless specification and pandas types:
 ``integer``     ``Int64``
 ``number``      ``float``
 ``string``      ``string``
-============   ===============
+=============  =================
 
 """
 

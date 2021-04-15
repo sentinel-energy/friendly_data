@@ -257,8 +257,8 @@ _idx_key_map = {
 _idx_optional_keys = ["idxcols", "name", "skip", "alias", "sheet"]
 
 
-    """Data package index
 class pkgindex(List[Dict]):
+    """Data package index (a subclass of ``list``)
 
     It is a list of dictionaries, where each dictionary is the respective
     record for a file.  A record may have the following keys:
@@ -293,6 +293,8 @@ class pkgindex(List[Dict]):
             If the file type is correct (YAML/JSON), but does not return a list
         RuntimeError
             If the file has an unknown extension (raised by :func:`friendly_data.io.dwim_file`)
+        MatchError
+            If the file contains any unknown keys
 
         """
         idx = dwim_file(Path(fpath))

@@ -1,6 +1,4 @@
-.. contents::
-
-For convenience, documentation for selected sections of the for the
+For convenience, documentation for selected sections of the
 ``frictionless`` API has been included below.
 
 Package

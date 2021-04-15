@@ -1,5 +1,3 @@
-.. contents::
-
 Technical documentation of functions and classes provided by the
 different ``friendly_data`` modules.
 
@@ -18,23 +16,30 @@ Registry API
 
 .. automodule:: friendly_data_registry
 
-Converters
-----------
+Command Line Interface
+----------------------
 
-.. automodule:: friendly_data.converters
+.. automodule:: friendly_data.cli
 
 Validation functions
 --------------------
 
 .. automodule:: friendly_data.validate
 
-Command Line Interface
-----------------------
+Data analysis interface
+-----------------------
 
-.. automodule:: friendly_data.cli
+The following modules provide interfaces that are useful when you are
+working with common data analysis frameworks like ``pandas`` and
+``xarray``.
+
+Converters
+==========
+
+.. automodule:: friendly_data.converters
 
 Time series API
----------------
+===============
 
 .. automodule:: friendly_data.tseries
 
@@ -44,10 +49,12 @@ Internal interfaces
 Internal functions and classes; useful if you are developing new
 features for ``friendly_data``.
 
-----
+File I/O
+========
 
 .. automodule:: friendly_data.io
 
-----
+Helper utilities
+================
 
 .. automodule:: friendly_data.helpers
