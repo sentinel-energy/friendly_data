@@ -257,8 +257,8 @@ _idx_key_map = {
 _idx_optional_keys = ["idxcols", "name", "skip", "alias", "sheet"]
 
 
-class pkgindex(list):
     """Data package index
+class pkgindex(List[Dict]):
 
     It is a list of dictionaries, where each dictionary is the respective
     record for a file.  A record may have the following keys:
@@ -275,7 +275,7 @@ class pkgindex(list):
     """
 
     @classmethod
-    def from_file(cls, fpath: _path_t):
+    def from_file(cls, fpath: _path_t) -> "pkgindex":
         """Read the index of files included in the data package
 
         Parameters
@@ -298,7 +298,7 @@ class pkgindex(list):
         idx = dwim_file(Path(fpath))
         if not isinstance(idx, list):
             raise ValueError(f"{fpath}: bad index file")
-        return pkgindex(pkgindex._validate(idx))
+        return cls(cls._validate(idx))
 
     @classmethod
     def _validate(cls, idx: List[Dict]) -> List[Dict]:
