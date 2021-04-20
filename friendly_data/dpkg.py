@@ -9,7 +9,7 @@ from typing import Dict, Iterable, List, Optional, Tuple, TypeVar, Union
 from warnings import warn
 from zipfile import ZipFile
 
-from frictionless import Layout, Package, Resource
+from frictionless import Detector, Layout, Package, Resource
 from glom import Assign, Coalesce, glom, Invoke, Iter, Spec, T
 from glom import Match, Optional as optmatch, Or
 from glom.matching import MatchError
@@ -53,7 +53,7 @@ def fullpath(resource: Resource) -> Path:
     return Path(resource.basepath) / resource["path"]
 
 
-def _resource(spec: Dict, basepath: _path_t = "") -> Resource:
+def _resource(spec: Dict, basepath: _path_t = "", infer=True) -> Resource:
     """Create a Resource object based on the dictionary
 
     Parameters
@@ -68,6 +68,9 @@ def _resource(spec: Dict, basepath: _path_t = "") -> Resource:
     basepath : Union[str, Path]
         Base path for resource object
 
+    infer : bool (default: True)
+        Whether to infer resource schema
+
     Returns
     -------
     Resource
@@ -81,14 +84,20 @@ def _resource(spec: Dict, basepath: _path_t = "") -> Resource:
         # the other hand uses a 0-indexed list, which has to be accounted for
         # in `to_df`
         opts["layout"] = Layout(skip_rows=[i + 1 for i in range(spec["skip"])])
+    if spec.get("schema"):
+        opts["detector"] = Detector(schema_patch=spec["schema"])
     res = Resource(path=str(spec["path"]), basepath=str(basepath), **opts)
+    if infer:
+        res.infer()
     return res
 
 
 _res_t = TypeVar("_res_t", str, Path, Dict)
 
 
-def create_pkg(meta: Dict, fpaths: Iterable[_res_t], basepath: _path_t = ""):
+def create_pkg(
+    meta: Dict, fpaths: Iterable[_res_t], basepath: _path_t = "", infer=True
+):
     """Create a datapackage from metadata and resources.
 
     If `resources` point to files that exist, their schema are inferred and
@@ -107,6 +116,9 @@ def create_pkg(meta: Dict, fpaths: Iterable[_res_t], basepath: _path_t = ""):
 
     basepath : str (default: empty string)
         Directory where the package files are located
+
+    infer : bool (default: True)
+        Whether to infer resource schema
 
     Returns
     -------
@@ -136,8 +148,7 @@ def create_pkg(meta: Dict, fpaths: Iterable[_res_t], basepath: _path_t = ""):
         spec = {"path": res} if isinstance(res, (str, Path)) else res
         if not keep(spec["path"]):
             continue
-        _res = _resource(spec, basepath=basepath)
-        _res.infer()
+        _res = _resource(spec, basepath=basepath, infer=infer)
         pkg.add_resource(_res)
 
     return _ensure_posix(pkg)
@@ -394,7 +405,7 @@ def get_aliased_cols(cols: Iterable[str], col_t: str, alias: Dict[str, str]) -> 
 
 
 def index_levels(
-    _file: _path_t, idxcols: Iterable[str], alias: Optional[Dict[str, str]] = None
+    _file: _path_t, idxcols: Iterable[str], alias: Dict[str, str] = {}
 ) -> Tuple[_path_t, Dict]:
     """Read a dataset and determine the index levels
 
@@ -405,6 +416,9 @@ def index_levels(
 
     idxcols : Iterable[str]
         List of columns in the dataset that constitute the index
+
+    alias : Dict[str, str]
+        Column aliases: {my_alias: col_in_registry}
 
     Returns
     -------
@@ -432,9 +446,7 @@ def index_levels(
         by reading the dataset and determining the full set of values.
 
     """
-    coldict = get_aliased_cols(
-        idxcols, "idxcols", alias if isinstance(alias, dict) else {}
-    )
+    coldict = get_aliased_cols(idxcols, "idxcols", alias)
     # select columns with an enum constraint where the enum values are empty
     select_cols = match({"constraints": {"enum": []}, str: str})
     cols = glom(coldict.values(), Iter().filter(select_cols).map("name").all())
@@ -532,34 +544,19 @@ def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pkgindex]
     """
     pkg_dir = Path(fpath).parent
     idx = pkgindex.from_file(fpath)
-    resources = idx.records(["path", "skip"])
-    pkg = create_pkg(meta, resources, basepath=f"{pkg_dir}")
-    for entry in idx.records(["path", "idxcols", "alias"]):
-        resource_name = Path(entry["path"]).stem
-        _, update = index_levels(
+    resources = []
+    for entry in idx.records(["path", "idxcols", "skip", "alias"]):
+        _, idxcoldict = index_levels(
             pkg_dir / entry["path"], entry["idxcols"], entry["alias"]
         )
-        update_pkg(pkg, resource_name, update)
-        update_pkg(pkg, resource_name, {"primaryKey": entry["idxcols"]}, fields=False)
+        entry.update(schema={"fields": idxcoldict, "primaryKey": entry["idxcols"]})
+        res = _resource(entry, basepath=f"{pkg_dir}", infer=True)
         # set of value columns
-        cols = (
-            glom(
-                pkg,
-                (
-                    "resources",
-                    Iter()
-                    .filter(select("path", equal_to=entry["path"]))
-                    .map("schema.fields")
-                    .flatten()
-                    .map("name")
-                    .all(),
-                    set,
-                ),
-            )
-            - set(entry["idxcols"])
-        )
+        cols = glom(res.schema.fields, (Iter("name"), set)) - set(entry["idxcols"])
         coldict = get_aliased_cols(cols, "cols", entry["alias"])
-        update_pkg(pkg, resource_name, coldict)
+        glom(entry, ("schema.fields", T.update(coldict)))
+        resources.append(entry)
+    pkg = create_pkg(meta, resources, basepath=f"{pkg_dir}")
     return pkg_dir, pkg, idx
 
 
