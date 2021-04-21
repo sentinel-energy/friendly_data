@@ -3,7 +3,6 @@
 """
 
 from pathlib import Path
-import re
 from typing import Dict, List, Union
 
 from glom import glom, Iter
@@ -17,15 +16,10 @@ from friendly_data.dpkg import pkg_glossary
 from friendly_data.dpkg import read_pkg
 from friendly_data.dpkg import pkgindex
 from friendly_data.dpkg import write_pkg
-from friendly_data.helpers import is_windows
+from friendly_data.helpers import is_windows, sanitise
 from friendly_data.io import dwim_file, path_not_in, relpaths
 from friendly_data.metatools import _fetch_license, check_license
 from friendly_data.doc import page
-
-
-def sanitise(string: str) -> str:
-    """Sanitise string for use as group/directory name"""
-    return "_".join(re.findall(re.compile("[^ @&()/]+"), string))
 
 
 def license_prompt() -> _license_t:  # pragma: no cover, interactive function

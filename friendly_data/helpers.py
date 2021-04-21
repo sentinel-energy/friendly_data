@@ -4,6 +4,7 @@ from collections import deque
 from collections.abc import Sequence
 from functools import partial
 from importlib import import_module
+import re
 import sys
 from typing import Iterable
 
@@ -18,6 +19,11 @@ def import_from(module: str, name: str):
 def is_windows() -> bool:
     """Check if we are on Windows"""
     return sys.platform in ("win32", "cygwin")
+
+
+def sanitise(string: str) -> str:
+    """Sanitise string for use as group/directory name"""
+    return "_".join(re.findall(re.compile("[^ @&()/]+"), string))
 
 
 # def from_hints(fn: Callable, arg: str) -> Tuple:
