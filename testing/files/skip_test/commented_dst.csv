@@ -1,5 +1,5 @@
 #Hourly electricity demand at point of use (GW),Individual Countries,,
-timesteps,UK,Ireland,France
+timestep,UK,Ireland,France
 01/01/2050 00:00,58.8,6.4,78.9
 01/01/2050 01:00,59.9,6.5,78.6
 01/01/2050 02:00,59.7,6.5,77.5

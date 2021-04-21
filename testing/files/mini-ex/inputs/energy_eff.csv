@@ -1,4 +1,4 @@
-locs,techs,energy_eff
+region,technology,energy_eff
 region1,ac_transmission:region2,0.85
 region1,ccgt,0.5
 region1,free_transmission:region1-1,1.0

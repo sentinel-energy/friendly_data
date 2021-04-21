@@ -1,4 +1,4 @@
 - path: commented_dst.csv
   skip: 1
   idxcols:
-  - timesteps
+  - timestep

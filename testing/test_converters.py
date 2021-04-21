@@ -85,4 +85,4 @@ def test_pkg_to_df_skip_rows(pkg_meta):
 def test_pkg_to_df_aliased_cols(pkg_meta):
     _, pkg, __ = pkg_from_index(pkg_meta, "testing/files/alias_test/index.yaml")
     df = to_df(pkg["resources"][0])
-    assert "resource_area" in df.columns
+    assert "region" in df.index.names

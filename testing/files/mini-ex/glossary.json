@@ -2,7 +2,7 @@
     {
         "path":"inputs\/cost_energy_cap.csv",
         "name":"cost_energy_cap",
-        "idxcols":"costs",
+        "idxcols":"cost",
         "values":[
             "monetary"
         ]
@@ -10,7 +10,7 @@
     {
         "path":"inputs\/cost_energy_cap.csv",
         "name":"cost_energy_cap",
-        "idxcols":"locs",
+        "idxcols":"region",
         "values":[
             "region1",
             "region1-1",
@@ -22,7 +22,7 @@
     {
         "path":"inputs\/cost_energy_cap.csv",
         "name":"cost_energy_cap",
-        "idxcols":"techs",
+        "idxcols":"technology",
         "values":[
             "ac_transmission:region1",
             "ac_transmission:region2",
@@ -33,7 +33,7 @@
     {
         "path":"inputs\/energy_eff.csv",
         "name":"energy_eff",
-        "idxcols":"locs",
+        "idxcols":"region",
         "values":[
             "region1",
             "region1-1",
@@ -45,7 +45,7 @@
     {
         "path":"inputs\/energy_eff.csv",
         "name":"energy_eff",
-        "idxcols":"techs",
+        "idxcols":"technology",
         "values":[
             "ac_transmission:region1",
             "ac_transmission:region2",
@@ -59,9 +59,9 @@
         ]
     },
     {
-        "path":"inputs\/names.csv",
-        "name":"names",
-        "idxcols":"techs",
+        "path":"inputs\/description.csv",
+        "name":"description",
+        "idxcols":"technology",
         "values":[
             "battery",
             "free_transmission",
@@ -74,7 +74,7 @@
     {
         "path":"outputs\/capacity_factor.csv",
         "name":"capacity_factor",
-        "idxcols":"carriers",
+        "idxcols":"carrier",
         "values":[
             "power"
         ]
@@ -82,7 +82,7 @@
     {
         "path":"outputs\/capacity_factor.csv",
         "name":"capacity_factor",
-        "idxcols":"locs",
+        "idxcols":"region",
         "values":[
             "region1",
             "region1-1",
@@ -94,7 +94,7 @@
     {
         "path":"outputs\/capacity_factor.csv",
         "name":"capacity_factor",
-        "idxcols":"techs",
+        "idxcols":"technology",
         "values":[
             "ac_transmission:region1",
             "ac_transmission:region2",
@@ -110,7 +110,7 @@
     {
         "path":"outputs\/capacity_factor.csv",
         "name":"capacity_factor",
-        "idxcols":"timesteps",
+        "idxcols":"timestep",
         "values":[
     
         ]
@@ -118,7 +118,7 @@
     {
         "path":"outputs\/resource_area.csv",
         "name":"resource_area",
-        "idxcols":"locs",
+        "idxcols":"region",
         "values":[
             "region1-1",
             "region1-2",
@@ -128,7 +128,7 @@
     {
         "path":"outputs\/resource_area.csv",
         "name":"resource_area",
-        "idxcols":"techs",
+        "idxcols":"technology",
         "values":[
             "csp"
         ]

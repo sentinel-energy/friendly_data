@@ -78,7 +78,7 @@ def test_create(tmp_pkgdir):
     (dest / "glossary.json").unlink()
     files = [
         dest / f"inputs/{f}"
-        for f in ("names.csv", "inheritance.csv", "loc_coordinates.csv")
+        for f in ("description.csv", "inheritance.csv", "loc_coordinates.csv")
     ]
     assert _create({"name": "foo", "license": "CC0-1.0"}, dest / "index.yaml", *files)
     assert (dest / "datapackage.json").exists() and (dest / "glossary.json").exists()
@@ -97,10 +97,10 @@ def test_add(tmp_pkgdir):
     count = glom(json.loads(pkgjson.read_text()), ("resources", len))
     files = [
         dest / f"inputs/{f}"
-        for f in ("names.csv", "inheritance.csv", "loc_coordinates.csv")
+        for f in ("description.csv", "inheritance.csv", "loc_coordinates.csv")
     ]
     assert add(dest, *files)
-    # names.csv is already included
+    # description.csv is already included
     assert glom(json.loads(pkgjson.read_text()), ("resources", len)) == count + 2
 
 
@@ -126,7 +126,7 @@ def test_update(tmp_pkgdir):
     meta = {
         "path": "inputs/inheritance.csv",
         "name": "inheritance",
-        "idxcols": ["techs"],
+        "idxcols": ["technology"],
     }
     idx = cast(List, dwim_file(dest / "index.yaml")) + [meta]
     # there are multiple index files in the test pkg, write to both as which
@@ -146,14 +146,14 @@ def test_update(tmp_pkgdir):
 
 def test_rm_from_et_al(tmp_pkgdir):
     _, dest = tmp_pkgdir
-    dstpath = dest / "inputs/names.csv"
+    dstpath = dest / "inputs/description.csv"
 
     with pytest.warns(RuntimeWarning):  # multiple indices
         idx = _rm_from_idx(dest, dstpath)
-    assert "inputs/names.csv" not in glom(idx, ["path"])
+    assert "inputs/description.csv" not in glom(idx, ["path"])
 
     glossary = _rm_from_glossary(dest, dstpath)
-    assert "inputs/names.csv" not in glossary["path"].unique()
+    assert "inputs/description.csv" not in glossary["path"].unique()
 
     (dest / "glossary.json").unlink()  # pkg w/o glossary
     assert _rm_from_glossary(dest, dstpath) is None
@@ -166,7 +166,7 @@ def test_rm_from_et_al(tmp_pkgdir):
 def test_remove(tmp_pkgdir):
     _, dest = tmp_pkgdir
     with pytest.warns(RuntimeWarning):  # multiple indices
-        msg = remove(dest, dest / "inputs/names.csv")  # pkg w/ glossary
+        msg = remove(dest, dest / "inputs/description.csv")  # pkg w/ glossary
     assert msg and msg.count("json") == 2
     assert msg and msg.count("yaml") == 1
 

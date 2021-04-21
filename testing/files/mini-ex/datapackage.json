@@ -19,7 +19,7 @@
             "schema": {
                 "fields": [
                     {
-                        "name": "costs",
+                        "name": "cost",
                         "type": "string",
                         "format": "default",
                         "constraints": {
@@ -29,7 +29,7 @@
                         }
                     },
                     {
-                        "name": "locs",
+                        "name": "region",
                         "type": "string",
                         "format": "default",
                         "constraints": {
@@ -43,7 +43,7 @@
                         }
                     },
                     {
-                        "name": "techs",
+                        "name": "technology",
                         "type": "string",
                         "format": "default",
                         "constraints": {
@@ -65,9 +65,9 @@
                     ""
                 ],
                 "primaryKey": [
-                    "costs",
-                    "locs",
-                    "techs"
+                    "cost",
+                    "region",
+                    "technology"
                 ]
             }
         },
@@ -81,7 +81,7 @@
             "schema": {
                 "fields": [
                     {
-                        "name": "locs",
+                        "name": "region",
                         "type": "string",
                         "format": "default",
                         "constraints": {
@@ -95,7 +95,7 @@
                         }
                     },
                     {
-                        "name": "techs",
+                        "name": "technology",
                         "type": "string",
                         "format": "default",
                         "constraints": {
@@ -126,22 +126,22 @@
                     ""
                 ],
                 "primaryKey": [
-                    "locs",
-                    "techs"
+                    "region",
+                    "technology"
                 ]
             }
         },
         {
-            "path": "inputs/names.csv",
+            "path": "inputs/description.csv",
             "profile": "tabular-data-resource",
-            "name": "names",
+            "name": "description",
             "format": "csv",
             "mediatype": "text/csv",
             "encoding": "utf-8",
             "schema": {
                 "fields": [
                     {
-                        "name": "techs",
+                        "name": "technology",
                         "type": "string",
                         "format": "default",
                         "constraints": {
@@ -156,7 +156,7 @@
                         }
                     },
                     {
-                        "name": "names",
+                        "name": "description",
                         "type": "string",
                         "format": "default"
                     }
@@ -165,7 +165,7 @@
                     ""
                 ],
                 "primaryKey": [
-                    "techs"
+                    "technology"
                 ]
             }
         },
@@ -179,7 +179,7 @@
             "schema": {
                 "fields": [
                     {
-                        "name": "carriers",
+                        "name": "carrier",
                         "type": "string",
                         "format": "default",
                         "constraints": {
@@ -189,7 +189,7 @@
                         }
                     },
                     {
-                        "name": "locs",
+                        "name": "region",
                         "type": "string",
                         "format": "default",
                         "constraints": {
@@ -203,7 +203,7 @@
                         }
                     },
                     {
-                        "name": "techs",
+                        "name": "technology",
                         "type": "string",
                         "format": "default",
                         "constraints": {
@@ -221,7 +221,7 @@
                         }
                     },
                     {
-                        "name": "timesteps",
+                        "name": "timestep",
                         "type": "datetime",
                         "format": "default"
                     },
@@ -239,10 +239,10 @@
                     ""
                 ],
                 "primaryKey": [
-                    "carriers",
-                    "locs",
-                    "techs",
-                    "timesteps"
+                    "carrier",
+                    "region",
+                    "technology",
+                    "timestep"
                 ]
             }
         },
@@ -256,7 +256,7 @@
             "schema": {
                 "fields": [
                     {
-                        "name": "locs",
+                        "name": "region",
                         "type": "string",
                         "format": "default",
                         "constraints": {
@@ -268,7 +268,7 @@
                         }
                     },
                     {
-                        "name": "techs",
+                        "name": "technology",
                         "type": "string",
                         "format": "default",
                         "constraints": {
@@ -290,8 +290,8 @@
                     ""
                 ],
                 "primaryKey": [
-                    "locs",
-                    "techs"
+                    "region",
+                    "technology"
                 ]
             }
         }

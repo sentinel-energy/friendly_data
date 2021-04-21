@@ -12,7 +12,7 @@ import friendly_data_registry as registry
 @pytest.mark.parametrize(
     "col, col_t, expectation",
     [
-        ("locs", "idxcols", does_not_raise()),
+        ("region", "idxcols", does_not_raise()),
         ("storage", "cols", does_not_raise()),
         (
             "notinreg",

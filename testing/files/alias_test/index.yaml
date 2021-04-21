@@ -1,6 +1,6 @@
-- path: resource_area_size.csv
-  name: resource_area_size
+- path: resource_area.csv
+  name: resource_area
   idxcols:
-  - locs
-  - techs
-  alias: {resource_area_size: resource_area}
+  - node
+  - technology
+  alias: {node: region}

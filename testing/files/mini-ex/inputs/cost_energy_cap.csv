@@ -1,4 +1,4 @@
-costs,locs,techs,cost_energy_cap
+cost,region,technology,cost_energy_cap
 monetary,region1,ac_transmission:region2,200.0
 monetary,region1,ccgt,750.0
 monetary,region1-1,csp,1000.0

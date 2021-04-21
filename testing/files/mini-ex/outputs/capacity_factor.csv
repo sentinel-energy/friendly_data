@@ -1,4 +1,4 @@
-carriers,locs,techs,timesteps,capacity_factor
+carrier,region,technology,timestep,capacity_factor
 power,region1,ac_transmission:region2,2005-01-01 00:00:00,0.0
 power,region1,ac_transmission:region2,2005-01-01 01:00:00,0.0
 power,region1,ac_transmission:region2,2005-01-01 02:00:00,0.0

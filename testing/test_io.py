@@ -17,7 +17,7 @@ def test_relpaths():
 
 def test_path_et_al():
     pkgdir = Path("testing/files/mini-ex")
-    assert path_in(pkgdir.glob("inputs/*.csv"), pkgdir / "inputs/names.csv")
+    assert path_in(pkgdir.glob("inputs/*.csv"), pkgdir / "inputs/description.csv")
     assert path_not_in(pkgdir.glob("inputs/*.csv"), pkgdir / "index.json")
 
 

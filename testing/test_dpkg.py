@@ -64,7 +64,7 @@ def test_pkg_creation():
 def test_pkg_creation_skip_rows(pkg_meta):
     resources = [{"path": "commented_dst.csv", "skip": 1}]
     pkg = create_pkg(pkg_meta, resources, basepath="testing/files/skip_test")
-    expected = ["timesteps", "UK", "Ireland", "France"]
+    expected = ["timestep", "UK", "Ireland", "France"]
     assert glom(pkg, ("resources.0.schema.fields", Iter("name").all())) == expected
 
 
@@ -184,18 +184,37 @@ def test_pkgindex_errors(tmp_path):
 @pytest.mark.parametrize(
     "csvfile, idxcols, ncatcols",
     [
-        ("inputs/cost_energy_cap.csv", ["costs", "locs", "techs"], 3),
-        ("inputs/energy_eff.csv", ["locs", "techs"], 2),
-        ("inputs/names.csv", ["techs"], 1),
-        ("outputs/capacity_factor.csv", ["carriers", "locs", "techs", "timesteps"], 3),
-        ("outputs/resource_area.csv", ["locs", "techs"], 2),
+        ("inputs/cost_energy_cap.csv", ["cost", "region", "technology"]),
+        ("inputs/cost_energy_cap.csv", ["cost", "region"]),  # specified columns only
+        ("inputs/energy_eff.csv", ["region", "technology"]),
+        ("inputs/description.csv", ["technology"]),
+        (
+            "outputs/capacity_factor.csv",
+            ["carrier", "region", "technology", "timestep"],
+        ),
+        # specified columns only
+        ("outputs/capacity_factor.csv", ["carrier", "technology", "timestep"]),
+        ("outputs/resource_area.csv", ["region", "technology"]),
     ],
 )
 def test_index_levels(csvfile, idxcols, ncatcols):
     pkgdir = Path("testing/files/mini-ex")
     _, coldict = index_levels(pkgdir / csvfile, idxcols)
     assert all(map(contains, idxcols, coldict))
-    cols_w_vals = glom(
+    # NOTE: metadata for categorical index columns isn't set as categorical if
+    # they are not in the registry
+    all_idxcols = glom(registry.getall(), ("idxcols", ["name"]))
+    lvl_counts = {
+        k: len(v)
+        for k, v in zip(
+            df.index.names,
+            df.index.levels
+            if isinstance(df.index, pd.MultiIndex)
+            else [df.index.unique()],
+        )
+        if "timestep" not in k and k in all_idxcols  # category columns only
+    }
+    catcols = glom(
         coldict.values(),
         [match({"constraints": {"enum": lambda i: len(i) > 0}, str: str})],
     )
@@ -216,14 +235,14 @@ def test_pkg_from_index(idx_t, pkg_meta):
 
 def test_pkg_from_index_skip_rows(pkg_meta):
     with pytest.warns(RuntimeWarning, match=".+: not in registry"):
-        _, pkg, idx = pkg_from_index(pkg_meta, "testing/files/skip_test/index.yaml")
-    expected = ["timesteps", "UK", "Ireland", "France"]
+        _, pkg, _ = pkg_from_index(pkg_meta, "testing/files/skip_test/index.yaml")
+    expected = ["timestep", "UK", "Ireland", "France"]
     assert glom(pkg, ("resources.0.schema.fields", Iter("name").all())) == expected
 
 
 def test_pkg_from_index_aliased_cols(pkg_meta):
-    _, pkg, idx = pkg_from_index(pkg_meta, "testing/files/alias_test/index.yaml")
-    ref = registry.get("resource_area", "cols")
+    _, pkg, _ = pkg_from_index(pkg_meta, "testing/files/alias_test/index.yaml")
+    ref = registry.get("region", "idxcols")
     col_schema, *_ = glom(
         pkg,
         (
@@ -231,8 +250,9 @@ def test_pkg_from_index_aliased_cols(pkg_meta):
             Iter(match({"alias": str, str: object})).all(),
         ),
     )
-    assert col_schema.pop("name") == "resource_area_size"
+    assert col_schema.pop("name") == "node"
     col_schema["name"] = col_schema.pop("alias")
+    col_schema["constraints"]["enum"] = []  # registry doesn't include levels
     assert col_schema == ref
 
 
