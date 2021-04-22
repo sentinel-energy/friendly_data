@@ -35,7 +35,7 @@ import xarray as xr
 
 from friendly_data._types import _path_t
 from friendly_data.dpkg import fullpath, get_aliased_cols, index_levels, _resource
-from friendly_data.helpers import consume, import_from, sanitise
+from friendly_data.helpers import consume, import_from, noop_map, sanitise
 
 # TODO: compressed files
 _source_ts = ["csv", "xls", "xlsx"]  # "sqlite"
@@ -165,10 +165,10 @@ def to_df(resource: Resource, noexcept: bool = False, **kwargs) -> pd.DataFrame:
             .filter(lambda i: "alias" in i)
             .map(({1: "name", 2: "alias"}, T.values()))
             .all(),
-            dict,
+            noop_map,
         ),
     )
-    return reader(
+    df = reader(
         fullpath(resource),
         dtype=schema,
         na_values=na_values,
@@ -177,6 +177,8 @@ def to_df(resource: Resource, noexcept: bool = False, **kwargs) -> pd.DataFrame:
         skiprows=skiprows,
         **kwargs,
     ).rename(columns=alias)
+    df.index.names = [alias[n] for n in df.index.names]
+    return df
 
 
 def to_da(resource: Resource, noexcept: bool = False, **kwargs) -> xr.DataArray:
