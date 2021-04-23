@@ -142,7 +142,7 @@ def dwim_file(fpath: _path_t, data=None):
             if data is None:
                 return json.load(stream)
             else:
-                json.dump(data, stream, indent=4)
+                json.dump(data, stream, indent=2)
     else:
         raise RuntimeError(f"{fpath}: not a JSON or YAML file")
 
