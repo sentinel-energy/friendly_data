@@ -13,5 +13,6 @@ Contents
    hands-on
    registry
    advanced
+   devnotes
 
 You can also download the hands-on overview as a :download:`PDF<_build/latex/sentinel-data-format.pdf>`.
