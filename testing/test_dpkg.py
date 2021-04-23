@@ -5,6 +5,7 @@ from pathlib import Path
 from glom import glom, Iter, T
 from glom.matching import MatchError
 import numpy as np
+import pandas as pd
 import pytest
 
 from friendly_data.converters import _schema, _source_type
@@ -181,8 +182,9 @@ def test_pkgindex_errors(tmp_path):
         pkgindex.from_file(idxfile)
 
 
+@pytest.mark.parametrize("is_df", [False, True])
 @pytest.mark.parametrize(
-    "csvfile, idxcols, ncatcols",
+    "csvfile, idxcols",
     [
         ("inputs/cost_energy_cap.csv", ["cost", "region", "technology"]),
         ("inputs/cost_energy_cap.csv", ["cost", "region"]),  # specified columns only
@@ -197,9 +199,10 @@ def test_pkgindex_errors(tmp_path):
         ("outputs/resource_area.csv", ["region", "technology"]),
     ],
 )
-def test_index_levels(csvfile, idxcols, ncatcols):
-    pkgdir = Path("testing/files/mini-ex")
-    _, coldict = index_levels(pkgdir / csvfile, idxcols)
+def test_index_levels(is_df, csvfile, idxcols):
+    csvfile = Path("testing/files/mini-ex") / csvfile
+    df = pd.read_csv(csvfile, index_col=idxcols)
+    _, coldict = index_levels(df if is_df else csvfile, idxcols)
     assert all(map(contains, idxcols, coldict))
     # NOTE: metadata for categorical index columns isn't set as categorical if
     # they are not in the registry
@@ -216,10 +219,16 @@ def test_index_levels(csvfile, idxcols, ncatcols):
     }
     catcols = glom(
         coldict.values(),
-        [match({"constraints": {"enum": lambda i: len(i) > 0}, str: str})],
+        (
+            Iter(match({"name": str, "constraints": {"enum": list}, str: str}))
+            .map({1: "name", 2: ("constraints.enum", len)})
+            .map(T.values())
+            .all(),
+            dict,
+        ),
     )
-    # ncatcols: only categorical columns are inferred
-    assert len(cols_w_vals) == ncatcols
+    assert catcols == lvl_counts  # check all levels are found
+    # TODO: aliased columns
 
 
 @pytest.mark.parametrize("idx_t", [".yaml", ".json"])

@@ -76,6 +76,8 @@ def _resource(spec: Dict, basepath: _path_t = "", infer=True) -> Resource:
     Resource
 
     """
+    if isinstance(spec, Resource):
+        return spec
     assert "path" in spec, f"Incomplete resource spec: {spec}"
     opts = {}
     if spec.get("skip"):
@@ -404,15 +406,18 @@ def get_aliased_cols(cols: Iterable[str], col_t: str, alias: Dict[str, str]) -> 
     return coldict
 
 
+_file_or_df_t = Union[_path_t, pd.DataFrame]
+
+
 def index_levels(
-    _file: _path_t, idxcols: Iterable[str], alias: Dict[str, str] = {}
-) -> Tuple[_path_t, Dict]:
+    file_or_df: _file_or_df_t, idxcols: Iterable[str], alias: Dict[str, str] = {}
+) -> Tuple[_file_or_df_t, Dict]:
     """Read a dataset and determine the index levels
 
     Parameters
     ----------
-    _file : Union[str, Path]
-        Path to the dataset
+    file_or_df : Union[str, Path, pd.DataFrame]
+        A dataframe, or the path to a CSV file
 
     idxcols : Iterable[str]
         List of columns in the dataset that constitute the index
@@ -422,7 +427,7 @@ def index_levels(
 
     Returns
     -------
-    Tuple[str, Dict]
+    Tuple[Union[str, Path, pd.DataFrame], Dict]
 
         Tuple of path to the dataset, and the schema of each column as a dictionary.
         If `idxcols` was ["foo", "bar"], the dictionary might look like::
@@ -450,7 +455,11 @@ def index_levels(
     # select columns with an enum constraint where the enum values are empty
     select_cols = match({"constraints": {"enum": []}, str: str})
     cols = glom(coldict.values(), Iter().filter(select_cols).map("name").all())
-    idx = pd.read_csv(_file, index_col=cols).index
+    if isinstance(file_or_df, pd.DataFrame):
+        diff = list(set(idxcols) - set(cols))
+        idx = file_or_df.index.droplevel(diff)
+    else:
+        idx = pd.read_csv(file_or_df, index_col=cols).index
     if isinstance(idx, pd.MultiIndex):
         levels = {col: list(lvls) for col, lvls in zip(idx.names, idx.levels)}
     else:
@@ -460,7 +469,7 @@ def index_levels(
         coldict.values(),
         Iter().filter(select_cols).map(Assign("constraints.enum", enum_vals)).all(),
     )
-    return _file, coldict
+    return file_or_df, coldict
 
 
 def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pkgindex]:
