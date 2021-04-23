@@ -4,3 +4,9 @@
   - node
   - technology
   alias: {node: region}
+- path: flow_in.csv
+  name: flow_in
+  idxcols:
+  - technology
+  - node
+  alias: {node: region, energy_in: flow_in}

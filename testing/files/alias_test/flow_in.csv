@@ -1,0 +1,14 @@
+technology,node,unit,energy_in
+ac_ohl_mountain_transmission,ALB,twh_per_year,-5.7133816363653525
+ac_ohl_mountain_transmission,AUT,twh_per_year,-23.174113517019894
+ac_ohl_transmission,SVK,twh_per_year,-60.88797799847403
+ac_ohl_transmission,SVN,twh_per_year,-77.8132877452423
+ac_ohl_transmission,SWE,twh_per_year,-265.3142748057963
+battery,ALB,twh_per_year,-0.000352828351722384
+battery,AUT,twh_per_year,-0.0009888655255923674
+biofuel_boiler,SWE,twh_per_year,-0.03231676184504856
+biofuel_heat_storage_small,ALB,twh_per_year,-0.00744848129952704
+biofuel_heat_storage_small,AUT,twh_per_year,-0.02179694908904061
+biofuel_tech_heat_to_demand,SWE,twh_per_year,-0.025778019998708802
+biofuel_to_diesel,ALB,twh_per_year,-0.5954017080882761
+biofuel_to_diesel,ALB,twh_per_year,-0.03222322907144419
