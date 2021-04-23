@@ -24,5 +24,18 @@
        {% endif %}
        {% endfor %}
 {% endif %}
+
+{% if alias is not undefined %}
+    Common aliases:
+
+    .. list-table::
+       :widths: auto
+       :align: left
+
+       {% for entry in alias %}
+       * - {{ entry['name'] }}
+         - {{ entry['description'] }}
+       {% endfor %}
+{% endif %}
     .. __: https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/{{ file }}
 

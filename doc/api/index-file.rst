@@ -20,3 +20,15 @@ Keys supported by the Package Index file
     Typically the name of a dataset is derived from its file name, but
     in the future this key might be used to provide an alternate more
     descriptive name to a dataset.
+
+**alias** (mapping or dictionary)
+
+    A mapping of column names in the dataset that should be mapped to
+    another column in the registry; e.g. you use ``node`` for
+    locations, and you want the corresponding column to be mapped to
+    ``region`` in the registry.  This can be specified with an index
+    entry like this::
+
+      - path: demand.csv
+        idxcols: [node, timestep]
+        alias: {node: region}

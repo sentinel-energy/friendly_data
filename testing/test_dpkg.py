@@ -162,7 +162,7 @@ def test_pkgindex(ext):
 
 
 def test_pkgindex_bad_file(capsys):
-    fpath = Path(f"testing/files/indices/badindex.yaml")
+    fpath = Path("testing/files/indices/badindex.yaml")
     with pytest.raises(MatchError):
         # a bad key in the index file will trigger this error; aliases -> alias
         pkgindex.from_file(fpath)
