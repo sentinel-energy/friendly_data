@@ -7,6 +7,7 @@ import pytest
 
 from friendly_data.dpkg import fullpath
 from friendly_data.dpkg import read_pkg
+from friendly_data.dpkg import pkg_from_index
 from friendly_data.io import HttpCache
 from friendly_data.metatools import ODLS
 from friendly_data.helpers import noop_map
@@ -77,6 +78,12 @@ def pkg():
     pkgdir = Path("testing/files/mini-ex")
     dpkg_json = pkgdir / "datapackage.json"
     return read_pkg(dpkg_json)
+
+
+@pytest.fixture
+def pkg_w_alias(pkg_meta):
+    _, pkg, _ = pkg_from_index(pkg_meta, "testing/files/alias_test/index.yaml")
+    return pkg
 
 
 @pytest.fixture

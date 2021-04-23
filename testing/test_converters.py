@@ -1,9 +1,11 @@
-from glom import Assign, glom
+from glom import Assign, glom, Iter, T
 import numpy as np
 import pandas as pd
 import pytest
 
-from friendly_data.converters import to_df, _schema, _source_type
+from friendly_data.converters import from_df
+from friendly_data.converters import from_dst
+from friendly_data.converters import to_df
 from friendly_data.dpkg import pkg_from_index
 
 from .conftest import expected_schema
@@ -82,8 +84,37 @@ def test_pkg_to_df_skip_rows(pkg_meta):
     assert isinstance(df.index, pd.DatetimeIndex)
 
 
-def test_pkg_to_df_aliased_cols(pkg_meta):
-    _, pkg, __ = pkg_from_index(pkg_meta, "testing/files/alias_test/index.yaml")
-    df = to_df(pkg["resources"][1])
+def test_pkg_to_df_aliased_cols(pkg_w_alias):
+    df = to_df(pkg_w_alias["resources"][1])
     assert "region" in df.index.names
     assert "flow_in" in df.columns
+
+
+def test_df_to_resource(tmp_path, pkg_w_alias):
+    df = to_df(pkg_w_alias["resources"][1])
+    res = from_df(df, basepath=tmp_path)
+    fpath = f"{'_'.join(df.columns)}.csv"
+    assert (tmp_path / fpath).exists()
+    assert fpath == res["path"]
+
+    df.columns = ["unit", "energy_in"]
+    df.index.names = ["technology", "node"]
+    alias = {"node": "region", "energy_in": "flow_in"}
+    res = from_df(df, basepath=tmp_path, alias=alias)
+    res_alias = glom(
+        res,
+        (
+            "schema.fields",
+            Iter()
+            .filter(lambda i: "alias" in i)
+            .map(({1: "name", 2: "alias"}, T.values()))
+            .all(),
+            dict,
+        ),
+    )
+    assert res_alias == alias
+
+
+@pytest.mark.skip
+def test_dst_to_pkg(tmp_path, pkg_w_alias):
+    pass

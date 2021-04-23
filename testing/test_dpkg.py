@@ -249,11 +249,10 @@ def test_pkg_from_index_skip_rows(pkg_meta):
     assert glom(pkg, ("resources.0.schema.fields", Iter("name").all())) == expected
 
 
-def test_pkg_from_index_aliased_cols(pkg_meta):
-    _, pkg, _ = pkg_from_index(pkg_meta, "testing/files/alias_test/index.yaml")
+def test_pkg_from_index_aliased_cols(pkg_w_alias):
     ref = registry.get("region", "idxcols")
     col_schema, *_ = glom(
-        pkg,
+        pkg_w_alias,
         (
             "resources.0.schema.fields",
             Iter(match({"alias": str, str: object})).all(),

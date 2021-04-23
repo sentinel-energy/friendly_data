@@ -272,8 +272,13 @@ def from_df(
 
     coldict = get_aliased_cols(df.columns, "cols", alias)
     _, idxcoldict = index_levels(df, df.index.names, alias)
-    schema = {"fields": {**idxcoldict, **coldict}, "primaryKey": list(df.index.names)}
-    spec = {"path": f"{datapath}", "schema": schema}
+    spec = {
+        "path": f"{datapath}",
+        "schema": {
+            "fields": {**idxcoldict, **coldict},
+            "primaryKey": list(df.index.names),
+        },
+    }
     return _resource(spec, basepath=basepath)
 
 
