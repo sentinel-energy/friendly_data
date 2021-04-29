@@ -26,7 +26,7 @@ Type mapping between the frictionless specification and pandas types:
 """
 
 from pathlib import Path
-from typing import Dict, Iterable, List
+from typing import Dict, Iterable, List, Union
 
 from frictionless import Resource
 from glom import glom, Iter, T
@@ -38,7 +38,6 @@ from friendly_data.dpkg import fullpath, get_aliased_cols, index_levels, _resour
 from friendly_data.helpers import consume, import_from, noop_map, sanitise
 
 # TODO: compressed files
-_source_ts = ["csv", "xls", "xlsx"]  # "sqlite"
 _pd_types = {
     "boolean": "bool",
     "date": "datetime64",
@@ -50,6 +49,12 @@ _pd_types = {
     "number": "float",
     "string": "string",
 }
+_pd_readers = {
+    "csv": "read_csv",
+    "xls": "read_excel",
+    "xlsx": "read_excel",
+    # "sqlite": "read_sql",
+}
 
 
 def _source_type(source: _path_t) -> str:
@@ -60,9 +65,14 @@ def _source_type(source: _path_t) -> str:
     """
     # FIXME: use file magic
     source_t = Path(source).suffix.strip(".").lower()
-    if source_t not in _source_ts:
-        raise ValueError(f"unsupported source: {source_t}")
+    if source_t not in _pd_readers:
+        raise ValueError(f"unsupported source: {source}")
     return source_t
+
+
+def _reader(fpath: _path_t, **kwargs) -> Union[pd.DataFrame, pd.Series]:
+    reader = import_from("pandas", _pd_readers[_source_type(fpath)])
+    return reader(fpath, **kwargs)
 
 
 def _schema(resource: Resource, type_map: Dict[str, str]) -> Dict[str, str]:
@@ -115,20 +125,6 @@ def to_df(resource: Resource, noexcept: bool = False, **kwargs) -> pd.DataFrame:
     """
     from pandas._libs.parsers import STR_NA_VALUES
 
-    pd_readers = {
-        "csv": "read_csv",
-        "xls": "read_excel",
-        "xlsx": "read_excel",
-        # "sqlite": "read_sql",
-    }
-    try:
-        reader = import_from("pandas", pd_readers[_source_type(resource["path"])])
-    except ValueError:
-        if noexcept:
-            return pd.DataFrame()
-        else:
-            raise
-
     # parse dates
     schema = _schema(resource, _pd_types)
     date_cols = [col for col, col_t in schema.items() if "datetime64" in col_t]
@@ -168,17 +164,24 @@ def to_df(resource: Resource, noexcept: bool = False, **kwargs) -> pd.DataFrame:
             noop_map,
         ),
     )
-    df = reader(
-        fullpath(resource),
-        dtype=schema,
-        na_values=na_values,
-        index_col=index_col,
-        parse_dates=date_cols,
-        skiprows=skiprows,
-        **kwargs,
-    ).rename(columns=alias)
-    df.index.names = [alias[n] for n in df.index.names]
-    return df
+    try:
+        df = _reader(
+            fullpath(resource),
+            dtype=schema,
+            na_values=na_values,
+            index_col=index_col,
+            parse_dates=date_cols,
+            skiprows=skiprows,
+            **kwargs,
+        ).rename(columns=alias)
+    except ValueError:
+        if noexcept:
+            return pd.DataFrame()
+        else:
+            raise
+    else:
+        df.index.names = [alias[n] for n in df.index.names]
+        return df
 
 
 def to_da(resource: Resource, noexcept: bool = False, **kwargs) -> xr.DataArray:
