@@ -257,19 +257,6 @@ def update_pkg(pkg: Package, resource: str, schema_update: Dict, fields: bool = 
     return pkg.metadata_valid
 
 
-# set of keys that are accepted in a data package
-_idx_key_map = {
-    "path": str,
-    "idxcols": [str],
-    "name": str,
-    "skip": int,
-    "alias": {str: str},
-    "sheet": Or(int, str),
-}
-
-_idx_optional_keys = ["idxcols", "name", "skip", "alias", "sheet"]
-
-
 class pkgindex(List[Dict]):
     """Data package index (a subclass of ``list``)
 
@@ -286,6 +273,17 @@ class pkgindex(List[Dict]):
       Excel only)
 
     """
+
+    # set of keys that are accepted in a data package
+    _key_map = {
+        "path": str,
+        "idxcols": [str],
+        "name": str,
+        "skip": int,
+        "alias": {str: str},
+        "sheet": Or(int, str),
+    }
+    _optional = ["idxcols", "name", "skip", "alias", "sheet"]
 
     @classmethod
     def from_file(cls, fpath: _path_t) -> "pkgindex":
@@ -319,8 +317,8 @@ class pkgindex(List[Dict]):
     def _validate(cls, idx: List[Dict]) -> List[Dict]:
         record_match = Match(
             {
-                optmatch(k, default=None) if k in _idx_optional_keys else k: v
-                for k, v in _idx_key_map.items()
+                optmatch(k, default=None) if k in cls._optional else k: v
+                for k, v in cls._key_map.items()
             }
         )
         try:
@@ -328,6 +326,10 @@ class pkgindex(List[Dict]):
         except MatchError as err:
             print(f"{err.args[1]}: bad key in index file")
             raise
+
+    def _validate_keys(cls, keys: Union[str, List[str]]):
+        keys = [keys] if isinstance(keys, str) else keys
+        glom(keys, [Match(Or(*cls._key_map.keys()))])
 
     def records(self, keys: List[str]) -> Iterable[Dict]:
         """Return an iterable of index records.
@@ -350,7 +352,7 @@ class pkgindex(List[Dict]):
             If `keys` has an unsupported value
 
         """
-        glom(keys, [Match(Or(*_idx_key_map.keys()))])
+        self._validate_keys(keys)
         filter_keys = {k: k for k in keys}
         return glom(self, Iter().map(filter_keys).all())
 
@@ -370,7 +372,7 @@ class pkgindex(List[Dict]):
             List of records with values corresponding to `key`.
 
         """
-        glom(key, Match(Or(*_idx_key_map.keys())))
+        self._validate_keys(key)
         return glom(self, [Coalesce(key, default=None)])
 
 
