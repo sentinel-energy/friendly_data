@@ -282,8 +282,9 @@ class pkgindex(List[Dict]):
         "skip": int,
         "alias": {str: str},
         "sheet": Or(int, str),
+        "iamc": str,  # FIXME: Regex("^[0-9a-zA-Z_ |-{}]+$"),
     }
-    _optional = ["idxcols", "name", "skip", "alias", "sheet"]
+    _optional = ["idxcols", "name", "skip", "alias", "sheet", "iamc"]
 
     @classmethod
     def from_file(cls, fpath: _path_t) -> "pkgindex":

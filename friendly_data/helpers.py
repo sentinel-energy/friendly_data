@@ -26,6 +26,12 @@ def sanitise(string: str) -> str:
     return "_".join(re.findall(re.compile("[^ @&()/]+"), string))
 
 
+def is_fmtstr(string: str) -> bool:
+    opening_braces = string.count("{")
+    closing_braces = string.count("}")
+    return bool(opening_braces and closing_braces and opening_braces == closing_braces)
+
+
 # def from_hints(fn: Callable, arg: str) -> Tuple:
 #     """NOTE: Comment out until we drop 3.7"""
 #     from typing import get_args, get_origin, get_type_hints
