@@ -25,17 +25,25 @@ Type mapping between the frictionless specification and pandas types:
 
 """
 
+from functools import lru_cache
+from itertools import product
 from pathlib import Path
-from typing import Dict, Iterable, List, Union
+from typing import cast, Dict, Iterable, List, Union
 
 from frictionless import Resource
-from glom import glom, Iter, T
+from glom import glom, Iter, Invoke, Match, MatchError, T
 import pandas as pd
+import pyam
 import xarray as xr
 
 from friendly_data._types import _path_t
-from friendly_data.dpkg import fullpath, get_aliased_cols, index_levels, _resource
-from friendly_data.helpers import consume, import_from, noop_map, sanitise
+from friendly_data.dpkg import _resource
+from friendly_data.dpkg import fullpath
+from friendly_data.dpkg import get_aliased_cols
+from friendly_data.dpkg import index_levels
+from friendly_data.dpkg import pkgindex
+from friendly_data.helpers import consume, import_from, is_fmtstr, noop_map, sanitise
+from friendly_data.io import dwim_file
 
 # TODO: compressed files
 _pd_types = {
@@ -325,3 +333,217 @@ def from_dst(
         for var, da in dst.data_vars.items()
     ]
     return resources
+
+
+class IAMconv:
+    """Converter class for IAMC data
+
+    This class resolves index columns against the "semi-hierarchical" variables
+    used in IAMC data, and separates them into individual datasets that are
+    part of the datapackage.  It relies on the index file and index column
+    definitions to do the disaggregation.  It also supports the reverse
+    operation of aggregating multiple datasets into an IAMC dataset.
+
+    TODO:
+    - describe assumptions (e.g. case insensitive match) and fallbacks (e.g. missing title)
+    - limitations (e.g. when no index column exists)
+
+    """
+
+    @classmethod
+    def _validate(cls, conf: Dict) -> Dict:
+        conf_match = Match(
+            {
+                "indices": [str],
+                str: object,  # fall through for other config keys
+            }
+        )
+        try:
+            return glom(conf, conf_match)
+        except MatchError as err:
+            print(
+                f"{err.args[1]}: must define a list of files pointing to idxcol"
+                "definitions for IAMC conversion"
+            )
+            raise
+
+    @classmethod
+    def iamdf2df(cls, iamdf: pyam.IamDataFrame) -> pd.DataFrame:
+        """Convert :class:`pyam.IamDataFrame` to :class:`pandas.DataFrame`"""
+        return (
+            iamdf.as_pandas()
+            .drop(columns="exclude")
+            .set_index(pyam.IAMC_IDX + ["year"])
+        )
+
+    @classmethod
+    @lru_cache
+    def f2col(cls, fpath: _path_t) -> str:
+        """Deduce column name from file name"""
+        return Path(fpath).stem
+
+    @classmethod
+    def from_iamdf_simple(
+        cls, iamdf: pyam.IamDataFrame, basepath: _path_t, datapath: _path_t
+    ) -> Resource:
+        """Simple conversion to data package in IAM long format"""
+        return from_df(cls.iamdf2df(iamdf), basepath, datapath)
+
+    @classmethod
+    def from_file(cls, confpath: _path_t, idxpath: _path_t, **kwargs) -> "IAMconv":
+        """Create a mapping of IAMC indicator variables with index columns
+
+        Parameters
+        ----------
+        confpath : Union[str, Path]
+            Path to config file for IAMC <-> data package config file
+
+        idxpath : Union[str, Path]
+            Path to index file
+
+        **kwargs
+            Keyword arguments passed on to the pandas reader backend.
+
+        Returns
+        -------
+        IAMconv
+
+
+        """
+        conf = cls._validate(cast(Dict, dwim_file(confpath)))
+        indices: Dict[str, pd.Series] = {
+            cls.f2col(path): _reader(
+                path,
+                usecols=[cls.f2col(path), "title"],
+                index_col=cls.f2col(path),
+                squeeze=True,
+                **kwargs,
+            )
+            for path in conf["indices"]
+        }
+        return cls(pkgindex.from_file(idxpath), indices)
+
+    def __init__(self, idx: pkgindex, indices: Dict[str, pd.Series]):
+        """Converter initialised with a set of IAMC variable index column defintions
+
+        Parameters
+        ----------
+        idx : `friendly_data.dpkg.pkgindex`
+            Index of datasets with IAMC variable definitions
+
+        indices : Dict[str, pd.Series]
+            Index column definitions
+
+        """
+        for col in indices:
+            # fallback when title is missing
+            _lvls = indices[col].fillna({i: i for i in indices[col].index})
+            # for bidirectional lookup
+            # indices[col] = _lvls.append(pd.Series({v:k for k, v in _lvls.items()}))
+            indices[col] = _lvls
+        self.indices = indices
+        self.res_idx = pkgindex(glom(idx, Iter().filter(T["iamc"]).all()))
+
+    def _varwidx(self, entry: Dict, df: pd.DataFrame, basepath: _path_t) -> Resource:
+        """Write a dataframe that includes index columns in the IAMC variable
+
+        Parameters
+        ----------
+        entry : Dict
+            Entry from the `friendly_data.dpkg.pkgindex`
+
+        df : pd.DataFrame
+            Data frame in IAMC format
+
+        basepath : Union[str, Path]
+            Data package base path
+
+        Returns
+        -------
+        Resource
+            The resource object pointing to the file that was written
+
+        """
+        _lvls = {
+            col: self.indices[col]
+            for col in entry["idxcols"]
+            if col not in pyam.IAMC_IDX + ["year"]
+        }
+        # do a case-insensitive match
+        values = {
+            entry["iamc"]
+            .format(**{k: v for k, v in zip(_lvls, vprod)})
+            .lower(): "|".join(kprod)
+            for kprod, vprod in zip(
+                glom(_lvls.values(), Invoke(product).star([T.index])),
+                glom(_lvls.values(), Invoke(product).star([T.values])),
+            )
+        }
+        _df = df.reset_index("variable").query("variable.str.lower() == list(@values)")
+        idxcols = _df.variable.str.lower().map(values).str.split("|", expand=True)
+        idxcols.columns = _lvls.keys()
+        # don't want to include _df["variable"] in results
+        _df = (
+            pd.concat([idxcols, _df["value"]], axis=1)
+            .set_index(list(_lvls), append=True)
+            .rename(columns={"value": self.f2col(entry["path"])})
+        )
+        return from_df(_df, basepath=basepath, datapath=entry["path"])
+
+    def _varwnoidx(self, entry: Dict, df: pd.DataFrame, basepath: _path_t) -> Resource:
+        """Write a dataframe that does not includes index columns in the IAMC variable
+
+        Parameters
+        ----------
+        entry : Dict
+            Entry from the `friendly_data.dpkg.pkgindex`
+
+        df : pd.DataFrame
+            Data frame in IAMC format
+
+        basepath : Union[str, Path]
+            Data package base path
+
+        Returns
+        -------
+        Resource
+            The resource object pointing to the file that was written
+
+        """
+        value = entry["iamc"].lower()
+        _df = (
+            df.reset_index("variable")
+            .query("variable.str.lower() == @value")
+            .drop(columns="variable")
+            .rename(columns={"value": self.f2col(entry["path"])})
+        )
+        return from_df(_df, basepath=basepath, datapath=entry["path"])
+
+    def from_iamdf(self, iamdf: pyam.IamDataFrame, basepath: _path_t) -> List[Resource]:
+        """Write an IAMC dataframe
+
+        Parameters
+        ----------
+        iamdf : pyam.IamDataFrame
+            The IAMC data frame
+
+        basepath : Union[str, Path]
+            Data package base path
+
+        Returns
+        -------
+        List[Resource]
+            List of resource objects pointing to the files that were written
+
+        """
+        df = self.iamdf2df(iamdf)
+        resources = [
+            self._varwidx(entry, df, basepath)
+            if is_fmtstr(entry["iamc"])
+            else self._varwnoidx(entry, df, basepath)
+            for entry in self.res_idx
+        ]
+        return resources
+
+    def to_iamdf(self, files: Iterable[_path_t], **kwargs):
+        return
