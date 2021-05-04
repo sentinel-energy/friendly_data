@@ -270,7 +270,7 @@ def from_df(
         datapath = f"{'_'.join(sanitise(col) for col in df.columns)}.csv"
     fullpath = Path(basepath) / datapath
     # ensure parent directory exists
-    fullpath.parent.mkdir(exist_ok=True)
+    fullpath.parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(fullpath)
 
     coldict = get_aliased_cols(df.columns, "cols", alias)
