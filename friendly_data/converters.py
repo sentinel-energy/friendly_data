@@ -51,7 +51,7 @@ _pd_types = {
     "date": "datetime64",
     "time": "datetime64",
     "datetime": "datetime64",
-    "year": "datetime64",
+    "year": "Int64",
     "yearmonth": "datetime64",
     "integer": "Int64",
     "number": "float",
