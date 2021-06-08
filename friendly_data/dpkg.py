@@ -136,7 +136,6 @@ def create_pkg(
     basepath = basepath if basepath else getattr(meta, "basepath", basepath)
     pkg = Package(meta, basepath=str(basepath))
 
-    # TODO: should we handle adding resources by descriptor? Package.add_resource(..)
     def keep(res: _path_t) -> bool:
         if Path(res) in existing:
             return False
@@ -150,6 +149,7 @@ def create_pkg(
         spec = {"path": res} if isinstance(res, (str, Path)) else res
         if not keep(spec["path"]):
             continue
+        # NOTE: noop when Resource
         _res = _resource(spec, basepath=basepath, infer=infer)
         pkg.add_resource(_res)
 
@@ -499,54 +499,21 @@ def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pkgindex]
     Examples
     --------
 
-    YAML::
+    YAML (JSON is also supported)::
 
-        >>> yaml_f = '''
-        ... - path: file1
-        ...   name: dst1
-        ...   idxcols: [cola, colb]
-        ... - path: file2
-        ...   name: dst2
-        ...   idxcols: [colx, coly, colz]
-        ... - path: file3
-        ...   name: dst3
-        ...   idxcols: [col]
-        ... '''
-
-    JSON::
-
-        >>> json_f = '''
-        ... [
-        ...     {
-        ...         "path": "file1",
-        ...         "name": "dst1",
-        ...         "idxcols": [
-        ...             "cola",
-        ...             "colb"
-        ...         ]
-        ...     },
-        ...     {
-        ...         "path": "file2",
-        ...         "name": "dst2",
-        ...         "idxcols": [
-        ...             "colx",
-        ...             "coly",
-        ...             "colz"
-        ...         ]
-        ...     },
-        ...     {
-        ...         "path": "file3",
-        ...         "name": "dst3",
-        ...         "idxcols": [
-        ...             "col"
-        ...         ]
-        ...     }
-        ... ]
-        ... '''
+        - path: file1
+          name: dst1
+          idxcols: [cola, colb]
+        - path: file2
+          name: dst2
+          idxcols: [colx, coly, colz]
+        - path: file3
+          name: dst3
+          idxcols: [col]
 
     Index as read from the example above::
 
-        >>> idx = read_pkg_index("testing/files/indices/index.json")
+        >>> idx = read_pkg_index("testing/files/indices/index.yaml")
         >>> idx
              path  name             idxcols
         0   file1  dst1        [cola, colb]
