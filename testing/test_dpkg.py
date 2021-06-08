@@ -2,6 +2,7 @@ from itertools import chain
 from operator import contains
 from pathlib import Path
 
+from frictionless import Resource
 from glom import glom, Iter, T
 from glom.matching import MatchError
 import numpy as np
@@ -17,6 +18,7 @@ from friendly_data.dpkg import pkg_from_files
 from friendly_data.dpkg import pkg_from_index
 from friendly_data.dpkg import pkg_glossary
 from friendly_data.dpkg import read_pkg
+from friendly_data.dpkg import res_from_entry
 from friendly_data.dpkg import pkgindex
 from friendly_data.dpkg import update_pkg
 from friendly_data.dpkg import write_pkg
@@ -229,6 +231,15 @@ def test_index_levels(is_df, csvfile, idxcols):
     )
     assert catcols == lvl_counts  # check all levels are found
     # TODO: aliased columns
+
+
+def test_res_from_entry():
+    pkgdir = Path("testing/files/mini-ex")
+    idxfile = pkgindex.from_file(pkgdir / "index.yaml")
+    for entry in idxfile:
+        res = res_from_entry(entry, pkgdir)
+        assert isinstance(res, Resource)
+        assert glom(res, "schema.primaryKey") == entry["idxcols"]
 
 
 @pytest.mark.parametrize("idx_t", [".yaml", ".json"])

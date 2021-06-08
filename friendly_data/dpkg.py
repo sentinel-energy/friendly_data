@@ -475,6 +475,49 @@ def index_levels(
     return file_or_df, coldict
 
 
+def res_from_entry(entry: Dict, pkg_dir: _path_t) -> Resource:
+    """Create a resource from an index entry
+
+    Parameters
+    ----------
+    entry : Dict
+        Entry from an index file::
+
+          {
+            "path": "data.csv"
+            "idxcols": ["col1", "col2"]
+            "alias": {
+              "col1": "col0"
+            }
+          }
+
+    pkg_dir : Union[str, Path]
+        Root directory of the package
+
+    Returns
+    -------
+    Resource
+        The resource object (subclass of ``dict``)
+
+    """
+    _, idxcoldict = index_levels(
+        pkg_dir / entry["path"], entry["idxcols"], entry["alias"]
+    )
+    entry.update(schema={"fields": idxcoldict, "primaryKey": entry["idxcols"]})
+    res = _resource(entry, basepath=f"{pkg_dir}", infer=True)
+    # set of value columns
+    cols = glom(res.schema.fields, (Iter("name"), set)) - set(entry["idxcols"])
+    coldict = get_aliased_cols(cols, "cols", entry["alias"])
+    glom(
+        res.schema.fields,
+        Iter()
+        .filter(match({"name": Or(*coldict.keys()), str: object}))
+        .map(lambda i: i.update(coldict[i["name"]]))
+        .all(),
+    )
+    return res
+
+
 def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pkgindex]:
     """Read an index file, and create a datapackage with the provided metadata.
 
@@ -523,18 +566,10 @@ def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pkgindex]
     """
     pkg_dir = Path(fpath).parent
     idx = pkgindex.from_file(fpath)
-    resources = []
-    for entry in idx.records(["path", "idxcols", "skip", "alias"]):
-        _, idxcoldict = index_levels(
-            pkg_dir / entry["path"], entry["idxcols"], entry["alias"]
-        )
-        entry.update(schema={"fields": idxcoldict, "primaryKey": entry["idxcols"]})
-        res = _resource(entry, basepath=f"{pkg_dir}", infer=True)
-        # set of value columns
-        cols = glom(res.schema.fields, (Iter("name"), set)) - set(entry["idxcols"])
-        coldict = get_aliased_cols(cols, "cols", entry["alias"])
-        glom(entry, ("schema.fields", T.update(coldict)))
-        resources.append(entry)
+    resources = [
+        res_from_entry(entry, pkg_dir)
+        for entry in idx.records(["path", "idxcols", "skip", "alias"])
+    ]
     pkg = create_pkg(meta, resources, basepath=f"{pkg_dir}")
     return pkg_dir, pkg, idx
 
