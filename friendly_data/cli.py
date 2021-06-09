@@ -3,7 +3,7 @@
 """
 
 from pathlib import Path
-from typing import Dict, List, Union
+from typing import Dict, Iterable, List
 
 from glom import glom, Iter
 import pandas as pd
@@ -12,7 +12,6 @@ from friendly_data._types import _license_t, _path_t
 from friendly_data.dpkg import create_pkg
 from friendly_data.dpkg import idxpath_from_pkgpath
 from friendly_data.dpkg import pkg_from_files
-from friendly_data.dpkg import pkg_glossary
 from friendly_data.dpkg import read_pkg
 from friendly_data.dpkg import pkgindex
 from friendly_data.dpkg import write_pkg
@@ -79,11 +78,17 @@ def _metadata(
 # - normalise relative path w.r.t. index entries
 # - for files not in the index, normalise relative path w.r.t. pkgdir
 # add similar ability for update(..)
-def _create(meta: Dict, idxpath: _path_t, *fpaths: _path_t) -> str:
+def _create(
+    meta: Dict,
+    idxpath: _path_t,
+    fpaths: Iterable[_path_t],
+) -> str:
     pkgdir, pkg, idx = pkg_from_files(meta, idxpath, fpaths)
-    glossary = pkg_glossary(pkg, idx)
-    fmeta, fglossary = write_pkg(pkg, pkgdir, glossary=glossary)
-    return f"Package metadata: {fmeta}\nPackage glossary: {fglossary}"
+    fmeta, *fidx = write_pkg(pkg, pkgdir, idx=idx)
+    msg = f"Package metadata: {fmeta}"
+    if idx:
+        msg += "\nPackage index: {fidx[0]}"
+    return msg
 
 
 def create(
@@ -138,7 +143,7 @@ def create(
         "metadata": metadata,
     }
     meta = _metadata(["name", "license"], **meta)  # type: ignore[arg-type]
-    return _create(meta, idxpath, *fpaths)
+    return _create(meta, idxpath, fpaths)
 
 
 def add(pkgpath: str, *fpaths: str):
@@ -222,7 +227,7 @@ def update(
         return f"Package metadata: {files[0]}"
     else:
         meta = {k: v for k, v in pkg.items() if k not in ("resources", "profile")}
-        return _create(meta, idxpath_from_pkgpath(pkgpath), *fpaths)
+        return _create(meta, idxpath_from_pkgpath(pkgpath), fpaths)
 
 
 def _rm_from_pkg(pkgpath: _path_t, *fpaths: _path_t):
@@ -249,17 +254,6 @@ def _rm_from_idx(pkgpath: _path_t, *fpaths: _path_t) -> pkgindex:
     )
 
 
-def _rm_from_glossary(pkgpath: _path_t, *fpaths: _path_t) -> Union[None, pd.DataFrame]:
-    jsonpath = Path(pkgpath) / "glossary.json"
-    if not jsonpath.exists():
-        return None
-    glossary = pd.read_json(jsonpath)
-    keep = glossary["path"].apply(
-        lambda entry: path_not_in(fpaths, jsonpath.parent / entry)
-    )
-    return glossary[keep]
-
-
 def remove(pkgpath: str, *fpaths: str) -> str:
     """Remove datasets from the package
 
@@ -277,17 +271,8 @@ def remove(pkgpath: str, *fpaths: str) -> str:
     if pkg is None:
         return "Nothing to do"
     idx = _rm_from_idx(pkgpath, *fpaths)
-    glossary = _rm_from_glossary(pkgpath, *fpaths)
-    if glossary is not None:
-        fmeta, fidx, fglossary = write_pkg(pkg, pkgpath, idx=idx, glossary=glossary)
-        msgs = [
-            f"Package metadata: {fmeta}",
-            f"Package index: {fidx}",
-            f"Package glossary: {fglossary}",
-        ]
-    else:
-        fmeta, fidx = write_pkg(pkg, pkgpath, idx=idx)
-        msgs = [f"Package metadata: {fmeta}", f"Package index: {fidx}"]
+    fmeta, fidx = write_pkg(pkg, pkgpath, idx=idx)
+    msgs = [f"Package metadata: {fmeta}", f"Package index: {fidx}"]
     return "\n".join(msgs)
 
 

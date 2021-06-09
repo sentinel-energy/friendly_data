@@ -576,44 +576,9 @@ def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pkgindex]
     return pkg_dir, pkg, idx
 
 
-def pkg_glossary(pkg: Package, idx: pkgindex) -> pd.DataFrame:
-    """Generate glossary from the package and the package index.
-
-    Parameters
-    ----------
-    pkg : Package
-
-    idx : pd.DataFrame
-        The index dataframe
-
-    Returns
-    -------
-    pd.DataFrame
-        The glossary as dataframe
-
-    """
-    _levels = lambda row: glom(
-        pkg,
-        (
-            "resources",
-            Iter()
-            .filter(select("path", equal_to=row["path"]))
-            .map("schema.fields")
-            .flatten()
-            .filter(
-                match({"name": row["idxcols"], "constraints": {"enum": list}, str: str})
-            )
-            .map("constraints.enum")
-            .flatten()
-            .all(),
-        ),
-    )
-    cols = ["path", "name", "idxcols"]
-    glossary = pd.DataFrame(idx.records(cols)).explode("idxcols").reset_index(drop=True)
-    return glossary.assign(values=glossary.apply(_levels, axis=1))
-
-
-def pkg_from_files(meta: Dict, fpath: _path_t, fpaths: Iterable[_path_t]):
+def pkg_from_files(
+    meta: Dict, fpath: _path_t, fpaths: Iterable[_path_t]
+) -> Tuple[Path, Package, Union[pkgindex, None]]:
     """Create a package from an index file and other files
 
     Parameters
@@ -632,7 +597,7 @@ def pkg_from_files(meta: Dict, fpath: _path_t, fpaths: Iterable[_path_t]):
 
     Returns
     -------
-    Tuple[Path, Package, pd.DataFrame]
+    Tuple[Path, Package, Union[pkgindex, None]]
         A datapackage with inferred schema for the resources/datasets present
         in the index; all other resources are added with a basic inferred
         schema.
@@ -696,7 +661,6 @@ def write_pkg(
     pkgdir: _path_t,
     *,
     idx: Union[pkgindex, List, None] = None,
-    glossary: Optional[pd.DataFrame] = None,
 ) -> List[Path]:
     """Write a data package to path
 
@@ -711,9 +675,6 @@ def write_pkg(
     idx : Union[pkgindex, List] (optional)
         Package index written to `pkgdir/index.json`
 
-    glossary : pandas.DataFrame (optional)
-        Package glossary written to `pkgdir/glossary.json`
-
     Returns
     -------
     List[Path]
@@ -727,10 +688,6 @@ def write_pkg(
     if isinstance(idx, (pkgindex, list)):
         files.append(pkgdir / "index.yaml")
         dwim_file(files[-1], list(idx))
-
-    if isinstance(glossary, pd.DataFrame):
-        files.append(pkgdir / "glossary.json")
-        dwim_file(files[-1], glossary.to_dict(orient="records"))
 
     # TODO: support saving to archives (zip, tar, etc)
     return files

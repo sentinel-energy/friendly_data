@@ -16,7 +16,6 @@ from friendly_data.dpkg import index_levels
 from friendly_data.dpkg import idxpath_from_pkgpath
 from friendly_data.dpkg import pkg_from_files
 from friendly_data.dpkg import pkg_from_index
-from friendly_data.dpkg import pkg_glossary
 from friendly_data.dpkg import read_pkg
 from friendly_data.dpkg import res_from_entry
 from friendly_data.dpkg import pkgindex
@@ -273,17 +272,6 @@ def test_pkg_from_index_aliased_cols(pkg_w_alias):
     assert col_schema == ref
 
 
-@pytest.mark.parametrize("idx_t", [".yaml", ".json"])
-def test_pkg_glossary(idx_t):
-    pkgdir = Path("testing/files/mini-ex")
-    pkg = read_pkg(pkgdir / "datapackage.json")
-    idx = pkgindex.from_file(pkgdir / f"index{idx_t}")
-    glossary = pkg_glossary(pkg, idx)
-    assert all(glossary.columns == ["path", "name", "idxcols", "values"])
-    assert glossary["values"].apply(lambda i: isinstance(i, list)).all()
-    assert len(glossary["path"].unique()) <= glossary.shape[0]
-
-
 def test_pkg_from_files(pkg_meta, caplog):
     pkgdir = Path("testing/files/mini-ex")
     files = list(chain(pkgdir.glob("inputs/*"), pkgdir.glob("outputs/*")))
@@ -328,19 +316,17 @@ def test_write_pkg(pkg, tmp_path):
     assert res[0].exists()
 
     assert not (tmp_path / "index.yaml").exists()
-    assert not (tmp_path / "glossary.json").exists()
 
 
-def test_write_pkg_idx_glossary(pkg, tmp_path):
+def test_write_pkg_idx(pkg, tmp_path):
     idx = pkgindex.from_file(f"{pkg.basepath}/index.yaml")
-    glossary = pkg_glossary(pkg, idx)
 
-    res = write_pkg(pkg, tmp_path, idx=idx, glossary=glossary)
-    assert len(res) == 3
+    res = write_pkg(pkg, tmp_path, idx=idx)
+    assert len(res) == 2
     assert all([p.exists() for p in res])
 
     with pytest.raises(TypeError):
-        write_pkg(pkg, tmp_path, idx, glossary)
+        write_pkg(pkg, tmp_path, idx)
 
 
 @pytest.mark.skip(reason="not implemented")

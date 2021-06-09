@@ -8,7 +8,6 @@ import pytest
 from friendly_data.cli import _metadata, remove
 from friendly_data.cli import _create
 from friendly_data.cli import _rm_from_idx
-from friendly_data.cli import _rm_from_glossary
 from friendly_data.cli import _rm_from_pkg
 from friendly_data.cli import add
 from friendly_data.cli import update
@@ -77,20 +76,18 @@ def test_metadata_file(ext):
 def test_create(tmp_pkgdir, caplog):
     _, dest = tmp_pkgdir
     (dest / "datapackage.json").unlink()
-    (dest / "glossary.json").unlink()
     files = [
         dest / f"inputs/{f}"
         for f in ("description.csv", "inheritance.csv", "loc_coordinates.csv")
     ]
-    assert _create({"name": "foo", "license": "CC0-1.0"}, dest / "index.yaml", *files)
-    assert (dest / "datapackage.json").exists() and (dest / "glossary.json").exists()
+    assert _create({"name": "foo", "licenses": "CC0-1.0"}, dest / "index.yaml", files)
+    assert (dest / "datapackage.json").exists()
 
     # with package directory only
     (dest / "datapackage.json").unlink()
-    (dest / "glossary.json").unlink()
-    assert _create({"name": "foo", "license": "CC0-1.0"}, dest, *files)
+    assert _create({"name": "foo", "licenses": "CC0-1.0"}, dest, files)
     assert_log(caplog, "multiple indices", "WARNING")
-    assert (dest / "datapackage.json").exists() and (dest / "glossary.json").exists()
+    assert (dest / "datapackage.json").exists()
 
 
 def test_add(tmp_pkgdir):
@@ -152,12 +149,6 @@ def test_rm_from_et_al(tmp_pkgdir):
     idx = _rm_from_idx(dest, dstpath)
     assert "inputs/description.csv" not in glom(idx, ["path"])
 
-    glossary = _rm_from_glossary(dest, dstpath)
-    assert "inputs/description.csv" not in glossary["path"].unique()
-
-    (dest / "glossary.json").unlink()  # pkg w/o glossary
-    assert _rm_from_glossary(dest, dstpath) is None
-
     pkg1 = read_pkg(dest)
     pkg2 = _rm_from_pkg(dest, dstpath)
     assert len(pkg1.resources) - len(pkg2.resources) == 1
@@ -165,11 +156,6 @@ def test_rm_from_et_al(tmp_pkgdir):
 
 def test_remove(tmp_pkgdir):
     _, dest = tmp_pkgdir
-    msg = remove(dest, dest / "inputs/description.csv")  # pkg w/ glossary
-    assert msg and msg.count("json") == 2
-    assert msg and msg.count("yaml") == 1
-
-    (dest / "glossary.json").unlink()  # pkg w/o glossary
     msg = remove(dest, dest / "inputs/energy_eff.csv")
     assert msg and msg.count("json") == 1
     assert msg and msg.count("yaml") == 1
