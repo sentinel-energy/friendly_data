@@ -29,6 +29,7 @@ from functools import lru_cache
 from itertools import product
 from pathlib import Path
 from typing import cast, Dict, Iterable, List, Union
+from warnings import warn
 
 from frictionless import Resource
 from glom import glom, Iter, Invoke, Match, MatchError, T
@@ -42,6 +43,7 @@ from friendly_data.dpkg import fullpath
 from friendly_data.dpkg import get_aliased_cols
 from friendly_data.dpkg import index_levels
 from friendly_data.dpkg import pkgindex
+from friendly_data.dpkg import res_from_entry
 from friendly_data.helpers import consume, import_from, is_fmtstr, noop_map, sanitise
 from friendly_data.io import dwim_file
 
@@ -368,6 +370,11 @@ class IAMconv:
             raise
 
     @classmethod
+    def _warn_empty(cls, df: pd.DataFrame, entry: Dict):
+        if df.empty:
+            warn(f"{entry['path']}: empty dataframe, check index entry", RuntimeWarning)
+
+    @classmethod
     def iamdf2df(cls, iamdf: pyam.IamDataFrame) -> pd.DataFrame:
         """Convert :class:`pyam.IamDataFrame` to :class:`pandas.DataFrame`"""
         return (
@@ -414,16 +421,16 @@ class IAMconv:
         indices: Dict[str, pd.Series] = {
             cls.f2col(path): _reader(
                 path,
-                usecols=[cls.f2col(path), "title"],
-                index_col=cls.f2col(path),
+                usecols=["name", "title"],
+                index_col="name",
                 squeeze=True,
                 **kwargs,
             )
             for path in conf["indices"]
         }
-        return cls(pkgindex.from_file(idxpath), indices)
+        return cls(pkgindex.from_file(idxpath), indices, basepath=Path(idxpath).parent)
 
-    def __init__(self, idx: pkgindex, indices: Dict[str, pd.Series]):
+    def __init__(self, idx: pkgindex, indices: Dict[str, pd.Series], basepath: _path_t):
         """Converter initialised with a set of IAMC variable index column defintions
 
         Parameters
@@ -443,6 +450,7 @@ class IAMconv:
             indices[col] = _lvls
         self.indices = indices
         self.res_idx = pkgindex(glom(idx, Iter().filter(T["iamc"]).all()))
+        self.basepath = Path(basepath)
 
     def _varwidx(self, entry: Dict, df: pd.DataFrame, basepath: _path_t) -> Resource:
         """Write a dataframe that includes index columns in the IAMC variable
@@ -480,6 +488,7 @@ class IAMconv:
             )
         }
         _df = df.reset_index("variable").query("variable.str.lower() == list(@values)")
+        self._warn_empty(_df, entry)
         idxcols = _df.variable.str.lower().map(values).str.split("|", expand=True)
         idxcols.columns = _lvls.keys()
         # don't want to include _df["variable"] in results
@@ -517,6 +526,7 @@ class IAMconv:
             .drop(columns="variable")
             .rename(columns={"value": self.f2col(entry["path"])})
         )
+        self._warn_empty(_df, entry)
         return from_df(_df, basepath=basepath, datapath=entry["path"])
 
     def from_iamdf(self, iamdf: pyam.IamDataFrame, basepath: _path_t) -> List[Resource]:
@@ -545,5 +555,44 @@ class IAMconv:
         ]
         return resources
 
-    def to_iamdf(self, files: Iterable[_path_t], **kwargs):
-        return
+    def to_iamdf(self, files: Iterable[_path_t], output: _path_t = "") -> pd.DataFrame:
+        dfs = []
+        for fpath in files:
+            _entries = [e for e in self.res_idx if f"{fpath}" == e["path"]]
+            if _entries:
+                entry = _entries[0]
+                if len(_entries) > 1:
+                    warn(
+                        f"{entry['path']}: duplicate entries, picking first",
+                        RuntimeWarning,
+                    )
+            else:
+                continue
+            df = to_df(res_from_entry(entry, self.basepath))
+            lvls = {
+                _lvl: self.indices[_lvl]
+                for _lvl in df.index.names
+                if _lvl not in pyam.IAMC_IDX + ["year"]
+            }
+            if is_fmtstr(entry["iamc"]):
+                iamc_variable = (
+                    df.index.set_levels(levels=lvls.values(), level=lvls.keys())
+                    .to_frame()
+                    .reset_index(list(lvls), drop=True)
+                    .apply(lambda r: entry["iamc"].format(**r.to_dict()), axis=1)
+                )
+            else:
+                iamc_variable = entry["iamc"]
+            df = (
+                df.rename(columns={df.columns[-1]: "value"})
+                .reset_index(list(lvls), drop=True)
+                .assign(variable=iamc_variable)
+                .set_index("variable", append=True)
+            )
+            df.index = df.index.reorder_levels(pyam.IAMC_IDX + ["year"])
+            dfs.append(df)
+        df = pd.concat(dfs, axis=0)
+        if output:
+            Path(output).parent.mkdir(parents=True, exist_ok=True)
+            df.to_csv(output)
+        return df
