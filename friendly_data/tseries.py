@@ -5,12 +5,14 @@ specification.
 """
 
 from datetime import datetime
+from logging import getLogger
 from pathlib import Path
 from typing import List, TextIO, TypeVar, Union
 import warnings
 
 import pandas as pd
 
+logger = getLogger(__name__)
 
 _file_t = TypeVar("_file_t", str, Path, TextIO)
 _col_t = TypeVar("_col_t", int, str)
@@ -138,7 +140,7 @@ def read_timeseries(
         ts = from_multicol(fpath, date_cols=date_cols, **kwargs)
     else:
         if source_t:
-            warnings.warn(f"{source_t}: unsupported source, falling back to default")
+            logger.warning(f"{source_t}: unsupported source, falling back to default")
         ts = pd.read_csv(fpath, **kwargs)
     return ts
 

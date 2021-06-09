@@ -25,11 +25,10 @@ Type mapping between the frictionless specification and pandas types:
 
 """
 
-from functools import lru_cache
 from itertools import product
+from logging import getLogger
 from pathlib import Path
 from typing import cast, Dict, Iterable, List, Union
-from warnings import warn
 
 from frictionless import Resource
 from glom import glom, Iter, Invoke, Match, MatchError, T
@@ -46,6 +45,8 @@ from friendly_data.dpkg import pkgindex
 from friendly_data.dpkg import res_from_entry
 from friendly_data.helpers import consume, import_from, is_fmtstr, noop_map, sanitise
 from friendly_data.io import dwim_file
+
+logger = getLogger(__name__)
 
 # TODO: compressed files
 _pd_types = {
@@ -354,6 +355,7 @@ class IAMconv:
 
     @classmethod
     def _validate(cls, conf: Dict) -> Dict:
+        # FIXME: check if file exists
         conf_match = Match(
             {
                 "indices": [str],
@@ -363,7 +365,7 @@ class IAMconv:
         try:
             return glom(conf, conf_match)
         except MatchError as err:
-            print(
+            logger.exception(
                 f"{err.args[1]}: must define a list of files pointing to idxcol"
                 "definitions for IAMC conversion"
             )
@@ -372,7 +374,7 @@ class IAMconv:
     @classmethod
     def _warn_empty(cls, df: pd.DataFrame, entry: Dict):
         if df.empty:
-            warn(f"{entry['path']}: empty dataframe, check index entry", RuntimeWarning)
+            logger.warning(f"{entry['path']}: empty dataframe, check index entry")
 
     @classmethod
     def iamdf2df(cls, iamdf: pyam.IamDataFrame) -> pd.DataFrame:
@@ -561,10 +563,7 @@ class IAMconv:
             if _entries:
                 entry = _entries[0]
                 if len(_entries) > 1:
-                    warn(
-                        f"{entry['path']}: duplicate entries, picking first",
-                        RuntimeWarning,
-                    )
+                    logger.warning(f"{entry['path']}: duplicate entries, picking first")
             else:
                 continue
             df = to_df(res_from_entry(entry, self.basepath))

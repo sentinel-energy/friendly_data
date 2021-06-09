@@ -21,6 +21,12 @@ default_type_map = {
 }
 
 
+def assert_log(caplog, msg: str, lvl: str = ""):
+    if lvl:
+        assert caplog.records[-1].levelname == lvl
+    assert msg in caplog.text
+
+
 def expected_schema(df, type_map=default_type_map):
     type_map = noop_map(type_map)
     # handle a resource and a path

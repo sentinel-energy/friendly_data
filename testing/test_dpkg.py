@@ -27,7 +27,7 @@ from friendly_data.io import relpaths
 from friendly_data.metatools import get_license
 import friendly_data_registry as registry
 
-from .conftest import expected_schema
+from .conftest import expected_schema, assert_log
 
 
 @pytest.mark.skipif(not is_windows(), reason="only relevant for windows")
@@ -163,14 +163,13 @@ def test_pkgindex(ext):
         idx.records(["path", "indexcols"])  # bad key: indexcols -> idxcols
 
 
-def test_pkgindex_bad_file(capsys):
+def test_pkgindex_bad_file(caplog):
     fpath = Path("testing/files/indices/badindex.yaml")
     with pytest.raises(MatchError):
         # a bad key in the index file will trigger this error; aliases -> alias
         pkgindex.from_file(fpath)
 
-    captured = capsys.readouterr()
-    assert "aliases: bad key in index file" in captured.out
+    assert_log(caplog, "aliases: bad key in index file", "ERROR")
 
 
 def test_pkgindex_errors(tmp_path):
@@ -254,8 +253,7 @@ def test_pkg_from_index(idx_t, pkg_meta):
 
 
 def test_pkg_from_index_skip_rows(pkg_meta):
-    with pytest.warns(RuntimeWarning, match=".+: not in registry"):
-        _, pkg, _ = pkg_from_index(pkg_meta, "testing/files/skip_test/index.yaml")
+    _, pkg, _ = pkg_from_index(pkg_meta, "testing/files/skip_test/index.yaml")
     expected = ["timestep", "UK", "Ireland", "France"]
     assert glom(pkg, ("resources.0.schema.fields", Iter("name").all())) == expected
 
@@ -286,7 +284,7 @@ def test_pkg_glossary(idx_t):
     assert len(glossary["path"].unique()) <= glossary.shape[0]
 
 
-def test_pkg_from_files(pkg_meta):
+def test_pkg_from_files(pkg_meta, caplog):
     pkgdir = Path("testing/files/mini-ex")
     files = list(chain(pkgdir.glob("inputs/*"), pkgdir.glob("outputs/*")))
     # with index file
@@ -295,33 +293,33 @@ def test_pkg_from_files(pkg_meta):
     assert len(pkg["resources"]) - len(idx) == 2
 
     # with directory containing index file
-    with pytest.warns(RuntimeWarning, match="multiple indices:.+"):
-        _pkgdir, pkg, idx = pkg_from_files(pkg_meta, pkgdir, files)
+    _pkgdir, pkg, idx = pkg_from_files(pkg_meta, pkgdir, files)
     assert _pkgdir == pkgdir
     assert len(pkg["resources"]) - len(idx) == 2
+    assert_log(caplog, "multiple indices:", "WARNING")
 
 
-def test_pkg_from_files_no_index(pkg_meta):
+def test_pkg_from_files_no_index(pkg_meta, caplog):
     pkgdir = Path("testing/files/random")
-    with pytest.warns(RuntimeWarning, match=".+no index file.+"):
-        _, pkg, idx = pkg_from_files(pkg_meta, pkgdir, pkgdir.glob("data/*"))
+    _, pkg, idx = pkg_from_files(pkg_meta, pkgdir, pkgdir.glob("data/*"))
     assert idx is None
     assert len(pkg["resources"]) == 3
+    assert_log(caplog, "no index file", "WARNING")
 
 
-def test_idxpath_from_pkgpath(tmp_path):
+def test_idxpath_from_pkgpath(tmp_path, caplog):
     idxpath = tmp_path / "index.json"
-    with pytest.warns(RuntimeWarning, match=f".*{tmp_path.name}: no index file found"):
-        assert idxpath_from_pkgpath(tmp_path) == ""
+    assert idxpath_from_pkgpath(tmp_path) == ""
+    assert_log(caplog, f"{tmp_path.name}: no index file found", "WARNING")
 
     idxpath.touch()
     assert idxpath_from_pkgpath(tmp_path) == idxpath
 
     idxpath.with_suffix(".yaml").touch()
     idxpath.with_suffix(".yml").touch()
-    with pytest.warns(RuntimeWarning, match="multiple indices:.+"):
-        # NOTE: returns the lexicographically first match
-        assert idxpath_from_pkgpath(tmp_path) == idxpath.with_suffix(".json")
+    # NOTE: returns the lexicographically first match
+    assert idxpath_from_pkgpath(tmp_path) == idxpath.with_suffix(".json")
+    assert_log(caplog, "multiple indices:", "WARNING")
 
 
 def test_write_pkg(pkg, tmp_path):

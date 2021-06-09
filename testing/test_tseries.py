@@ -5,6 +5,8 @@ import pytest  # noqa: F401
 
 from friendly_data.tseries import read_timeseries, from_table, from_multicol
 
+from .conftest import assert_log
+
 
 @pytest.mark.parametrize("zero_idx", [True, False])
 @pytest.mark.parametrize(
@@ -38,7 +40,7 @@ def test_from_multicol(tseries_multicol):
     tm.assert_frame_equal(result, expected)
 
 
-def test_read_timeseries(tseries_multicol, tseries_table):
+def test_read_timeseries(tseries_multicol, tseries_table, caplog):
     df, expected = tseries_table
     CSV = StringIO(df.to_csv(None))  # 0-indexed
 
@@ -58,6 +60,6 @@ def test_read_timeseries(tseries_multicol, tseries_table):
         read_timeseries(CSV, source_t="multicol")
 
     CSV.seek(0)  # reset stream to the beginning
-    with pytest.warns(UserWarning, match="multi: .+"):
-        result = read_timeseries(CSV, source_t="multi", date_cols=[0, 1])
-        tm.assert_frame_equal(result, df.reset_index(drop=True))
+    result = read_timeseries(CSV, source_t="multi", date_cols=[0, 1])
+    tm.assert_frame_equal(result, df.reset_index(drop=True))
+    assert_log(caplog, "multi:", "WARNING")

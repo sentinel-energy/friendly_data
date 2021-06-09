@@ -10,7 +10,7 @@ from typing import Dict, List, Tuple
 from friendly_data.io import HttpCache
 from friendly_data._types import _license_t
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 # Open Definition License Service, url template
 ODLS = "https://licenses.opendefinition.org/licenses/groups/{}.json"

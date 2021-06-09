@@ -4,9 +4,9 @@
 # PS: the coincidential module name is intentional ;)
 
 import json
+from logging import getLogger
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Tuple, TypeVar, Union
-from warnings import warn
 from zipfile import ZipFile
 
 from frictionless import Detector, Layout, Package, Resource
@@ -19,6 +19,8 @@ from friendly_data.io import dwim_file, path_not_in, posixpathstr, relpaths
 from friendly_data.helpers import match, noop_map, select, is_windows
 from friendly_data._types import _path_t
 import friendly_data_registry as registry
+
+logger = getLogger(__name__)
 
 
 def _ensure_posix(pkg):
@@ -141,7 +143,7 @@ def create_pkg(
             return False
         full_path = Path(basepath) / res
         if not full_path.exists():
-            warn(f"{full_path}: skipped, doesn't exist", RuntimeWarning)
+            logger.warning(f"{full_path}: skipped, doesn't exist")
             return False
         return True
 
@@ -325,7 +327,7 @@ class pkgindex(List[Dict]):
         try:
             return glom(idx, Iter(record_match).all())
         except MatchError as err:
-            print(f"{err.args[1]}: bad key in index file")
+            logger.exception(f"{err.args[1]}: bad key in index file")
             raise
 
     def _validate_keys(cls, keys: Union[str, List[str]]):
@@ -669,7 +671,6 @@ def idxpath_from_pkgpath(pkgpath: _path_t) -> _path_t:
 
     Warns
     -----
-    RuntimeWarning
         - Warns if no index file is not found
         - Warns if multiple index files are found
 
@@ -681,12 +682,11 @@ def idxpath_from_pkgpath(pkgpath: _path_t) -> _path_t:
         if p.suffix in (".yaml", ".yml", ".json")
     ]
     if not idxpath:
-        warn(f"{pkgpath}: no index file found", RuntimeWarning)
+        logger.warning(f"{pkgpath}: no index file found")
         return ""
     elif len(idxpath) > 1:
-        warn(
-            f"multiple indices: {','.join(map(str, idxpath))}, using {idxpath[0]}",
-            RuntimeWarning,
+        logger.warning(
+            f"multiple indices: {','.join(map(str, idxpath))}, using {idxpath[0]}"
         )
     return idxpath[0]
 

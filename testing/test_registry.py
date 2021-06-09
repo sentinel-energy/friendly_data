@@ -1,5 +1,5 @@
-from contextlib import nullcontext as does_not_raise
 from itertools import chain
+import logging
 from pathlib import Path
 
 from pkg_resources import resource_filename
@@ -9,16 +9,26 @@ import pytest
 import friendly_data_registry as registry
 
 
+@pytest.mark.parametrize("col, col_t", [("region", "idxcols"), ("storage", "cols")])
+def test_registry(col, col_t):
+    res = registry.get(col, col_t)
+    assert isinstance(res, dict)
+
+
+@pytest.mark.parametrize(
+    "col, col_t, msg", [("notinreg", "cols", "notinreg: not in registry")]
+)
+def test_registry_warn(caplog, col, col_t, msg):
+    with caplog.at_level(logging.INFO):
+        res = registry.get(col, col_t)
+        assert isinstance(res, dict)
+        assert res == {}
+        assert msg in caplog.text
+
+
 @pytest.mark.parametrize(
     "col, col_t, expectation",
     [
-        ("region", "idxcols", does_not_raise()),
-        ("storage", "cols", does_not_raise()),
-        (
-            "notinreg",
-            "cols",
-            pytest.warns(RuntimeWarning, match="notinreg: not in registry"),
-        ),
         (
             "timesteps",
             "bad_col_t",
@@ -26,12 +36,10 @@ import friendly_data_registry as registry
         ),
     ],
 )
-def test_registry(col, col_t, expectation):
+def test_registry_raise(col, col_t, expectation):
     with expectation:
         res = registry.get(col, col_t)
         assert isinstance(res, dict)
-        if col == "notinreg":
-            assert res == {}
 
 
 def test_getall():

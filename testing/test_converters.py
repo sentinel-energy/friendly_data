@@ -8,7 +8,7 @@ from friendly_data.converters import from_dst
 from friendly_data.converters import to_df
 from friendly_data.dpkg import pkg_from_index
 
-from .conftest import expected_schema
+from .conftest import assert_log, expected_schema
 
 
 @pytest.mark.skip(reason="not sure how to test schema parsing")
@@ -76,8 +76,7 @@ def test_pkg_to_df(rnd_pkg):
 
 
 def test_pkg_to_df_skip_rows(pkg_meta):
-    with pytest.warns(RuntimeWarning, match=".+: not in registry"):
-        _, pkg, __ = pkg_from_index(pkg_meta, "testing/files/skip_test/index.yaml")
+    _, pkg, __ = pkg_from_index(pkg_meta, "testing/files/skip_test/index.yaml")
     df = to_df(pkg["resources"][0])
     expected = ["UK", "Ireland", "France"]
     np.testing.assert_array_equal(df.columns, expected)

@@ -15,6 +15,8 @@ from friendly_data.cli import update
 from friendly_data.dpkg import read_pkg
 from friendly_data.io import dwim_file
 
+from .conftest import assert_log
+
 
 def test_metadata():
     mandatory = ["name", "license"]
@@ -72,7 +74,7 @@ def test_metadata_file(ext):
     assert all(k in res for k in mandatory)
 
 
-def test_create(tmp_pkgdir):
+def test_create(tmp_pkgdir, caplog):
     _, dest = tmp_pkgdir
     (dest / "datapackage.json").unlink()
     (dest / "glossary.json").unlink()
@@ -86,8 +88,8 @@ def test_create(tmp_pkgdir):
     # with package directory only
     (dest / "datapackage.json").unlink()
     (dest / "glossary.json").unlink()
-    with pytest.warns(RuntimeWarning, match="multiple indices.+"):
-        assert _create({"name": "foo", "license": "CC0-1.0"}, dest, *files)
+    assert _create({"name": "foo", "license": "CC0-1.0"}, dest, *files)
+    assert_log(caplog, "multiple indices", "WARNING")
     assert (dest / "datapackage.json").exists() and (dest / "glossary.json").exists()
 
 
@@ -104,13 +106,13 @@ def test_add(tmp_pkgdir):
     assert glom(json.loads(pkgjson.read_text()), ("resources", len)) == count + 2
 
 
-def test_add_badfile(tmp_pkgdir):
+def test_add_badfile(tmp_pkgdir, caplog):
     _, dest = tmp_pkgdir
     pkgjson = dest / "datapackage.json"
     count = glom(json.loads(pkgjson.read_text()), ("resources", len))
     files = [dest / f"inputs/{f}" for f in ("inheritance.csv", "nonexistent.csv")]
-    with pytest.warns(RuntimeWarning, match=f"{files[-1].name}: skipped.+"):
-        assert add(dest, *files)
+    assert add(dest, *files)
+    assert_log(caplog, f"{files[-1].name}: skipped", "WARNING")
     assert glom(json.loads(pkgjson.read_text()), ("resources", len)) == count + 1
 
 
@@ -132,8 +134,7 @@ def test_update(tmp_pkgdir):
     # there are multiple index files in the test pkg, write to both as which
     # file is read isn't deterministic
     [dwim_file(dest / f, idx) for f in ("index.yaml", "index.json")]
-    with pytest.warns(RuntimeWarning):  # multiple index files in test pkg
-        assert update(dest, dest / meta["path"])
+    assert update(dest, dest / meta["path"])
     entry, *_ = glom(
         dwim_file(dest / "datapackage.json"),
         (
@@ -148,8 +149,7 @@ def test_rm_from_et_al(tmp_pkgdir):
     _, dest = tmp_pkgdir
     dstpath = dest / "inputs/description.csv"
 
-    with pytest.warns(RuntimeWarning):  # multiple indices
-        idx = _rm_from_idx(dest, dstpath)
+    idx = _rm_from_idx(dest, dstpath)
     assert "inputs/description.csv" not in glom(idx, ["path"])
 
     glossary = _rm_from_glossary(dest, dstpath)
@@ -165,13 +165,11 @@ def test_rm_from_et_al(tmp_pkgdir):
 
 def test_remove(tmp_pkgdir):
     _, dest = tmp_pkgdir
-    with pytest.warns(RuntimeWarning):  # multiple indices
-        msg = remove(dest, dest / "inputs/description.csv")  # pkg w/ glossary
+    msg = remove(dest, dest / "inputs/description.csv")  # pkg w/ glossary
     assert msg and msg.count("json") == 2
     assert msg and msg.count("yaml") == 1
 
     (dest / "glossary.json").unlink()  # pkg w/o glossary
-    with pytest.warns(RuntimeWarning):  # multiple indices
-        msg = remove(dest, dest / "inputs/energy_eff.csv")
+    msg = remove(dest, dest / "inputs/energy_eff.csv")
     assert msg and msg.count("json") == 1
     assert msg and msg.count("yaml") == 1
