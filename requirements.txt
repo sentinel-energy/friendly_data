@@ -6,6 +6,7 @@ jinja2
 numexpr
 numpy
 pandas>=1.0
+pyam-iamc
 pyyaml
 requests
 xarray
