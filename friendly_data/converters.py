@@ -329,7 +329,7 @@ def from_dst(
         from_df(
             da.to_dataframe().dropna(),
             basepath,
-            datapath=f"{sanitise(var)}.csv",
+            datapath=f"{sanitise(var)}.csv",  # type: ignore
             alias=alias,
         )
         for var, da in dst.data_vars.items()
