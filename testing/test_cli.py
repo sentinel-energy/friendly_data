@@ -18,12 +18,12 @@ from .conftest import assert_log
 
 
 def test_metadata():
-    mandatory = ["name", "license"]
+    mandatory = ["name", "licenses"]
     res = _metadata(
         mandatory,
         name="",
         title="foo bar",
-        license="CC0-1.0",
+        licenses="CC0-1.0",
         description="",
         keywords="foo bar",
     )
@@ -37,7 +37,7 @@ def test_metadata():
         [],
         name="",
         title="",
-        license="",
+        licenses="",
         description="",
         keywords="",
     )
@@ -51,7 +51,7 @@ def test_metadata():
             mandatory,
             name="",
             title="",
-            license="",
+            licenses="",
             description="",
             keywords="",
         )
@@ -60,12 +60,12 @@ def test_metadata():
 @pytest.mark.parametrize("ext", [".yaml", ".yml", ".json"])
 def test_metadata_file(ext):
     conf = Path("testing/files/metadata/pkgmeta")
-    mandatory = ["name", "license"]
+    mandatory = ["name", "licenses"]
     res = _metadata(
         mandatory,
         name="",
         title="",
-        license="",
+        licenses="",
         description="",
         keywords="",
         metadata=conf.with_suffix(ext),
@@ -115,11 +115,12 @@ def test_add_badfile(tmp_pkgdir, caplog):
 
 def test_update(tmp_pkgdir):
     _, dest = tmp_pkgdir
-    meta = {"name": "Howzah", "license": "Public Domain"}
+    meta = {"name": "Howzah", "licenses": "Public Domain"}
     assert update(dest, **meta)
+    meta["licenses"] = [meta["licenses"]]
     assert meta == glom(
         dwim_file(dest / "datapackage.json"),
-        {"name": "name", "license": "license"},
+        {"name": "name", "licenses": "licenses"},
     )
 
     meta = {

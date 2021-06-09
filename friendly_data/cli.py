@@ -47,24 +47,26 @@ def _metadata(
     *,
     name: str,
     title: str,
-    license: str,
+    licenses: str,
     description: str,
     keywords: str,
     metadata: _path_t = "",
 ) -> Dict:
     if metadata:
-        meta = dwim_file(Path(metadata))
+        meta = dwim_file(metadata)
     else:
         meta = {
             "name": name if name else sanitise(title),
             "title": title,
             "description": description,
             "keywords": keywords.split(),
-            "license": license
-            if license or "license" not in mandatory
-            else license_prompt(),
         }
-    meta = {k: meta[k] for k in filter(meta.__getitem__, meta)}
+        if licenses:
+            meta["licenses"] = [licenses]
+        elif "licenses" in mandatory:
+            meta["licenses"] = [license_prompt()]
+
+    meta = {k: v for k, v in meta.items() if v}
 
     check = [k for k in mandatory if k not in meta]  # mandatory fields
     if check:
@@ -96,7 +98,7 @@ def create(
     *fpaths: str,
     name: str = "",
     title: str = "",
-    license: str = "",
+    licenses: str = "",
     description: str = "",
     keywords: str = "",
     metadata: _path_t = "",
@@ -119,6 +121,9 @@ def create(
     title : str
         Package title
 
+    licenses : str
+        License
+
     description : str
         Package description
 
@@ -126,8 +131,6 @@ def create(
         A space separated list of keywords: 'renewable energy model' ->
         ['renewable', 'energy', 'model']
 
-    license : str
-        License
 
     metadata : str
         Instead of passing metadata via flags, you may provide the metadata as
@@ -137,12 +140,12 @@ def create(
     meta = {
         "name": name,
         "title": title,
-        "license": license,
+        "licenses": licenses,
         "description": description,
         "keywords": keywords,
         "metadata": metadata,
     }
-    meta = _metadata(["name", "license"], **meta)  # type: ignore[arg-type]
+    meta = _metadata(["name", "licenses"], **meta)  # type: ignore[arg-type]
     return _create(meta, idxpath, fpaths)
 
 
@@ -174,7 +177,7 @@ def update(
     *fpaths: str,
     name: str = "",
     title: str = "",
-    license: str = "",
+    licenses: str = "",
     description: str = "",
     keywords: str = "",
     metadata: _path_t = "",
@@ -202,7 +205,7 @@ def update(
         A space separated list of keywords: 'renewable energy model' ->
         ['renewable', 'energy', 'model']
 
-    license : str
+    licenses : str
         License
 
     metadata : str
@@ -213,7 +216,7 @@ def update(
     meta = {
         "name": name,
         "title": title,
-        "license": license,
+        "licenses": licenses,
         "description": description,
         "keywords": keywords,
         "metadata": metadata,
