@@ -384,7 +384,6 @@ class IAMconv:
         )
 
     @classmethod
-    @lru_cache
     def f2col(cls, fpath: _path_t) -> str:
         """Deduce column name from file name"""
         return Path(fpath).stem
