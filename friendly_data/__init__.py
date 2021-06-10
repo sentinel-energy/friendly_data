@@ -5,7 +5,7 @@ def logger_config(lvl: int = 0, fmt: str = ""):
     fmt = fmt if fmt else "{asctime}:{levelname}:{name}:{lineno}: {message}"
 
     logger = getLogger(__name__)
-    formatter = Formatter(fmt, style="{", datefmt="%Y-%m-%d %H:%M")
+    formatter = Formatter(fmt, style="{", datefmt="%Y-%m-%dT%H:%M")
     logstream = StreamHandler()
     logstream.setFormatter(formatter)
     logger.addHandler(logstream)
