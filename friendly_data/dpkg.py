@@ -6,7 +6,7 @@
 import json
 from logging import getLogger
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Tuple, TypeVar, Union
+from typing import Dict, Iterable, List, Optional, Tuple, TypeVar, Union, overload
 from zipfile import ZipFile
 
 from frictionless import Detector, Layout, Package, Resource
@@ -274,6 +274,9 @@ class pkgindex(List[Dict]):
     - "sheet": sheet name or position (0-indexed) to use as dataset (optional,
       Excel only)
 
+    While iterating over an index, always use :method:`~pkgindex.records` to
+    ensure all necessary keys are present.
+
     """
 
     # set of keys that are accepted in a data package
@@ -320,7 +323,7 @@ class pkgindex(List[Dict]):
     def _validate(cls, idx: List[Dict]) -> List[Dict]:
         record_match = Match(
             {
-                optmatch(k, default=None) if k in cls._optional else k: v
+                optmatch(k) if k in cls._optional else k: v
                 for k, v in cls._key_map.items()
             }
         )
@@ -330,9 +333,19 @@ class pkgindex(List[Dict]):
             logger.exception(f"{err.args[1]}: bad key in index file")
             raise
 
-    def _validate_keys(cls, keys: Union[str, List[str]]):
-        keys = [keys] if isinstance(keys, str) else keys
-        glom(keys, [Match(Or(*cls._key_map.keys()))])
+    @overload
+    def _validate_keys(cls, keys: str) -> str:
+        ...  # pragma: no cover, overload
+
+    @overload
+    def _validate_keys(cls, keys: List[str]) -> List[str]:
+        ...  # pragma: no cover, overload
+
+    def _validate_keys(cls, keys):
+        if isinstance(keys, str):
+            return glom(keys, Match(Or(*cls._key_map.keys())))
+        else:
+            return glom(keys, [Match(Or(*cls._key_map.keys()))])
 
     def records(self, keys: List[str]) -> Iterable[Dict]:
         """Return an iterable of index records.
@@ -355,9 +368,8 @@ class pkgindex(List[Dict]):
             If `keys` has an unsupported value
 
         """
-        self._validate_keys(keys)
-        filter_keys = {k: k for k in keys}
-        return glom(self, Iter().map(filter_keys).all())
+        spec = {k: Coalesce(k, default=None) for k in self._validate_keys(keys)}
+        return glom(self, Iter().map(spec).all())
 
     def get(self, key: str) -> List:
         """Get the value of `key` from all records as a list.
@@ -375,8 +387,7 @@ class pkgindex(List[Dict]):
             List of records with values corresponding to `key`.
 
         """
-        self._validate_keys(key)
-        return glom(self, [Coalesce(key, default=None)])
+        return glom(self, [Coalesce(self._validate_keys(key), default=None)])
 
 
 # FIXME: fix col_t annotations when we drop Python 3.7
@@ -478,7 +489,10 @@ def index_levels(
 
 
 def res_from_entry(entry: Dict, pkg_dir: _path_t) -> Resource:
-    """Create a resource from an index entry
+    """Create a resource from an index entry.
+
+    Entry must have the keys: ``path``, ``idxcols``, ``alias``; so use
+    :method:`pkgindex.records` to iterate over the index.
 
     Parameters
     ----------
@@ -502,6 +516,13 @@ def res_from_entry(entry: Dict, pkg_dir: _path_t) -> Resource:
         The resource object (subclass of ``dict``)
 
     """
+    mandatory = ("path", "idxcols", "alias")
+    if not all(map(lambda i: i in entry, mandatory)):
+        msg = f"one of {mandatory} missing in {entry}"
+        msg += "\nDid you call idx.records(keys) to iterate?"
+        logger.exception(msg)
+        raise ValueError(msg)
+
     _, idxcoldict = index_levels(
         pkg_dir / entry["path"], entry["idxcols"], entry["alias"]
     )
@@ -571,7 +592,7 @@ def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pkgindex]
     resources = [
         res_from_entry(entry, pkg_dir)
         for entry in idx.records(["path", "idxcols", "skip", "alias"])
-    ]
+    ]  # NOTE: res_from_entry requires: "path", "idxcols", "alias"
     pkg = create_pkg(meta, resources, basepath=f"{pkg_dir}")
     return pkg_dir, pkg, idx
 

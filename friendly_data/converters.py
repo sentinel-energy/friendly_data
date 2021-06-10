@@ -567,9 +567,29 @@ class IAMconv:
         return resources
 
     def to_iamdf(self, files: Iterable[_path_t], output: _path_t = "") -> pd.DataFrame:
+        """Convert CSV files to IAMC format according to configuration in the index
+
+        Parameters
+        ----------
+        files : Iterable[Union[str, Path]]
+            List of files to collate and convert to IAMC
+
+        output : Union[str, Path] (default: empty string)
+            Path of the output CSV file; if empty, nothing is written to file.
+
+        Returns
+        -------
+        DataFrame
+            A ``pandas.DataFrame`` in IAMC format
+
+        """
         dfs = []
         for fpath in files:
-            _entries = [e for e in self.res_idx if f"{fpath}" == e["path"]]
+            _entries = [
+                entry
+                for entry in self.res_idx.records(["path", "idxcols", "alias"])
+                if f"{fpath}" == entry["path"]
+            ]  # NOTE: res_from_entry requires: "path", "idxcols", "alias"
             if _entries:
                 entry = _entries[0]
                 if len(_entries) > 1:

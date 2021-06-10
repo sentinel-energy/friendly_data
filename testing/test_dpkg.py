@@ -234,7 +234,7 @@ def test_index_levels(is_df, csvfile, idxcols):
 def test_res_from_entry():
     pkgdir = Path("testing/files/mini-ex")
     idxfile = pkgindex.from_file(pkgdir / "index.yaml")
-    for entry in idxfile:
+    for entry in idxfile.records(["path", "idxcols", "alias"]):
         res = res_from_entry(entry, pkgdir)
         assert isinstance(res, Resource)
         assert glom(res, "schema.primaryKey") == entry["idxcols"]
