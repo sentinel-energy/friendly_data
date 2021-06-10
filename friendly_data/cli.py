@@ -3,9 +3,11 @@
 """
 
 from pathlib import Path
+import sys
 from typing import Dict, Iterable, List
 
 from glom import glom, Iter
+from tabulate import tabulate
 
 from friendly_data import logger_config
 from friendly_data._types import _license_t, _path_t
@@ -17,11 +19,51 @@ from friendly_data.dpkg import pkgindex
 from friendly_data.dpkg import write_pkg
 from friendly_data.helpers import is_windows, sanitise
 from friendly_data.io import dwim_file, path_not_in, relpaths
-from friendly_data.metatools import _fetch_license, check_license
+from friendly_data.metatools import _fetch_license
+from friendly_data.metatools import check_license
+from friendly_data.metatools import get_license
+from friendly_data.metatools import lic_metadata
 from friendly_data.doc import page
 
 logger = logger_config(fmt="{name}: {levelname}: {message}")
 
+
+def list_licenses() -> str:
+    """List commonly used licenses
+
+    NOTE: for Python API users, not to be confused with
+    :func:`metatools.list_licenses`.
+
+    Returns
+    -------
+    str
+        ASCII table with commonly used licenses
+
+    """
+    keys = ("domain", "id", "maintainer", "title")
+    return tabulate(lic_metadata(keys), headers="keys")
+
+
+def license_info(lic: str) -> Dict:
+    """Give detailed metadata about a license
+
+    Parameters
+    ----------
+    lic : str
+        License ID as listed in the output of ``friendly_data list-licenses``
+
+    Returns
+    -------
+    Dict
+        License metadata
+
+    """
+    keys = ("domain", "id", "maintainer", "title", "url")
+    lic_info = lic_metadata(keys, lambda i: i["id"] == lic)
+    if not lic_info:
+        logger.error(f"no matching license with id: {lic}")
+        sys.exit(1)
+    return lic_info[0]
 
 
 def license_prompt() -> _license_t:  # pragma: no cover, interactive function
@@ -295,5 +337,7 @@ def main():  # pragma: no cover, CLI entry point
             "update": update,
             "remove": remove,
             "registry": page,
+            "list-licenses": list_licenses,
+            "license-info": license_info,
         }
     )
