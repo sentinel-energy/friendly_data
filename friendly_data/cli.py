@@ -6,7 +6,6 @@ from pathlib import Path
 from typing import Dict, Iterable, List
 
 from glom import glom, Iter
-import pandas as pd
 
 from friendly_data import logger_config
 from friendly_data._types import _license_t, _path_t

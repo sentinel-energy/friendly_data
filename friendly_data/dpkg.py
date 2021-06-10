@@ -636,7 +636,7 @@ def idxpath_from_pkgpath(pkgpath: _path_t) -> _path_t:
 
     Warns
     -----
-        - Warns if no index file is not found
+        - Warns if no index file is found
         - Warns if multiple index files are found
 
     """
