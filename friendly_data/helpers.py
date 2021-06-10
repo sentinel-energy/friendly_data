@@ -6,7 +6,7 @@ from functools import partial
 from importlib import import_module
 import re
 import sys
-from typing import Iterable
+from typing import Dict, Iterable
 
 from glom import Check, Match, SKIP
 
@@ -47,6 +47,11 @@ def flatten_list(lst: Iterable) -> Iterable:
             yield from flatten_list(el)
         else:
             yield el
+
+
+def filter_dict(data: Dict, allowed: Iterable) -> Dict:
+    """Filter a dictionary based on a set of allowed keys"""
+    return dict(filter(lambda kv: kv[0] in allowed, data.items()))
 
 
 class noop_map(dict):
