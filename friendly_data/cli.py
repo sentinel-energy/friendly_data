@@ -98,7 +98,9 @@ def _metadata(
     metadata: _path_t = "",
 ) -> Dict:
     if metadata:
-        meta = dwim_file(metadata)
+        meta = dwim_file(metadata)["metadata"]
+        if "licenses" in meta:
+            meta["licenses"] = glom(meta, ("licenses", [get_license]))
     else:
         meta = {
             "name": name if name else sanitise(title),
@@ -107,7 +109,7 @@ def _metadata(
             "keywords": keywords.split(),
         }
         if licenses:
-            meta["licenses"] = [licenses]
+            meta["licenses"] = [get_license(licenses)]
         elif "licenses" in mandatory:
             meta["licenses"] = [license_prompt()]
 
@@ -115,7 +117,8 @@ def _metadata(
 
     check = [k for k in mandatory if k not in meta]  # mandatory fields
     if check:
-        raise ValueError(f"{check}: mandatory metadata missing")
+        logger.error(f"{check}: mandatory metadata missing")
+        sys.exit(1)
 
     return meta
 
