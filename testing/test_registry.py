@@ -19,7 +19,7 @@ def test_registry(col, col_t):
     "col, col_t, msg", [("notinreg", "cols", "notinreg: not in registry")]
 )
 def test_registry_warn(caplog, col, col_t, msg):
-    with caplog.at_level(logging.INFO):
+    with caplog.at_level(logging.INFO, logger="friendly_data.registry"):
         res = registry.get(col, col_t)
         assert isinstance(res, dict)
         assert res == {}

@@ -1,7 +1,9 @@
 {
-    "name": "foo-bar-baz",
-    "title": "foo bar baz",
-    "licenses": "CC0-1.0",
-    "description": "Foo Bar Baz",
-    "keywords": ["foo", "bar", "baz"]
+    "metadata": {
+	"name": "foo-bar-baz",
+	"title": "foo bar baz",
+	"licenses": ["CC0-1.0"],
+	"description": "Foo Bar Baz",
+	"keywords": ["foo", "bar", "baz"]
+    }
 }

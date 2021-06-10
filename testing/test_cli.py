@@ -17,7 +17,7 @@ from friendly_data.io import dwim_file
 from .conftest import assert_log
 
 
-def test_metadata():
+def test_metadata(caplog):
     mandatory = ["name", "licenses"]
     res = _metadata(
         mandatory,
@@ -46,7 +46,7 @@ def test_metadata():
     mandatory = ["name", "keywords"]
     # FIXME: don't know why 'match' isn't working
     # with pytest.raises(ValueError, match=f"{mandatory}:.+"):
-    with pytest.raises(ValueError):
+    with pytest.raises(SystemExit) as err:
         _metadata(
             mandatory,
             name="",
@@ -55,6 +55,8 @@ def test_metadata():
             description="",
             keywords="",
         )
+    assert err.value.code == 1
+    assert_log(caplog, f"{mandatory}: mandatory metadata missing", "ERROR")
 
 
 @pytest.mark.parametrize("ext", [".yaml", ".yml", ".json"])
@@ -115,12 +117,11 @@ def test_add_badfile(tmp_pkgdir, caplog):
 
 def test_update(tmp_pkgdir):
     _, dest = tmp_pkgdir
-    meta = {"name": "Howzah", "licenses": "Public Domain"}
+    meta = {"name": "Howzah", "licenses": "CC0-1.0"}
     assert update(dest, **meta)
-    meta["licenses"] = [meta["licenses"]]
     assert meta == glom(
         dwim_file(dest / "datapackage.json"),
-        {"name": "name", "licenses": "licenses"},
+        {"name": "name", "licenses": "licenses.0.name"},
     )
 
     meta = {
