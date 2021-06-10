@@ -28,7 +28,7 @@ Type mapping between the frictionless specification and pandas types:
 from itertools import product
 from logging import getLogger
 from pathlib import Path
-from typing import cast, Dict, Iterable, List, Union
+from typing import cast, Dict, Iterable, List, overload
 
 from frictionless import Resource
 from glom import glom, Iter, Invoke, Match, MatchError, T
@@ -81,7 +81,17 @@ def _source_type(source: _path_t) -> str:
     return source_t
 
 
-def _reader(fpath: _path_t, **kwargs) -> Union[pd.DataFrame, pd.Series]:
+@overload
+def _reader(fpath: _path_t, **kwargs) -> pd.DataFrame:
+    ...  # pragma: no cover, overload
+
+
+@overload
+def _reader(fpath: _path_t, **kwargs) -> pd.Series:
+    ...  # pragma: no cover, overload
+
+
+def _reader(fpath, **kwargs):
     reader = import_from("pandas", _pd_readers[_source_type(fpath)])
     return reader(fpath, **kwargs)
 

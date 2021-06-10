@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 import tempfile
 import time
-from typing import Dict, Iterable, List, overload, Tuple, Union
+from typing import Any, Dict, Iterable, List, overload, Tuple, Union
 
 import requests
 import yaml
@@ -97,16 +97,21 @@ def posixpathstr(fpath: _path_t) -> str:
 
 
 @overload
-def dwim_file(fpath: _path_t) -> Union[Dict, List]:
+def dwim_file(fpath: _path_t) -> Dict:
     ...  # pragma: no cover, overload
 
 
 @overload
-def dwim_file(fpath: _path_t, data) -> None:
+def dwim_file(fpath: _path_t) -> List:
     ...  # pragma: no cover, overload
 
 
-def dwim_file(fpath: _path_t, data=None):
+@overload
+def dwim_file(fpath: _path_t, data: Any) -> None:
+    ...  # pragma: no cover, overload
+
+
+def dwim_file(fpath, data=None):
     """Do What I Mean with file
 
     Depending on the function arguments, either read the contents of a file, or
