@@ -8,6 +8,7 @@ from typing import Dict, Iterable, List
 from glom import glom, Iter
 import pandas as pd
 
+from friendly_data import logger_config
 from friendly_data._types import _license_t, _path_t
 from friendly_data.dpkg import create_pkg
 from friendly_data.dpkg import idxpath_from_pkgpath
@@ -19,6 +20,9 @@ from friendly_data.helpers import is_windows, sanitise
 from friendly_data.io import dwim_file, path_not_in, relpaths
 from friendly_data.metatools import _fetch_license, check_license
 from friendly_data.doc import page
+
+logger = logger_config(fmt="{name}: {levelname}: {message}")
+
 
 
 def license_prompt() -> _license_t:  # pragma: no cover, interactive function
