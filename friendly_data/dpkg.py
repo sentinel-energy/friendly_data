@@ -148,7 +148,7 @@ def create_pkg(
         return True
 
     for res in fpaths:
-        spec = {"path": res} if isinstance(res, (str, Path)) else res
+        spec = res if isinstance(res, dict) else {"path": res}
         if not keep(spec["path"]):
             continue
         # NOTE: noop when Resource
