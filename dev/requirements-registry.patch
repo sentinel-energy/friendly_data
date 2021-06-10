@@ -1,5 +1,5 @@
 diff --git a/requirements-docs.txt b/requirements-docs.txt
-index ccc2476..b13bd5f 100644
+index a045b10..fdfee92 100644
 --- a/requirements-docs.txt
 +++ b/requirements-docs.txt
 @@ -1,7 +1,7 @@
@@ -12,7 +12,7 @@ index ccc2476..b13bd5f 100644
  pyyaml
 +git+git://github.com/sentinel-energy/friendly_data_registry#egg=friendly_data_registry
 diff --git a/requirements.txt b/requirements.txt
-index 9b15e7a..6174b6c 100644
+index aec8c11..7aa54b2 100644
 --- a/requirements.txt
 +++ b/requirements.txt
 @@ -1,6 +1,5 @@
@@ -22,8 +22,8 @@ index 9b15e7a..6174b6c 100644
  glom>=19.10
  jinja2
  numexpr
-@@ -9,3 +8,4 @@ pandas>=1.0
- pyyaml
+@@ -11,3 +10,4 @@ pyyaml
  requests
+ tabulate
  xarray
 +git+git://github.com/sentinel-energy/friendly_data_registry#egg=friendly_data_registry
