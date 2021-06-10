@@ -5,8 +5,11 @@
 import json
 import logging
 from operator import contains
-from typing import Dict, List, Tuple
+from typing import Callable, Dict, Iterable, List, Tuple
 
+from glom import Assign, glom, Iter, Spec
+
+from friendly_data.helpers import filter_dict
 from friendly_data.io import HttpCache
 from friendly_data._types import _license_t
 
@@ -31,6 +34,51 @@ def _fetch_license(group: str = "all") -> Dict:
 def list_licenses(group: str = "all") -> List[str]:
     """Return list of valid licenses"""
     return list(_fetch_license(group).keys())
+
+
+def lic_domain(lic: _license_t) -> str:
+    """Find the domain of a license"""
+    for domain in ("content", "data", "software"):
+        if lic[f"domain_{domain}"]:
+            return domain
+    return ""
+
+
+def lic_metadata(
+    keys: Iterable[str], pred: Callable[[Dict], bool] = lambda i: True
+) -> List[Dict[str, str]]:
+    """Return a list of license metadata with the requested set of keys
+
+    Parameters
+    ----------
+    keys : Iterable[str]
+        List of keys to include in the metadata
+
+    pred : Callable[[Dict], bool]
+        A predicate to select a subset of licenses.  It should accept a
+        dictionary with license metadata, and return a boolean indicating
+        whether to accept or not.
+
+    Returns
+    -------
+    List[Dict]
+        List of license metadata
+
+    """
+    res = glom(
+        _fetch_license("all").values(),
+        Iter()
+        .filter(
+            lambda i: i["status"] == "active"
+            and i["maintainer"]
+            and "GFDL" not in i["id"]  # weird one, probably won't need
+        )
+        .filter(pred)
+        .map(Assign("domain", Spec(lic_domain)))
+        .map(lambda i: filter_dict(i, keys))
+        .all(),
+    )
+    return res
 
 
 def get_license(lic: str, group: str = "all") -> _license_t:
