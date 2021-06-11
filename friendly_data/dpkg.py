@@ -16,7 +16,7 @@ from glom.matching import MatchError
 import pandas as pd
 
 from friendly_data.io import dwim_file, path_not_in, posixpathstr, relpaths
-from friendly_data.helpers import match, noop_map, select, is_windows
+from friendly_data.helpers import match, noop_map, is_windows
 from friendly_data._types import _path_t
 import friendly_data_registry as registry
 
@@ -577,15 +577,6 @@ def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pkgindex]
           name: dst3
           idxcols: [col]
 
-    Index as read from the example above::
-
-        >>> idx = read_pkg_index("testing/files/indices/index.yaml")
-        >>> idx
-             path  name             idxcols
-        0   file1  dst1        [cola, colb]
-        1   file2  dst2  [colx, coly, colz]
-        2   file3  dst3               [col]
-
     """
     pkg_dir = Path(fpath).parent
     idx = pkgindex.from_file(fpath)
@@ -614,7 +605,8 @@ def pkg_from_files(
 
     fpaths : List[Union[str, Path]]
         A list of paths to datasets/resources not in the index.  If any of the
-        paths point to a dataset already present in the index, it is ignored.
+        paths point to a dataset already present in the index, the index entry
+        is respected.
 
     Returns
     -------
@@ -678,7 +670,7 @@ def idxpath_from_pkgpath(pkgpath: _path_t) -> _path_t:
 
 
 def write_pkg(
-    pkg: Package,
+    pkg: Union[Dict, Package],
     pkgdir: _path_t,
     *,
     idx: Union[pkgindex, List, None] = None,
