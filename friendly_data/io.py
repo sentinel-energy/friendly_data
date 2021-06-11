@@ -5,6 +5,7 @@
 from hashlib import sha256
 import json
 from pathlib import Path
+import shutil
 import tempfile
 import time
 from typing import Any, Dict, Iterable, List, overload, Tuple, Union
@@ -13,6 +14,47 @@ import requests
 import yaml
 
 from friendly_data._types import _path_t
+
+
+def copy_files(
+    src: Iterable[_path_t], dest: _path_t, anchor: _path_t = ""
+) -> List[Path]:
+    """Copy files to a directory
+
+    Without an anchor, the source files are copied to the root of the
+    destination directory; with an anchor, the relative paths between the
+    source files are maintained; any required subdirectories are created.
+
+    Parameters
+    ----------
+    src : Iterable[Union[str, Path]]
+        List of files to be copied
+
+    dest : Union[str, Path]
+        Destination directory
+
+    anchor : Union[str, Path] (default: empty string)
+        Top-level directory for anchoring, provide if you want the relative
+        paths between the source files to be maintained with respect to this
+        directory.
+
+    Returns
+    -------
+    List[Path]
+        List of files that were copied
+
+    """
+    dest, anchor = Path(dest), Path(anchor)
+    dest.mkdir(parents=True, exist_ok=True)
+    if not anchor.is_dir():
+        anchor = anchor.parent
+    files = []
+    for fp in src:
+        fp = Path(fp)
+        files.append(dest / (fp.relative_to(anchor) if anchor else fp.name))
+        files[-1].parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(fp, files[-1].parent)
+    return files
 
 
 def relpaths(basepath: _path_t, pattern: Union[str, Iterable[_path_t]]) -> List[str]:
@@ -37,6 +79,34 @@ def relpaths(basepath: _path_t, pattern: Union[str, Iterable[_path_t]]) -> List[
         return [str(p.relative_to(basepath)) for p in basepath.glob(pattern)]
     else:  # iterable of "paths"
         return [str(p.relative_to(basepath)) for p in map(Path, pattern)]
+
+
+def outoftree_paths(
+    basepath: _path_t, fpaths: Iterable[_path_t]
+) -> Tuple[List[Path], List[Path]]:
+    """Separate a list of paths into in tree and out of tree.
+
+    Parameters
+    ----------
+    basepath : Union[str, Path]
+        Path to use as the reference when identifying in/out of tree paths.
+
+    fpaths : Iterable[Union[str, Path]]
+        List of paths.
+
+    Returns
+    -------
+    Tuple[List[str], List[Path]]
+        A pair of list of in tree and out of tree paths
+
+    """
+    intree, outoftree = [], []
+    for fp in map(Path, fpaths):
+        if fp.is_relative_to(basepath):
+            intree.append(fp)
+        else:
+            outoftree.append(fp)
+    return intree, outoftree
 
 
 def path_in(fpaths: Iterable[_path_t], testfile: _path_t) -> bool:
