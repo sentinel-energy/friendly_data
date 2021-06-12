@@ -1,3 +1,4 @@
+from itertools import product
 import json
 from pathlib import Path
 from typing import cast, List
@@ -5,13 +6,16 @@ from typing import cast, List
 from glom import glom, Iter
 import pytest
 
-from friendly_data.cli import _metadata, remove
+from friendly_data.cli import _metadata, create
+from friendly_data.cli import list_licenses
+from friendly_data.cli import license_info
 from friendly_data.cli import _create
 from friendly_data.cli import _rm_from_idx
 from friendly_data.cli import _rm_from_pkg
-from friendly_data.cli import add
+from friendly_data.cli import _rm_from_disk
+from friendly_data.cli import remove
+from friendly_data.cli import _update
 from friendly_data.cli import update
-from friendly_data.dpkg import read_pkg
 from friendly_data.io import dwim_file
 
 from .conftest import assert_log
@@ -75,44 +79,57 @@ def test_metadata_file(ext):
     assert all(k in res for k in mandatory)
 
 
-def test_create(tmp_pkgdir, caplog):
-    _, dest = tmp_pkgdir
-    (dest / "datapackage.json").unlink()
-    files = [
-        dest / f"inputs/{f}"
-        for f in ("description.csv", "inheritance.csv", "loc_coordinates.csv")
-    ]
-    assert _create({"name": "foo", "licenses": "CC0-1.0"}, dest / "index.yaml", files)
-    assert (dest / "datapackage.json").exists()
+@pytest.mark.parametrize(
+    "src, export", list(product(("index.yaml", ""), ("", "outdir")))
+)
+def test_create(tmp_pkgdir_w_files, caplog, src, export):
+    dest, dpkgjson, meta, files = tmp_pkgdir_w_files
 
-    # with package directory only
-    (dest / "datapackage.json").unlink()
-    assert _create({"name": "foo", "licenses": "CC0-1.0"}, dest, files)
-    assert_log(caplog, "multiple indices", "WARNING")
-    assert (dest / "datapackage.json").exists()
+    if export:
+        export = dest.parent / export
+        dpkgjson = export / "datapackage.json"
+    else:
+        dpkgjson.unlink()
 
-
-def test_add(tmp_pkgdir):
-    _, dest = tmp_pkgdir
-    pkgjson = dest / "datapackage.json"
-    count = glom(json.loads(pkgjson.read_text()), ("resources", len))
-    files = [
-        dest / f"inputs/{f}"
-        for f in ("description.csv", "inheritance.csv", "loc_coordinates.csv")
-    ]
-    assert add(dest, *files)
-    # description.csv is already included
-    assert glom(json.loads(pkgjson.read_text()), ("resources", len)) == count + 2
+    assert _create(meta, dest / src, files, export=export)
+    assert dpkgjson.exists()
+    if not src:
+        assert_log(caplog, "multiple indices", "WARNING")
+    assert glom(dwim_file(dpkgjson), ("resources", len)) == 7
 
 
-def test_add_badfile(tmp_pkgdir, caplog):
-    _, dest = tmp_pkgdir
-    pkgjson = dest / "datapackage.json"
-    count = glom(json.loads(pkgjson.read_text()), ("resources", len))
-    files = [dest / f"inputs/{f}" for f in ("inheritance.csv", "nonexistent.csv")]
-    assert add(dest, *files)
-    assert_log(caplog, f"{files[-1].name}: skipped", "WARNING")
-    assert glom(json.loads(pkgjson.read_text()), ("resources", len)) == count + 1
+@pytest.mark.parametrize("export", ("", "outdir"))
+def test_create_no_idx(tmp_pkgdir_w_files, export):
+    dest, dpkgjson, meta, files = tmp_pkgdir_w_files
+
+    if export:
+        export = dest.parent / export
+        dpkgjson = export / "datapackage.json"
+    else:
+        dpkgjson.unlink()
+
+    for i in dest.glob("index.*"):
+        i.unlink()  # delete index files
+
+    assert _create(meta, dest, files, export=export)
+    assert dpkgjson.exists()
+    assert glom(dwim_file(dpkgjson), ("resources", len)) == 3
+
+
+def test_create_error(tmp_pkgdir_w_files, caplog):
+    dest, _, meta, files = tmp_pkgdir_w_files
+
+    with pytest.raises(SystemExit) as err:
+        create(dest, *files, inplace=False, export="", **meta)
+    assert err.value.code == 1
+    assert_log(caplog, "choose between `inplace` or `export`", "ERROR")
+
+
+def test_create_warning(tmp_pkgdir_w_files, caplog):
+    dest, _, meta, files = tmp_pkgdir_w_files
+
+    assert create(dest, *files, inplace=True, export="out", **meta)
+    assert_log(caplog, "`inplace` will be ignored", "WARNING")
 
 
 def test_update(tmp_pkgdir):
@@ -144,16 +161,51 @@ def test_update(tmp_pkgdir):
     assert glom(entry, "schema.primaryKey") == meta["idxcols"]
 
 
-def test_rm_from_et_al(tmp_pkgdir):
+def test_update_add(tmp_pkgdir):
     _, dest = tmp_pkgdir
+    dpkgjson = dest / "datapackage.json"
+    pkg = dwim_file(dpkgjson)
+    count = len(pkg["resources"])
+    files = [
+        dest / f"inputs/{f}"
+        for f in ("description.csv", "inheritance.csv", "loc_coordinates.csv")
+    ]
+    assert _update(pkg, dest, files)
+    pkg = dwim_file(dpkgjson)  # description.csv is already included
+    assert len(pkg["resources"]) == count + 2
+
+
+@pytest.mark.skip(reason="probably, not relevant")
+def test_update_badfile(tmp_pkgdir, caplog):
+    _, dest = tmp_pkgdir
+    pkgjson = json.loads((dest / "datapackage.json").read_text())
+    count = glom(pkgjson, ("resources", len))
+    files = [dest / f"inputs/{f}" for f in ("inheritance.csv", "nonexistent.csv")]
+    assert _update(pkgjson, dest, files)
+    assert_log(caplog, f"{files[-1].name}: skipped", "WARNING")
+    assert glom(pkgjson, ("resources", len)) == count + 1
+
+
+def test_rm_from_et_al(tmp_pkgdir_w_files):
+    dest, dpkgjson, *_ = tmp_pkgdir_w_files
     dstpath = dest / "inputs/description.csv"
 
-    idx = _rm_from_idx(dest, dstpath)
+    idx = _rm_from_idx(dest, [dstpath])
     assert "inputs/description.csv" not in glom(idx, ["path"])
 
-    pkg1 = read_pkg(dest)
-    pkg2 = _rm_from_pkg(dest, dstpath)
-    assert len(pkg1.resources) - len(pkg2.resources) == 1
+    pkg1 = dwim_file(dpkgjson)
+    pkg2 = _rm_from_pkg(dwim_file(dpkgjson), dest, [dstpath])
+    assert len(pkg1["resources"]) - len(pkg2["resources"]) == 1
+
+
+def test_rm_from_disk(tmp_path):
+    files = []
+    for f in ("foo", "bar", "baz"):
+        files.append(tmp_path / f)
+        files[-1].touch()
+
+    _rm_from_disk(files)
+    assert all(map(lambda f: not f.exists(), files))
 
 
 def test_remove(tmp_pkgdir):
@@ -161,3 +213,17 @@ def test_remove(tmp_pkgdir):
     msg = remove(dest, dest / "inputs/energy_eff.csv")
     assert msg and msg.count("json") == 1
     assert msg and msg.count("yaml") == 1
+
+
+def test_license_display(caplog):
+    tokens = ("domain", "id", "maintainer", "Apache", "GPL", "CC")
+    table = list_licenses()
+    assert all(map(lambda t: t in table, tokens))
+
+    assert isinstance(license_info("CC0-1.0"), dict)
+
+    bad_license = "not-there"
+    with pytest.raises(SystemExit) as err:
+        license_info(bad_license)
+    assert err.value.code == 1
+    assert_log(caplog, f"no matching license with id: {bad_license}", "ERROR")

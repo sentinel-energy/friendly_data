@@ -2,6 +2,7 @@
 
 """
 
+from itertools import chain
 from pathlib import Path
 import sys
 from typing import Dict, Iterable, List
@@ -11,14 +12,16 @@ from tabulate import tabulate
 
 from friendly_data import logger_config
 from friendly_data._types import _license_t, _path_t
-from friendly_data.dpkg import create_pkg
 from friendly_data.dpkg import idxpath_from_pkgpath
 from friendly_data.dpkg import pkg_from_files
 from friendly_data.dpkg import read_pkg
 from friendly_data.dpkg import pkgindex
 from friendly_data.dpkg import write_pkg
-from friendly_data.helpers import is_windows, sanitise
-from friendly_data.io import dwim_file, path_not_in, relpaths
+from friendly_data.helpers import consume, is_windows, sanitise
+from friendly_data.io import copy_files
+from friendly_data.io import dwim_file
+from friendly_data.io import path_not_in
+from friendly_data.io import outoftree_paths
 from friendly_data.metatools import _fetch_license
 from friendly_data.metatools import check_license
 from friendly_data.metatools import get_license
@@ -111,7 +114,7 @@ def _metadata(
         if licenses:
             meta["licenses"] = [get_license(licenses)]
         elif "licenses" in mandatory:
-            meta["licenses"] = [license_prompt()]
+            meta["licenses"] = [license_prompt()]  # pragma: no cover
 
     meta = {k: v for k, v in meta.items() if v}
 
@@ -130,15 +133,39 @@ def _metadata(
 # add similar ability for update(..)
 def _create(
     meta: Dict,
-    idxpath: _path_t,
+    pkgpath: _path_t,
     fpaths: Iterable[_path_t],
-) -> str:
-    pkgdir, pkg, idx = pkg_from_files(meta, idxpath, fpaths)
-    fmeta, *fidx = write_pkg(pkg, pkgdir, idx=idx)
-    msg = f"Package metadata: {fmeta}"
-    if idx:
-        msg += "\nPackage index: {fidx[0]}"
-    return msg
+    *,
+    export: _path_t,
+) -> List[Path]:
+    if export:
+        pkgpath, export = Path(pkgpath), Path(export)
+        idxpath = idxpath_from_pkgpath(pkgpath) if pkgpath.is_dir() else pkgpath
+        if idxpath:  # create a uniquified list of files
+            files = chain(
+                [idxpath],
+                set(
+                    chain(
+                        glom(
+                            pkgindex.from_file(idxpath),
+                            Iter("path").map(lambda p: idxpath.parent / p),
+                        ),
+                        map(Path, fpaths),
+                    )
+                ),
+            )
+        else:
+            files = fpaths
+        # NOTE: if idxpath was found, first of the returned files is the index
+        # file that was copied in the export directory, extract it to pkgpath
+        fpaths = copy_files(files, export, pkgpath)
+        if idxpath:
+            pkgpath, *fpaths = fpaths
+        else:  # if no index was found, set export directory to new pkgpath
+            pkgpath = export
+
+    pkgdir, pkg, _ = pkg_from_files(meta, pkgpath, fpaths)
+    return write_pkg(pkg, pkgdir)
 
 
 def create(
@@ -149,6 +176,8 @@ def create(
     licenses: str = "",
     description: str = "",
     keywords: str = "",
+    inplace: bool = False,
+    export: str = "",
     metadata: _path_t = "",
 ):
     """Create a package from an index file and other files
@@ -179,12 +208,27 @@ def create(
         A space separated list of keywords: 'renewable energy model' ->
         ['renewable', 'energy', 'model']
 
+    inplace : bool
+        Whether to create the data package by only adding metadata to the
+        current directory.  NOTE: one of inplace/export must be chosen
+
+    export : str
+        Create the data package in the provided directory instead of the
+        current directory
 
     metadata : str
         Instead of passing metadata via flags, you may provide the metadata as
         JSON or YAML
 
     """
+    if (not export) and (not inplace):
+        logger.error("you must explicitly choose between `inplace` or `export`")
+        sys.exit(1)
+    elif export and inplace:
+        logger.warning(
+            "both `inplace` and `export` present, `inplace` will be ignored`"
+        )
+
     meta = {
         "name": name,
         "title": title,
@@ -194,29 +238,16 @@ def create(
         "metadata": metadata,
     }
     meta = _metadata(["name", "licenses"], **meta)  # type: ignore[arg-type]
-    return _create(meta, idxpath, fpaths)
+    files = _create(meta, idxpath, fpaths, export=export)
+    return f"Package metadata: {files[0]}"
 
 
-def add(pkgpath: str, *fpaths: str):
-    """Add datasets to a package
-
-    Parameters
-    ----------
-    pkgpath : str
-        Path to the package.
-
-    fpaths : Tuple[str]
-        List of datasets/resources not in the package.  If any of them point to
-        a dataset already present in the index, it is ignored.
-
-    """
-    pkg = read_pkg(pkgpath)
-    pkgdir = Path(pkg.basepath)
-    _fpaths = relpaths(pkgdir, fpaths)
-    pkg = create_pkg(pkg, _fpaths, basepath=pkg.basepath)
-    pkgjson = pkgdir / "datapackage.json"
-    dwim_file(pkgjson, pkg)
-    return f"Package metadata: {pkgjson}"
+def _update(pkg: Dict, pkgpath: _path_t, fpaths: Iterable[_path_t]):
+    _fpaths1, outoftree = outoftree_paths(pkgpath, fpaths)
+    _fpaths2 = copy_files(outoftree, pkgpath)
+    fpaths = _fpaths1 + _fpaths2
+    pkg = _rm_from_pkg(pkg, pkgpath, fpaths)
+    return _create(pkg, pkgpath, fpaths, export="")
 
 
 # TODO: option to update files in index
@@ -230,7 +261,7 @@ def update(
     keywords: str = "",
     metadata: _path_t = "",
 ):
-    """Update only the metadata of a package.
+    """Update metadata and datasets in a package.
 
     Parameters
     ----------
@@ -238,7 +269,8 @@ def update(
         Path to the package.
 
     fpaths : Tuple[str]
-        List of datasets/resources in the index, that were updated.
+        List of datasets/resources; they could be new datasets or datasets with
+        updated index entries.
 
     name : str
         Package name (no spaces or special characters)
@@ -275,37 +307,34 @@ def update(
 
     if len(fpaths) == 0:
         files = write_pkg(pkg, pkgpath)
-        return f"Package metadata: {files[0]}"
     else:
-        meta = {k: v for k, v in pkg.items() if k not in ("resources", "profile")}
-        return _create(meta, idxpath_from_pkgpath(pkgpath), fpaths)
+        files = _update(pkg, pkgpath, fpaths)
+    return f"Package metadata: {files[0]}"
 
 
-def _rm_from_pkg(pkgpath: _path_t, *fpaths: _path_t):
-    pkg = read_pkg(pkgpath)
+def _rm_paths_spec(pkgpath: _path_t, fpaths: Iterable[_path_t]):
+    pkgpath = Path(pkgpath)
+    return Iter().filter(lambda r: path_not_in(fpaths, pkgpath / r["path"])).all()
+
+
+def _rm_from_pkg(pkg: Dict, pkgpath: _path_t, fpaths: Iterable[_path_t]):
     count = len(pkg["resources"])
-    resources = glom(
-        pkg,
-        (
-            "resources",
-            Iter().filter(lambda r: path_not_in(fpaths, pkgpath / r["path"])).all(),
-        ),
-    )
-    if count == len(resources):
-        return None  # no changes
-    pkg["resources"] = resources
+    pkg["resources"] = glom(pkg["resources"], _rm_paths_spec(pkgpath, fpaths))
+    if count == len(pkg["resources"]):
+        logger.info("no resources to update/remove in package")
     return pkg
 
 
-def _rm_from_idx(pkgpath: _path_t, *fpaths: _path_t) -> pkgindex:
-    pkgpath = Path(pkgpath)
+def _rm_from_idx(pkgpath: _path_t, fpaths: Iterable[_path_t]) -> pkgindex:
     idx = pkgindex.from_file(idxpath_from_pkgpath(pkgpath))
-    return glom(
-        idx, Iter().filter(lambda r: path_not_in(fpaths, pkgpath / r["path"])).all()
-    )
+    return glom(idx, _rm_paths_spec(pkgpath, fpaths))
 
 
-def remove(pkgpath: str, *fpaths: str) -> str:
+def _rm_from_disk(fpaths: Iterable[_path_t]):
+    consume(map(lambda fp: Path(fp).unlink(), fpaths))
+
+
+def remove(pkgpath: str, *fpaths: str, rm_from_disk: bool = False) -> str:
     """Remove datasets from the package
 
     Parameters
@@ -313,16 +342,19 @@ def remove(pkgpath: str, *fpaths: str) -> str:
     pkgpath : str
         Path to the package directory
 
-    fpaths : str
+    fpaths : Tuple[str]
         List of datasets/resources to be removed from the package. The index is
         updated accordingly.
 
+    rm_from_disk : bool (default: False)
+        Permanently delete the files from disk
+
     """
-    pkg = _rm_from_pkg(pkgpath, *fpaths)
-    if pkg is None:
-        return "Nothing to do"
-    idx = _rm_from_idx(pkgpath, *fpaths)
+    pkg = _rm_from_pkg(read_pkg(pkgpath), pkgpath, fpaths)
+    idx = _rm_from_idx(pkgpath, fpaths)
     fmeta, fidx = write_pkg(pkg, pkgpath, idx=idx)
+    if rm_from_disk:
+        _rm_from_disk(fpaths)
     msgs = [f"Package metadata: {fmeta}", f"Package index: {fidx}"]
     return "\n".join(msgs)
 
@@ -336,7 +368,6 @@ def main():  # pragma: no cover, CLI entry point
     fire.Fire(
         {
             "create": create,
-            "add": add,
             "update": update,
             "remove": remove,
             "registry": page,

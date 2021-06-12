@@ -80,6 +80,18 @@ def tmp_pkgdir(tmp_path):
 
 
 @pytest.fixture
+def tmp_pkgdir_w_files(tmp_pkgdir):
+    _, dest = tmp_pkgdir
+    meta = {"name": "foo", "licenses": "CC0-1.0"}
+    dpkgjson = dest / "datapackage.json"
+    files = [
+        dest / f"inputs/{f}"
+        for f in ("description.csv", "inheritance.csv", "loc_coordinates.csv")
+    ]  # in index: description, not in index: inheritance, loc_coordinates
+    return dest, dpkgjson, meta, files
+
+
+@pytest.fixture
 def pkg():
     pkgdir = Path("testing/files/mini-ex")
     dpkg_json = pkgdir / "datapackage.json"
