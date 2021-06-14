@@ -257,6 +257,7 @@ def from_df(
     basepath: _path_t,
     datapath: _path_t = "",
     alias: Dict[str, str] = {},
+    rename: bool = False,
 ) -> Resource:
     """Write dataframe to a CSV file, and return a data package resource.
 
@@ -284,6 +285,9 @@ def from_df(
         column name in the dataframe, and the value is a column in the
         registry.
 
+    rename : bool (default: False)
+        Rename aliased columns to match the registry when writing to the CSV.
+
     Returns
     -------
     frictionless.Resource
@@ -295,9 +299,11 @@ def from_df(
     fullpath = Path(basepath) / datapath
     # ensure parent directory exists
     fullpath.parent.mkdir(parents=True, exist_ok=True)
+    if rename:
+        df = df.rename(columns=alias)
     df.to_csv(fullpath)
 
-    coldict = get_aliased_cols(df.columns, "cols", alias)
+    coldict = get_aliased_cols(df.columns, "cols", {} if rename else alias)
     _, idxcoldict = index_levels(df, df.index.names, alias)
     spec = {
         "path": f"{datapath}",
