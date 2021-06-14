@@ -102,10 +102,13 @@ def outoftree_paths(
     """
     intree, outoftree = [], []
     for fp in map(Path, fpaths):
-        if fp.is_relative_to(basepath):
-            intree.append(fp)
-        else:
+        # NOTE: cannot use fp.is_relative_to(basepath) for <Python 3.9
+        try:
+            fp.relative_to(basepath)
+        except ValueError:
             outoftree.append(fp)
+        else:
+            intree.append(fp)
     return intree, outoftree
 
 
