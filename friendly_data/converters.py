@@ -201,7 +201,10 @@ def to_df(resource: Resource, noexcept: bool = False, **kwargs) -> pd.DataFrame:
         else:
             raise
     else:
-        df.index.names = [alias[n] for n in df.index.names]
+        if isinstance(df.index, pd.MultiIndex):
+            df.index.names = [alias[n] for n in df.index.names]
+        else:
+            df.index.name = alias[df.index.name]
         return df
 
 
