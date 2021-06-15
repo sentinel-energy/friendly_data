@@ -8,6 +8,7 @@ import sys
 from typing import Dict, Iterable, List
 
 from glom import glom, Iter
+from glom.core import Coalesce
 import pyam
 from tabulate import tabulate
 
@@ -105,7 +106,9 @@ def _metadata(
     if metadata:
         meta = dwim_file(metadata)["metadata"]
         if "licenses" in meta:
-            meta["licenses"] = glom(meta, ("licenses", [get_license]))
+            meta["licenses"] = glom(
+                meta, ("licenses", Coalesce([get_license], get_license))
+            )
     else:
         meta = {
             "name": name if name else sanitise(title),
