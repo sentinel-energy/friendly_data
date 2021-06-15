@@ -1,9 +1,13 @@
 from typing import Dict
 
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import BaseLoader, Environment, FileSystemLoader
 from pkg_resources import resource_filename
 
 import friendly_data_registry as registry
+
+
+def template_from_str(template: str):
+    return Environment(loader=BaseLoader()).from_string(template)
 
 
 def get_template(name: str):
