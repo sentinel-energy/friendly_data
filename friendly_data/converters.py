@@ -28,7 +28,7 @@ Type mapping between the frictionless specification and pandas types:
 from itertools import product
 from logging import getLogger
 from pathlib import Path
-from typing import cast, Dict, Iterable, List, overload
+from typing import cast, Dict, Iterable, List, overload, Union
 
 from frictionless import Resource
 from glom import glom, Iter, Invoke, Match, MatchError, T
@@ -43,7 +43,12 @@ from friendly_data.dpkg import get_aliased_cols
 from friendly_data.dpkg import index_levels
 from friendly_data.dpkg import pkgindex
 from friendly_data.dpkg import res_from_entry
-from friendly_data.helpers import consume, import_from, is_fmtstr, noop_map, sanitise
+from friendly_data.helpers import consume, idx_lvl_values
+from friendly_data.helpers import filter_dict
+from friendly_data.helpers import import_from
+from friendly_data.helpers import is_fmtstr
+from friendly_data.helpers import noop_map
+from friendly_data.helpers import sanitise
 from friendly_data.io import dwim_file
 
 logger = getLogger(__name__)
@@ -370,14 +375,18 @@ class IAMconv:
     - describe assumptions (e.g. case insensitive match) and fallbacks (e.g. missing title)
     - limitations (e.g. when no index column exists)
 
+    FIXME:
+    - basepath insconsistency
+    - df/iamdf/csv inconsistency
+
     """
 
     @classmethod
     def _validate(cls, conf: Dict) -> Dict:
-        # FIXME: check if file exists
+        # FIXME: check if file exists for user defined idxcols
         conf_match = Match(
             {
-                "indices": [str],
+                "indices": {str: str},
                 str: object,  # fall through for other config keys
             }
         )
@@ -385,8 +394,9 @@ class IAMconv:
             return glom(conf, conf_match)
         except MatchError as err:
             logger.exception(
-                f"{err.args[1]}: must define a list of files pointing to idxcol"
-                "definitions for IAMC conversion"
+                f"{err.args[1]}: must define a dictionary of files pointing to idxcol"
+                "definitions for IAMC conversion, or set a default value for one of:"
+                f"{', '.join(pyam.IAMC_IDX)}"
             )
             raise
 
@@ -437,20 +447,26 @@ class IAMconv:
 
 
         """
+        basepath = Path(idxpath).parent
         conf = cls._validate(cast(Dict, dwim_file(confpath)))
-        indices: Dict[str, pd.Series] = {
-            cls.f2col(path): _reader(
-                path,
-                usecols=["name", "title"],
-                index_col="name",
-                squeeze=True,
-                **kwargs,
-            )
-            for path in conf["indices"]
-        }
-        return cls(pkgindex.from_file(idxpath), indices, basepath=Path(idxpath).parent)
+        return cls(
+            pkgindex.from_file(idxpath), conf["indices"], basepath=basepath, **kwargs
+        )
 
-    def __init__(self, idx: pkgindex, indices: Dict[str, pd.Series], basepath: _path_t):
+    @classmethod
+    def read_indices(cls, path: _path_t, basepath: _path_t, **kwargs) -> pd.Series:
+        """Read index column definitions provided in config"""
+        _lvls: pd.Series = _reader(
+            Path(basepath) / path,
+            usecols=["name", "title"],
+            index_col="name",
+            squeeze=True,
+            **kwargs,
+        )
+        # fallback when title is missing; capitalized name is the most common
+        return _lvls.fillna({i: i.capitalize() for i in _lvls.index})
+
+    def __init__(self, idx: pkgindex, indices: Dict, basepath: _path_t, **kwargs):
         """Converter initialised with a set of IAMC variable index column defintions
 
         Parameters
@@ -462,15 +478,23 @@ class IAMconv:
             Index column definitions
 
         """
-        for col in indices:
-            # fallback when title is missing
-            _lvls = indices[col].fillna({i: i for i in indices[col].index})
-            # for bidirectional lookup
-            # indices[col] = _lvls.append(pd.Series({v:k for k, v in _lvls.items()}))
-            indices[col] = _lvls
-        self.indices = indices
-        self.res_idx = pkgindex(glom(idx, Iter().filter(T["iamc"]).all()))
+        # levels are for user defined idxcols, default for mandatory idxcols
+        self.indices = {
+            col: path_or_default
+            if col in pyam.IAMC_IDX
+            else self.read_indices(path_or_default, basepath, **kwargs)
+            for col, path_or_default in indices.items()
+        }
+        self.res_idx = pkgindex(glom(idx, Iter().filter(T.get("iamc")).all()))
         self.basepath = Path(basepath)
+
+    def index_levels(self, idxcols: Iterable) -> Dict[str, pd.Series]:
+        # only for user defined idxcols
+        return {
+            col: self.indices[col]
+            for col in idxcols
+            if col not in pyam.IAMC_IDX + ["year"]
+        }
 
     def _varwidx(self, entry: Dict, df: pd.DataFrame, basepath: _path_t) -> Resource:
         """Write a dataframe that includes index columns in the IAMC variable
@@ -492,11 +516,7 @@ class IAMconv:
             The resource object pointing to the file that was written
 
         """
-        _lvls = {
-            col: self.indices[col]
-            for col in entry["idxcols"]
-            if col not in pyam.IAMC_IDX + ["year"]
-        }
+        _lvls = self.index_levels(entry["idxcols"])
         # do a case-insensitive match
         values = {
             entry["iamc"]
@@ -575,7 +595,23 @@ class IAMconv:
         ]
         return resources
 
-    def to_iamdf(self, files: Iterable[_path_t], output: _path_t = "") -> pd.DataFrame:
+    def resolve_iamc_idxcol_defaults(self, df: pd.DataFrame):
+        """Find missing IAMC indices and set them to the default value from config
+
+        The IAMC format requires the following indices: `pyam.IAMC_IDX +
+        ['year']`; if any of them are missing, the corresponding index level is
+        created, and the level values are set to a constant specified in the
+        config.
+
+        Parameters
+        ----------
+        df : pandas.DataFrame
+
+        """
+        defaults = filter_dict(self.indices, set(pyam.IAMC_IDX) - set(df.index.names))
+        return df.assign(**defaults).set_index(list(defaults), append=True)
+
+    def to_df(self, files: Iterable[_path_t], basepath: _path_t = "") -> pd.DataFrame:
         """Convert CSV files to IAMC format according to configuration in the index
 
         Parameters
@@ -583,8 +619,8 @@ class IAMconv:
         files : Iterable[Union[str, Path]]
             List of files to collate and convert to IAMC
 
-        output : Union[str, Path] (default: empty string)
-            Path of the output CSV file; if empty, nothing is written to file.
+        basepath : Union[str, Path]
+            Data package base path
 
         Returns
         -------
@@ -594,28 +630,31 @@ class IAMconv:
         """
         dfs = []
         for fpath in files:
+            # NOTE: res_from_entry requires: "path", "idxcols", "alias"; later
+            # in the iteration, "iamc" is required
             _entries = [
                 entry
-                for entry in self.res_idx.records(["path", "idxcols", "alias"])
+                for entry in self.res_idx.records(["path", "idxcols", "alias", "iamc"])
                 if f"{fpath}" == entry["path"]
-            ]  # NOTE: res_from_entry requires: "path", "idxcols", "alias"
+            ]
             if _entries:
                 entry = _entries[0]
                 if len(_entries) > 1:
                     logger.warning(f"{entry['path']}: duplicate entries, picking first")
             else:
                 continue
-            df = to_df(res_from_entry(entry, self.basepath))
-            lvls = {
-                _lvl: self.indices[_lvl]
-                for _lvl in df.index.names
-                if _lvl not in pyam.IAMC_IDX + ["year"]
-            }
+            df = to_df(res_from_entry(entry, basepath if basepath else self.basepath))
+            df = self.resolve_iamc_idxcol_defaults(df)
+            lvls = self.index_levels(df.index.names)
             if is_fmtstr(entry["iamc"]):
+                # NOTE: need to calculate the subset of levels that are in the
+                # current dataframe; this is b/c MultiIndex.set_levels accepts
+                # a sequence of level values for every level
+                _lvls = {col: lvls[col][idx_lvl_values(df.index, col)] for col in lvls}
                 iamc_variable = (
-                    df.index.set_levels(levels=lvls.values(), level=lvls.keys())
+                    df.index.set_levels(levels=_lvls.values(), level=_lvls.keys())
                     .to_frame()
-                    .reset_index(list(lvls), drop=True)
+                    .reset_index(list(_lvls), drop=True)
                     .apply(lambda r: entry["iamc"].format(**r.to_dict()), axis=1)
                 )
             else:
@@ -629,7 +668,36 @@ class IAMconv:
             df.index = df.index.reorder_levels(pyam.IAMC_IDX + ["year"])
             dfs.append(df)
         df = pd.concat(dfs, axis=0)
-        if output:
-            Path(output).parent.mkdir(parents=True, exist_ok=True)
-            df.to_csv(output)
+        if df.empty:
+            logger.warning("empty data set, check config and index file")
         return df
+
+    def to_csv(
+        self,
+        files: Iterable[_path_t],
+        output: _path_t,
+        basepath: _path_t = "",
+        wide: bool = False,
+    ):
+        """Write converted IAMC data frame to a CSV file
+
+        Parameters
+        ----------
+        files : Iterable[Union[str, Path]]
+            List of files to collate and convert to IAMC
+
+        output : Union[str, Path] (default: empty string)
+            Path of the output CSV file; if empty, nothing is written to file.
+
+        basepath : Union[str, Path]
+            Data package base path
+
+        wide : bool (default: False)
+            Write the CSN in wide format (with years as columns)
+
+        """
+        df = self.to_df(files, basepath=basepath)
+        if wide:
+            df = pyam.IamDataFrame(df)
+        Path(output).parent.mkdir(parents=True, exist_ok=True)
+        df.to_csv(output)

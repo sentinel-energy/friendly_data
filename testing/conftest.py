@@ -72,6 +72,14 @@ def pkg_meta():
 
 
 @pytest.fixture
+def tmp_iamc(tmp_path):
+    src = Path("testing/files/iamc")
+    dest = tmp_path / "iamc"
+    copytree(src, dest)
+    return src, dest
+
+
+@pytest.fixture
 def tmp_pkgdir(tmp_path):
     src = Path("testing/files/mini-ex")
     dest = tmp_path / "pkg"
