@@ -31,7 +31,7 @@ from pathlib import Path
 from typing import cast, Dict, Iterable, List, overload, Union
 
 from frictionless import Resource
-from glom import glom, Iter, Invoke, Match, MatchError, T
+from glom import glom, Iter, Invoke, Match, MatchError, Or, T
 import pandas as pd
 import pyam
 import xarray as xr
@@ -381,12 +381,14 @@ class IAMconv:
 
     """
 
+    _IAMC_IDX = pyam.IAMC_IDX + ["year"]
+
     @classmethod
     def _validate(cls, conf: Dict) -> Dict:
         # FIXME: check if file exists for user defined idxcols
         conf_match = Match(
             {
-                "indices": {str: str},
+                "indices": {str: Or(str, int)},  # int for year
                 str: object,  # fall through for other config keys
             }
         )
@@ -396,7 +398,7 @@ class IAMconv:
             logger.exception(
                 f"{err.args[1]}: must define a dictionary of files pointing to idxcol"
                 "definitions for IAMC conversion, or set a default value for one of:"
-                f"{', '.join(pyam.IAMC_IDX)}"
+                f"{', '.join(cls._IAMC_IDX)}"
             )
             raise
 
@@ -408,11 +410,7 @@ class IAMconv:
     @classmethod
     def iamdf2df(cls, iamdf: pyam.IamDataFrame) -> pd.DataFrame:
         """Convert :class:`pyam.IamDataFrame` to :class:`pandas.DataFrame`"""
-        return (
-            iamdf.as_pandas()
-            .drop(columns="exclude")
-            .set_index(pyam.IAMC_IDX + ["year"])
-        )
+        return iamdf.as_pandas().drop(columns="exclude").set_index(cls._IAMC_IDX)
 
     @classmethod
     def f2col(cls, fpath: _path_t) -> str:
@@ -481,7 +479,7 @@ class IAMconv:
         # levels are for user defined idxcols, default for mandatory idxcols
         self.indices = {
             col: path_or_default
-            if col in pyam.IAMC_IDX
+            if col in self._IAMC_IDX
             else self.read_indices(path_or_default, basepath, **kwargs)
             for col, path_or_default in indices.items()
         }
@@ -490,11 +488,7 @@ class IAMconv:
 
     def index_levels(self, idxcols: Iterable) -> Dict[str, pd.Series]:
         # only for user defined idxcols
-        return {
-            col: self.indices[col]
-            for col in idxcols
-            if col not in pyam.IAMC_IDX + ["year"]
-        }
+        return {col: self.indices[col] for col in idxcols if col not in self._IAMC_IDX}
 
     def _varwidx(self, entry: Dict, df: pd.DataFrame, basepath: _path_t) -> Resource:
         """Write a dataframe that includes index columns in the IAMC variable
@@ -598,17 +592,18 @@ class IAMconv:
     def resolve_iamc_idxcol_defaults(self, df: pd.DataFrame):
         """Find missing IAMC indices and set them to the default value from config
 
-        The IAMC format requires the following indices: `pyam.IAMC_IDX +
-        ['year']`; if any of them are missing, the corresponding index level is
-        created, and the level values are set to a constant specified in the
-        config.
+        The IAMC format requires the following indices: `self._IAMC_IDX`; if
+        any of them are missing, the corresponding index level is created, and
+        the level values are set to a constant specified in the config.
 
         Parameters
         ----------
         df : pandas.DataFrame
 
         """
-        defaults = filter_dict(self.indices, set(pyam.IAMC_IDX) - set(df.index.names))
+        defaults = filter_dict(
+            self.indices, set(pyam.IAMC_IDX + ["year"]) - set(df.index.names)
+        )
         return df.assign(**defaults).set_index(list(defaults), append=True)
 
     def to_df(self, files: Iterable[_path_t], basepath: _path_t = "") -> pd.DataFrame:
@@ -665,7 +660,7 @@ class IAMconv:
                 .assign(variable=iamc_variable)
                 .set_index("variable", append=True)
             )
-            df.index = df.index.reorder_levels(pyam.IAMC_IDX + ["year"])
+            df.index = df.index.reorder_levels(self._IAMC_IDX)
             dfs.append(df)
         df = pd.concat(dfs, axis=0)
         if df.empty:

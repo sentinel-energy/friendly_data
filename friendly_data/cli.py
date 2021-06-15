@@ -394,7 +394,7 @@ def from_iamc(config: str, idxpath: str, iamcpath: str, export: str):
     pkg = create_pkg(meta, resources, basepath=export, infer=False)
     files = write_pkg(pkg, export)
     indices = dwim_file(config)["indices"]
-    indices = filter_dict(indices, set(indices) - set(pyam.IAMC_IDX))
+    indices = filter_dict(indices, set(indices) - set(conv._IAMC_IDX))
     src = Path(idxpath).parent
     if not src.samefile(export):
         copy_files([idxpath, *list(src / f for f in indices.values())], export)
