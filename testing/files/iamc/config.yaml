@@ -1,0 +1,13 @@
+metadata:
+  name: foo-bar-baz
+  title: Foo Bar Baz
+  description: This is a test data package
+  keywords:
+    - foo
+    - bar
+  licenses: [CC0-1.0, Apache-2.0]
+
+indices: 
+  technology: technology.csv
+  ghg: ghg.csv
+  model: calliope

@@ -1,0 +1,80 @@
+- path: nameplate_capacity.csv
+  iamc: Capacity|Electricity|{technology}
+  idxcols:
+  - model
+  - scenario
+  - region
+  - unit
+  - year
+  - technology
+- path: emissions.csv
+  iamc: Emissions|{ghg}
+  idxcols:
+  - model
+  - scenario
+  - region
+  - unit
+  - year
+  - ghg
+- path: resource.csv
+  iamc: Final Energy|{technology}
+  idxcols:
+  - model
+  - scenario
+  - region
+  - unit
+  - year
+  - technology
+- path: gdp.csv
+  iamc: GDP|PPP
+  idxcols:
+  - model
+  - scenario
+  - region
+  - unit
+  - year
+- path: area.csv
+  iamc: Land Cover
+  idxcols:
+  - model
+  - scenario
+  - region
+  - unit
+  - year
+- path: population.csv
+  iamc: Population
+  idxcols:
+  - model
+  - scenario
+  - region
+  - unit
+  - year
+- path: demand.csv
+  iamc: Primary Energy|{technology}
+  idxcols:
+  - model
+  - scenario
+  - region
+  - unit
+  - year
+  - technology
+- path: electricity.csv
+  iamc: Secondary Energy|Electricity|{technology}
+  idxcols:
+  - model
+  - scenario
+  - region
+  - unit
+  - year
+  - technology
+- path: electricity_agg.csv
+  iamc: Secondary Energy|Electricity
+  idxcols:
+  - model
+  - scenario
+  - region
+  - unit
+  - year
+  alias:
+    electricity_agg: electricity
+- path: dummy.csv
