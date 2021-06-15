@@ -11,8 +11,7 @@ from zipfile import ZipFile
 
 from frictionless import Detector, Layout, Package, Resource
 from glom import Assign, Coalesce, glom, Invoke, Iter, Spec, T
-from glom import Match, Optional as optmatch, Or
-from glom.matching import MatchError
+from glom import Match, MatchError, Optional as optmatch, Or
 import pandas as pd
 
 from friendly_data.io import dwim_file, path_not_in, posixpathstr, relpaths
@@ -93,6 +92,9 @@ def _resource(spec: Dict, basepath: _path_t = "", infer=True) -> Resource:
     res = Resource(path=str(spec["path"]), basepath=str(basepath), **opts)
     if infer:
         res.infer()
+    empty = glom(res, ("schema.fields", Iter("type").filter(match("any")).all(), len))
+    if empty:
+        logger.warning(f"{res['path']} has empty columns")
     return res
 
 
