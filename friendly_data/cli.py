@@ -8,16 +8,18 @@ import sys
 from typing import Dict, Iterable, List
 
 from glom import glom, Iter
+import pyam
 from tabulate import tabulate
 
 from friendly_data import logger_config
 from friendly_data._types import _license_t, _path_t
-from friendly_data.dpkg import idxpath_from_pkgpath
+from friendly_data.converters import IAMconv
+from friendly_data.dpkg import create_pkg, idxpath_from_pkgpath
 from friendly_data.dpkg import pkg_from_files
 from friendly_data.dpkg import read_pkg
 from friendly_data.dpkg import pkgindex
 from friendly_data.dpkg import write_pkg
-from friendly_data.helpers import consume, is_windows, sanitise
+from friendly_data.helpers import consume, filter_dict, is_windows, sanitise
 from friendly_data.io import copy_files
 from friendly_data.io import dwim_file
 from friendly_data.io import path_not_in
@@ -359,6 +361,70 @@ def remove(pkgpath: str, *fpaths: str, rm_from_disk: bool = False) -> str:
     return "\n".join(msgs)
 
 
+def from_iamc(config: str, idxpath: str, iamcpath: str, export: str):
+    """Convert a dataset from IAMC format to friendly data package
+
+    Parameters
+    ----------
+    config : str
+        Config file
+
+    idxpath : str
+        Index file
+
+    iamcpath : str
+        IAMC dataset
+
+    export : str
+        Path to export data package to
+
+    """
+    meta = _metadata(
+        ["name"],
+        metadata=config,
+        name="",
+        title="",
+        licenses="",
+        description="",
+        keywords="",
+    )
+    conv = IAMconv.from_file(config, idxpath)
+    iamdf = pyam.IamDataFrame(iamcpath)
+    resources = conv.from_iamdf(iamdf, basepath=export)
+    pkg = create_pkg(meta, resources, basepath=export, infer=False)
+    files = write_pkg(pkg, export)
+    indices = dwim_file(config)["indices"]
+    indices = filter_dict(indices, set(indices) - set(pyam.IAMC_IDX))
+    src = Path(idxpath).parent
+    if not src.samefile(export):
+        copy_files([idxpath, *list(src / f for f in indices.values())], export)
+    return f"Package metadata: {files[0]}"
+
+
+def to_iamc(config: str, idxpath: str, iamcpath: str, *, wide: bool = False):
+    """Aggregate datasets into an IAMC dataset
+
+    Parameters
+    ----------
+    config : str
+        Config file
+
+    idxpath : str
+        Index file
+
+    iamcpath : str
+        IAMC dataset
+
+    wide : bool (default: False)
+        Enable wide IAMC format
+
+    """
+    conv = IAMconv.from_file(config, idxpath)
+    files = conv.res_idx.get("path")
+    conv.to_csv(files, output=iamcpath, wide=wide)
+    return f"{', '.join(files)} -> {iamcpath}"
+
+
 def main():  # pragma: no cover, CLI entry point
     """Entry point for console scripts"""
     import os
@@ -373,5 +439,7 @@ def main():  # pragma: no cover, CLI entry point
             "registry": page,
             "list-licenses": list_licenses,
             "license-info": license_info,
+            "from-iamc": from_iamc,
+            "to-iamc": to_iamc,
         }
     )

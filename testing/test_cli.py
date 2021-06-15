@@ -16,6 +16,8 @@ from friendly_data.cli import _rm_from_disk
 from friendly_data.cli import remove
 from friendly_data.cli import _update
 from friendly_data.cli import update
+from friendly_data.cli import to_iamc
+from friendly_data.cli import from_iamc
 from friendly_data.io import dwim_file
 
 from .conftest import assert_log
@@ -227,3 +229,22 @@ def test_license_display(caplog):
         license_info(bad_license)
     assert err.value.code == 1
     assert_log(caplog, f"no matching license with id: {bad_license}", "ERROR")
+
+
+def test_iamc(tmp_iamc):
+    _, pkgdir = tmp_iamc
+    confpath = pkgdir / "config.yaml"
+    idxpath = pkgdir / "index.yaml"
+    iamcpath = pkgdir / "mini.csv"
+    exportdir = pkgdir / "outdir"
+
+    assert from_iamc(confpath, idxpath, iamcpath, exportdir)
+    # 10 index entries, 1 dummy => 9 data files, + 2 index definitions
+    assert len(list(exportdir.glob("*.csv"))) == 11
+    exported_idxpath = exportdir / "index.yaml"
+    assert exported_idxpath.exists()
+    assert (exportdir / "datapackage.json").exists()
+
+    newiamc = pkgdir / "new.csv"
+    assert to_iamc(confpath, exported_idxpath, newiamc)
+    assert newiamc.exists()
