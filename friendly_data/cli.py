@@ -28,7 +28,7 @@ from friendly_data.metatools import _fetch_license
 from friendly_data.metatools import check_license
 from friendly_data.metatools import get_license
 from friendly_data.metatools import lic_metadata
-from friendly_data.doc import page
+from friendly_data.doc import get_template, page
 
 logger = logger_config(fmt="{name}: {levelname}: {message}")
 
@@ -425,6 +425,29 @@ def to_iamc(config: str, idxpath: str, iamcpath: str, *, wide: bool = False):
     return f"{', '.join(files)} -> {iamcpath}"
 
 
+def describe(pkgpath: str):
+    """Give a summary of the data package
+
+    Parameters
+    ----------
+    pkgpath : str
+        Path to the data package
+
+    """
+    pkg = read_pkg(pkgpath)
+    res = {}
+    meta_f = ("name", "title", "description", "keywords", "licenses")
+    for k, v in pkg.items():
+        if k in meta_f and v:
+            res[k] = glom(v, ["name"]) if k == "licenses" else v
+
+    tmpl = get_template("dpkg_describe.template")
+    res["resources"] = glom(
+        pkg["resources"], [{"fields": ("schema.fields", ["name"]), "path": "path"}]
+    )
+    return tmpl.render(res)
+
+
 def main():  # pragma: no cover, CLI entry point
     """Entry point for console scripts"""
     import os
@@ -441,5 +464,6 @@ def main():  # pragma: no cover, CLI entry point
             "license-info": license_info,
             "from-iamc": from_iamc,
             "to-iamc": to_iamc,
+            "describe": describe,
         }
     )

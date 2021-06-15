@@ -1,0 +1,17 @@
+name: {{ name }}
+{% if title is not undefined %}
+title: {{ title }}
+{% endif %}
+{% if description is not undefined %}
+description: {{ description }}
+{% endif %}
+{% if keywords is not undefined %}
+keywords: {{ keywords }}
+{% endif %}
+licenses: {{ licenses }}
+
+resources:
+{% for res in resources %}
+path: {{ res["path"] }}
+fields: {{ res["fields"]|join(", ") }}
+{% endfor %}

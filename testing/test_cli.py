@@ -6,7 +6,9 @@ from typing import cast, List
 from glom import glom, Iter
 import pytest
 
-from friendly_data.cli import _metadata, create
+from friendly_data.cli import _metadata
+from friendly_data.cli import create
+from friendly_data.cli import describe
 from friendly_data.cli import list_licenses
 from friendly_data.cli import license_info
 from friendly_data.cli import _create
@@ -248,3 +250,11 @@ def test_iamc(tmp_iamc):
     newiamc = pkgdir / "new.csv"
     assert to_iamc(confpath, exported_idxpath, newiamc)
     assert newiamc.exists()
+
+
+def test_describe():
+    pkgdir = "testing/files/mini-ex"
+    txt = describe(pkgdir)
+    assert txt
+    tokens = ("name", "licenses", "resources", "path", "fields", "csv")
+    assert all(map(lambda t: t in t, tokens))
