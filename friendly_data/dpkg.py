@@ -209,6 +209,11 @@ def read_pkg(pkg_path: _path_t, extract_dir: Optional[_path_t] = None):
 def update_pkg(pkg: Package, resource: str, schema_update: Dict, fields: bool = True):
     """Update package resource schema
 
+    .. deprecated:: 0.2
+
+       This function is not used any more, instead the schema is updated per
+       resource in :func:`~friendly_data.dpkg.res_from_entry`.
+
     Parameters
     ----------
     pkg : Package
@@ -244,6 +249,7 @@ def update_pkg(pkg: Package, resource: str, schema_update: Dict, fields: bool = 
         Return the `Package.valid` flag; `True` if the update was valid.
 
     """
+    logger.warning("update_pkg: this function has been deprecated")
     assert "resources" in pkg, "Package should have at least one resource"
     res, *_ = [res for res in pkg["resources"] if res["name"] == resource]
     if fields:
