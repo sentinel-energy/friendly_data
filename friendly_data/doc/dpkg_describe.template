@@ -11,7 +11,9 @@ keywords: {{ keywords }}
 licenses: {{ licenses }}
 
 resources:
+---
 {% for res in resources %}
 path: {{ res["path"] }}
 fields: {{ res["fields"]|join(", ") }}
+---
 {% endfor %}
