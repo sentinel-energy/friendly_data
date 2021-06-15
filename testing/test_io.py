@@ -1,9 +1,29 @@
+from itertools import chain
 from pathlib import Path
 import pytest
 import requests
 
-from friendly_data.io import dwim_file, relpaths, path_in, path_not_in
+from friendly_data.io import copy_files
+from friendly_data.io import dwim_file
+from friendly_data.io import outoftree_paths
+from friendly_data.io import path_in
+from friendly_data.io import path_not_in
+from friendly_data.io import relpaths
 from friendly_data.metatools import ODLS
+
+
+@pytest.mark.parametrize("anchored", [True, False])
+def test_copy_files(tmp_path, anchored):
+    pkgdir = Path("testing/files/mini-ex")
+    src = list(pkgdir.rglob("*.csv"))
+    if anchored:
+        res = copy_files(src, tmp_path, pkgdir)
+        assert len(list(tmp_path.rglob("*.csv"))) == len(res) == len(src)
+        assert len(list(tmp_path.glob("*.csv"))) == 0  # no CSV in top-level dir
+    else:
+        res = copy_files(src, tmp_path)  # paths not anchored
+        assert len(list(tmp_path.glob("*.csv"))) == len(res) == len(src)
+    assert all(map(lambda fp: fp.exists(), res))
 
 
 def test_relpaths():
@@ -13,6 +33,15 @@ def test_relpaths():
     assert len(res)
     assert all(map(lambda p: isinstance(p, str), res))
     assert all(map(lambda p: str(basepath) not in p, res))
+
+
+def test_outoftree():
+    pkgdir, iamcdir = Path("testing/files/mini-ex"), Path("testing/files/iamc")
+    itree, otree = outoftree_paths(
+        pkgdir, chain(pkgdir.glob("index.*"), iamcdir.glob("*.csv"))
+    )
+    assert all(map(lambda f: f.parent.samefile(pkgdir), itree))
+    assert all(map(lambda f: f.parent.samefile(iamcdir), otree))
 
 
 def test_path_et_al():

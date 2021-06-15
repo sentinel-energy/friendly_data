@@ -44,10 +44,12 @@ def copy_files(
         List of files that were copied
 
     """
-    dest, anchor = Path(dest), Path(anchor)
+    dest = Path(dest)
     dest.mkdir(parents=True, exist_ok=True)
-    if not anchor.is_dir():
-        anchor = anchor.parent
+    if anchor:
+        anchor = Path(anchor)
+        if not anchor.is_dir():
+            anchor = anchor.parent
     files = []
     for fp in src:
         fp = Path(fp)
