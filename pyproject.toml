@@ -35,7 +35,7 @@ addopts = "-ra -q"
 # --doctest-modules --doctest-continue-on-failure
 
 [tool.coverage.run]
-# omit = ["friendly_data/cli.py"]
+omit = ["*/__init__.py", "*/__main__.py", "*/_types.py"]
 
 # [tool.mypy]
 # ignore_missing_imports = "True"
