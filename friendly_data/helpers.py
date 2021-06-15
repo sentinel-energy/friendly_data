@@ -9,6 +9,7 @@ import sys
 from typing import Dict, Iterable
 
 from glom import Check, Match, SKIP
+import pandas as pd
 
 
 def import_from(module: str, name: str):
@@ -64,6 +65,26 @@ class noop_map(dict):
 
     def __missing__(self, key):
         return key
+
+
+def idx_lvl_values(idx: pd.MultiIndex, name: str) -> pd.Index:
+    """Given a ``pandas.MultiIndex`` and a level name, find the level values
+
+    Parameters
+    ----------
+    idx : pandas.MultiIndex
+        A multi index
+
+    name : str
+        Level name
+
+    Returns
+    -------
+    pandas.Index
+        Index with the level values
+
+    """
+    return idx.levels[idx.names.index(name)]
 
 
 def select(spec, **kwargs):
