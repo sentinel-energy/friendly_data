@@ -15,7 +15,7 @@ requirements = list(
 
 setup(
     name="friendly_data",
-    version="0.1.dev2",
+    version="0.2",
     description="A frictionless data package implementation for energy system data.",
     long_description=Path("README.rst").read_text(),
     long_description_content_type="text/x-rst",
