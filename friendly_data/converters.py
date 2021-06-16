@@ -191,6 +191,7 @@ def to_df(resource: Resource, noexcept: bool = False, **kwargs) -> pd.DataFrame:
         ),
     )
     try:
+        # FIXME: validate options
         df = _reader(
             fullpath(resource),
             dtype=schema,
@@ -513,9 +514,7 @@ class IAMconv:
         _lvls = self.index_levels(entry["idxcols"])
         # do a case-insensitive match
         values = {
-            entry["iamc"]
-            .format(**{k: v for k, v in zip(_lvls, vprod)})
-            .lower(): "|".join(kprod)
+            entry["iamc"].format(**dict(zip(_lvls, vprod))).lower(): "|".join(kprod)
             for kprod, vprod in zip(
                 glom(_lvls.values(), Invoke(product).star([T.index])),
                 glom(_lvls.values(), Invoke(product).star([T.values])),
@@ -523,6 +522,7 @@ class IAMconv:
         }
         _df = df.reset_index("variable").query("variable.str.lower() == list(@values)")
         self._warn_empty(_df, entry)
+        # FIXME: maybe instead of str.split, put a tuple, and expand
         idxcols = _df.variable.str.lower().map(values).str.split("|", expand=True)
         idxcols.columns = _lvls.keys()
         # don't want to include _df["variable"] in results
@@ -530,7 +530,7 @@ class IAMconv:
             pd.concat([idxcols, _df["value"]], axis=1)
             .set_index(list(_lvls), append=True)
             .rename(columns={"value": self.f2col(entry["path"])})
-        )
+        )  # FIXME: maybe add a column spec in index entries
         return from_df(_df, basepath=basepath, datapath=entry["path"])
 
     def _varwnoidx(self, entry: Dict, df: pd.DataFrame, basepath: _path_t) -> Resource:
@@ -644,7 +644,8 @@ class IAMconv:
             if is_fmtstr(entry["iamc"]):
                 # NOTE: need to calculate the subset of levels that are in the
                 # current dataframe; this is b/c MultiIndex.set_levels accepts
-                # a sequence of level values for every level
+                # a sequence of level values for every level FIXME: check if
+                # data in file is consistent with index definition
                 _lvls = {col: lvls[col][idx_lvl_values(df.index, col)] for col in lvls}
                 iamc_variable = (
                     df.index.set_levels(levels=_lvls.values(), level=_lvls.keys())
