@@ -654,9 +654,11 @@ class IAMconv:
                 )
             else:
                 iamc_variable = entry["iamc"]
+            useridxlvls = list(set(df.index.names) - set(self._IAMC_IDX))
+            # ensure all user defined index columns are removed before concatinating
             df = (
                 df.rename(columns={df.columns[-1]: "value"})
-                .reset_index(list(lvls), drop=True)
+                .reset_index(useridxlvls, drop=True)
                 .assign(variable=iamc_variable)
                 .set_index("variable", append=True)
             )
