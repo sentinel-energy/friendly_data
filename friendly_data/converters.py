@@ -456,12 +456,12 @@ class IAMconv:
         """Read index column definitions provided in config"""
         _lvls: pd.Series = _reader(
             Path(basepath) / path,
-            usecols=["name", "title"],
+            usecols=["name", "iamc"],
             index_col="name",
             squeeze=True,
             **kwargs,
         )
-        # fallback when title is missing; capitalized name is the most common
+        # fallback when iamc name is missing; capitalized name is the most common
         return _lvls.fillna({i: i.capitalize() for i in _lvls.index})
 
     def __init__(self, idx: pkgindex, indices: Dict, basepath: _path_t, **kwargs):
