@@ -32,3 +32,11 @@ Keys supported by the Package Index file
       - path: demand.csv
         idxcols: [node, timestep]
         alias: {node: region}
+
+**iamc** (string)
+
+    A format string to construct the IAMC variable for a file entry.
+    It can reference index columns by enclosing them in braces (like a
+    Python format string)::
+
+      Installed Capacity|{carrier}|{technology}
