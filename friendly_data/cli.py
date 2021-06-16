@@ -106,9 +106,8 @@ def _metadata(
     if metadata:
         meta = dwim_file(metadata)["metadata"]
         if "licenses" in meta:
-            meta["licenses"] = glom(
-                meta, ("licenses", Coalesce([get_license], get_license))
-            )
+            lic = glom(meta, ("licenses", Coalesce([get_license], get_license)))
+            meta["licenses"] = lic if isinstance(lic, list) else [lic]
     else:
         meta = {
             "name": name if name else sanitise(title),
@@ -126,6 +125,8 @@ def _metadata(
     check = [k for k in mandatory if k not in meta]  # mandatory fields
     if check:
         logger.error(f"{check}: mandatory metadata missing")
+        if "license" in meta:
+            logger.error("'license': should be plural!")
         sys.exit(1)
 
     return meta
