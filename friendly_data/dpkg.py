@@ -530,11 +530,17 @@ def res_from_entry(entry: Dict, pkg_dir: _path_t) -> Resource:
         msg += "\nDid you call idx.records(keys) to iterate?"
         logger.exception(msg)
         raise ValueError(msg)
-
-    _, idxcoldict = index_levels(
-        pkg_dir / entry["path"], entry["idxcols"], entry["alias"]
-    )
+    try:
+        _, idxcoldict = index_levels(
+            pkg_dir / entry["path"], entry["idxcols"], entry["alias"]
+        )
+    except Exception as err:
+        # FIXME: too broad; most likely this fails because of bad options
+        # (e.g. index file entry), validate options and narrow scope of except
+        logger.exception(f"error reading {entry}")
+        raise
     entry.update(schema={"fields": idxcoldict, "primaryKey": entry["idxcols"]})
+    # FIXME: should we wrap this in a similar try: ... except: ...
     res = _resource(entry, basepath=f"{pkg_dir}", infer=True)
     # set of value columns
     cols = glom(res.schema.fields, (Iter("name"), set)) - set(entry["idxcols"])
