@@ -2,15 +2,15 @@ Overview
 ========
 
 SENTINEL partners work with a variety of models in diverse computing
-environments.  The *SENTINEL archive* data format [#]_ has been
-designed to facilitate interoperability in this diverse ecosystem by
-prioritising ease of sharing.  Since we have to cope with a variety of
-research requirements, and workflows, the format is fairly flexible,
-and to a great extent self-descriptive.  As the author of model or
-dataset is the most knowledgeable person about their work, we rely on
-the author to describe it accurately, and provide tools to simplify
-the process.  A typical description of a dataset includes metadata and
-structural information.
+environments.  The *Friendly data* format [#]_ has been designed to
+facilitate interoperability in this diverse ecosystem by prioritising
+ease of sharing.  Since we have to cope with a variety of research
+requirements, and workflows, the format is fairly flexible, and to a
+great extent self-descriptive.  As the author of a model or dataset is
+the most knowledgeable person about their work, we rely on the author
+to describe it accurately, and provide tools to simplify the process.
+A typical description of a dataset includes metadata and structural
+information.
 
 **Metadata** of a dataset typically establishes the context for the
 dataset.  It can consist of properties like:
@@ -34,10 +34,10 @@ top of the *frictionless datapackage* specification_.
 
 .. _specification: https://frictionlessdata.io/
 
-What is a ``datapackage``?
+What is a data package?
 ++++++++++++++++++++++++++
 
-A datapackage consists of a set of data files, any related source
+A data package consists of a set of data files, any related source
 code, relevant licenses, and a ``datapackage.json`` file that records
 all this information in a single place.  It is based on a widely
 recognised standard called *frictionless data*; further details of the
@@ -60,17 +60,16 @@ it can be used for smaller or simpler data packages, it does not
 support any of the SENTINEL specific additions.  The web UI is meant
 to be easy to use, and requires no knowledge of programming.
 
-The SENTINEL archive framework conforms to this specification, however
-it adds a few other SENTINEL specific conventions designed to
-facilitate interoperation between various models.  You can either use
-the command line interface (CLI) or the Python API to create or manage
-data packages.  While the underlying frictionless data specification
+The Friendly data library conforms to this specification, however it
+adds a few other SENTINEL specific conventions designed to facilitate
+interoperation between various models.  You can either use the command
+line interface (CLI) or the Python API to create or manage data
+packages.  While the underlying frictionless data specification
 provides alternate implementations of the datapackage format in other
-programming languages, at the moment SENTINEL archive is only
-available in Python.  However, since the underlying design uses
-established file formats, e.g. using *JSON* for metadata, and *CSV* or
-*Excel* for dataset; there are no barriers to reading a data package
-from other languages.
+programming languages, at the moment Friendly data is only available
+in Python.  However, since the underlying design uses established file
+formats, e.g. using *JSON* for metadata, and *CSV* for dataset; there
+is no barrier to reading a data package using other languages.
 
 .. _`online documentation`: https://specs.frictionlessdata.io/
 .. _`web-based user interface`: https://create.frictionlessdata.io/

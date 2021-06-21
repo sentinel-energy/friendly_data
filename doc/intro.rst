@@ -15,15 +15,15 @@ naming schemes, etc.
 
 To address this, we are developing a flexible data standard that can
 be the common medium of exchange between different models, allowing
-for sharing of results and linking.  The *SENTINEL archive* package,
-or ``friendly_data``, implements this framework.  It provides a Command Line
-Interface to create and manage data archives (or packages) that can be
-easily exchanged between different models in SENTINEL.  It also
-provides a Python API to do the same operations and more from within a
-computer program.  As the Python language has a very rich ecosystem of
-tools for data analysis and visualisation, this opens the the door to
-a very powerful analysis environment for collaborative research.  This
-framework is available as open source software under the version 2 of
-the `Apache software license`_.
+for sharing of results and linking.  The ``friendly_data`` package,
+implements this framework.  It provides a Command Line Interface to
+create and manage data packages that can be easily exchanged between
+different modelling teams in SENTINEL.  It also provides a Python API
+to do the same operations and more from within a computer program.  As
+the Python language has a very rich ecosystem of tools for data
+analysis and visualisation, this opens the the door to a very powerful
+analysis environment for collaborative research.  This framework is
+available as open source software under the version 2 of the `Apache
+software license`_.
 
 .. _`Apache software license`: https://www.apache.org/licenses/LICENSE-2.0

@@ -1,7 +1,7 @@
 Hands-on tutorial
 =================
 
-There are two parts to working with SENTINEL archive.  The files
+There are two parts to working with Friendly data.  The files
 containing the metadata and datasets, and the set of conventions that
 need to be followed.  We will start by understanding the conventions,
 so that working with the files later on will make sense.
@@ -18,5 +18,3 @@ and from a Python program using the Python API.
 .. include:: tutorial/registry-intro.rst
 .. include:: tutorial/example.rst
 .. include:: tutorial/metadata.rst
-.. include:: tutorial/archive.rst
-.. include:: tutorial/converters.rst

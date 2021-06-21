@@ -1,4 +1,4 @@
-techs,timesteps,capacity_factor
+technology,timestep,capacity_factor
 ccgt,2005-01-05 17:00:00,1.0
 ccgt,2005-01-05 18:00:00,1.0
 ccgt,2005-01-05 19:00:00,0.985
