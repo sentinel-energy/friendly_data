@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 from shutil import copytree
 
 import pandas as pd
@@ -19,6 +20,10 @@ default_type_map = {
     "Int64": "integer",
     "bool": "boolean",
 }
+
+
+def escape_path(path: Path) -> str:
+    return re.escape(f"{path}")
 
 
 def assert_log(caplog, msg: str, lvl: str = ""):

@@ -26,7 +26,7 @@ from friendly_data.io import relpaths
 from friendly_data.metatools import get_license
 import friendly_data_registry as registry
 
-from .conftest import expected_schema, assert_log
+from .conftest import expected_schema, escape_path, assert_log
 
 
 @pytest.mark.skipif(not is_windows(), reason="only relevant for windows")
@@ -100,9 +100,11 @@ def test_pkg_read_error(tmp_pkgdir):
     _, dest = tmp_pkgdir
     pkg_json = dest / "datapackage.json"
     pkg_json.unlink()
-    with pytest.raises(FileNotFoundError, match=f"{pkg_json}: not found"):
+    # NOTE: escape for Windows paths
+    path = escape_path(pkg_json) if is_windows() else pkg_json
+    with pytest.raises(FileNotFoundError, match=f"{path}: not found"):
         read_pkg(dest)
-    with pytest.raises(FileNotFoundError, match=f"{pkg_json}: not found"):
+    with pytest.raises(FileNotFoundError, match=f"{path}: not found"):
         read_pkg(pkg_json)
 
 
