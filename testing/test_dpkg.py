@@ -91,11 +91,19 @@ def test_zippkg_read(rnd_pkg, tmp_path_factory):
         assert (zipfile.parent / "foo/datapackage.json").exists()
 
 
-def test_pkg_read_error():
+def test_pkg_read_error(tmp_pkgdir):
     # unsupported archive: tarball
     tarball = Path("/path/to/package.tar")
     with pytest.raises(ValueError, match=f".*{tarball.name}:.+"):
         read_pkg(tarball)
+
+    _, dest = tmp_pkgdir
+    pkg_json = dest / "datapackage.json"
+    pkg_json.unlink()
+    with pytest.raises(FileNotFoundError, match=f"{pkg_json}: not found"):
+        read_pkg(dest)
+    with pytest.raises(FileNotFoundError, match=f"{pkg_json}: not found"):
+        read_pkg(pkg_json)
 
 
 def test_pkg_update(rnd_pkg):

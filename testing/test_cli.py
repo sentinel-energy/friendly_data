@@ -252,9 +252,15 @@ def test_iamc(tmp_iamc):
     assert newiamc.exists()
 
 
-def test_describe():
-    pkgdir = "testing/files/mini-ex"
+def test_describe(tmp_pkgdir, caplog):
+    _, pkgdir = tmp_pkgdir
     txt = describe(pkgdir)
     assert txt
     tokens = ("name", "licenses", "resources", "path", "fields", "csv")
     assert all(map(lambda t: t in t, tokens))
+
+    pkg_json = pkgdir / "datapackage.json"
+    pkg_json.unlink()
+    with pytest.raises(SystemExit):
+        describe(pkgdir)
+    assert_log(caplog, f"{pkg_json}: not found", "ERROR")

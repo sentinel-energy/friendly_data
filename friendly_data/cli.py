@@ -438,7 +438,10 @@ def describe(pkgpath: str):
         Path to the data package
 
     """
-    pkg = read_pkg(pkgpath)
+    try:
+        pkg = read_pkg(pkgpath)
+    except (ValueError, FileNotFoundError):
+        sys.exit(1)
     res = {}
     meta_f = ("name", "title", "description", "keywords", "licenses")
     for k, v in pkg.items():

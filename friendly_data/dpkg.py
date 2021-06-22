@@ -166,7 +166,7 @@ def read_pkg(pkg_path: _path_t, extract_dir: Optional[_path_t] = None):
     If `pkg_path` points to a `datapackage.json` file, read it as is.  If it
     points to a zip archive.  The archive is first extracted before opening it.
     If `extract_dir` is not provided, the current directory of the zip archive
-    is used.
+    is used.  If it is a directory, look for a `datapackage.json` inside.
 
     Parameters
     ----------
@@ -183,14 +183,15 @@ def read_pkg(pkg_path: _path_t, extract_dir: Optional[_path_t] = None):
     Raises
     ------
     ValueError
-        When an unsupported file format (not JSON or ZIP) is provided
+        When an unsupported format (not a directory, JSON, or ZIP) is provided
+    FileNotFoundError
+        When a datapackage.json file cannot be found
 
     """
     pkg_path = Path(pkg_path)
     if pkg_path.suffix == ".json":
-        with open(pkg_path) as pkg_json:
-            basepath = f"{Path(pkg_path).parent}"
-            pkg = Package(json.load(pkg_json), basepath=basepath)
+        pkg_json = pkg_path
+        basepath = Path(pkg_path).parent
     elif pkg_path.suffix == ".zip":
         if extract_dir is None:
             extract_dir = pkg_path.parent
@@ -198,13 +199,22 @@ def read_pkg(pkg_path: _path_t, extract_dir: Optional[_path_t] = None):
             extract_dir = Path(extract_dir)
         with ZipFile(pkg_path) as pkg_zip:
             pkg_zip.extractall(path=extract_dir)
-            with open(extract_dir / "datapackage.json") as pkg_json:
-                pkg = Package(json.load(pkg_json), basepath=f"{extract_dir}")
+            pkg_json = extract_dir / "datapackage.json"
+            basepath = extract_dir
     elif pkg_path.is_dir():
-        with open(pkg_path / "datapackage.json") as pkg_json:
-            pkg = Package(json.load(pkg_json), basepath=str(pkg_path))
+        pkg_json = pkg_path / "datapackage.json"
+        basepath = pkg_path
+
     else:
-        raise ValueError(f"{pkg_path}: expecting a JSON or ZIP file")
+        raise ValueError(f"{pkg_path}: not a directory, JSON, or ZIP file")
+
+    if pkg_json.exists():
+        pkg = Package(dwim_file(pkg_json), basepath=f"{basepath}")
+    else:
+        msg = f"{pkg_json}: not found"
+        logger.error(msg)
+        raise FileNotFoundError(msg)
+
     return _ensure_posix(pkg)
 
 
