@@ -52,3 +52,8 @@ accomodate changing needs of the community and reach a consensus much
 faster.  So to update to the latest registry, you can do::
 
   $ pip install -U friendly-data-registry
+
+If you also want to convert data packages into IAMC format, you need
+the optional dependencies; which can be installed like this::
+
+  $ pip install [-U] friendly-data[extras]

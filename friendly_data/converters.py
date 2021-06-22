@@ -33,7 +33,6 @@ from typing import cast, Dict, Iterable, List, overload, Union
 from frictionless import Resource
 from glom import glom, Iter, Invoke, Match, MatchError, Or, T
 import pandas as pd
-import pyam
 import xarray as xr
 
 from friendly_data._types import _path_t
@@ -361,6 +360,10 @@ def from_dst(
         for var, da in dst.data_vars.items()
     ]
     return resources
+
+
+# weak dependency on pyam; damn plotly!
+pyam = import_from("pyam", "")
 
 
 class IAMconv:

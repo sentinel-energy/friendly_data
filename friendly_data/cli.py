@@ -9,7 +9,6 @@ from typing import Dict, Iterable, List
 
 from glom import glom, Iter
 from glom.core import Coalesce
-import pyam
 from tabulate import tabulate
 
 from friendly_data import logger_config
@@ -20,7 +19,11 @@ from friendly_data.dpkg import pkg_from_files
 from friendly_data.dpkg import read_pkg
 from friendly_data.dpkg import pkgindex
 from friendly_data.dpkg import write_pkg
-from friendly_data.helpers import consume, filter_dict, is_windows, sanitise
+from friendly_data.helpers import consume
+from friendly_data.helpers import filter_dict
+from friendly_data.helpers import import_from
+from friendly_data.helpers import is_windows
+from friendly_data.helpers import sanitise
 from friendly_data.io import copy_files
 from friendly_data.io import dwim_file
 from friendly_data.io import path_not_in
@@ -383,6 +386,8 @@ def from_iamc(config: str, idxpath: str, iamcpath: str, export: str):
         Path to export data package to
 
     """
+    pyam = import_from("pyam", "")
+
     meta = _metadata(
         ["name"],
         metadata=config,
