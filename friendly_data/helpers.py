@@ -4,6 +4,7 @@ from collections import deque
 from collections.abc import Sequence
 from functools import partial
 from importlib import import_module
+from logging import getLogger
 import re
 import sys
 from typing import Dict, Iterable
@@ -11,10 +12,19 @@ from typing import Dict, Iterable
 from glom import Check, Match, SKIP
 import pandas as pd
 
+logger = getLogger(__name__)
+
 
 def import_from(module: str, name: str):
-    """Import ``name`` from ``module``."""
-    return getattr(import_module(module), name)
+    """Import `name` from `module`, if `name` is empty, return module"""
+    try:
+        mod = import_module(module)
+    except ImportError as err:
+        msg = f"Missing optional dependency '{name}', use pip or conda to install"
+        logger.exception(msg)
+        raise err from None
+    else:
+        return getattr(mod, name) if name else mod
 
 
 def is_windows() -> bool:
