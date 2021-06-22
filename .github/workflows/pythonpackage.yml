@@ -55,7 +55,9 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          for r in requirements*.txt; do pip install -r ${r}; done
+          pip install -r requirements.txt
+          pip install -r requirements-extras.txt
+          pip install -r requirements-dev.txt
           pip install -e .
       - name: Test w/ pytest
         run: |
@@ -88,7 +90,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           git apply ./dev/requirements-${{ matrix.req-version }}.patch
-          for r in requirements*.txt; do pip install -r ${r}; done
+          pip install -r requirements.txt
+          pip install -r requirements-extras.txt
+          pip install -r requirements-dev.txt
           pip install -e .
       - name: Test w/ pytest
         run: |
