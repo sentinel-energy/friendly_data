@@ -347,8 +347,8 @@ class pkgindex(List[Dict]):
         try:
             return glom(idx, Iter(record_match).all())
         except MatchError as err:
-            logger.exception(f"{err.args[1]}: bad key in index file")
-            raise
+            logger.error(f"{err.args[1]}: bad key in index file")
+            raise err from None
 
     @overload
     def _validate_keys(cls, keys: str) -> str:
@@ -547,7 +547,7 @@ def res_from_entry(entry: Dict, pkg_dir: _path_t) -> Resource:
         # FIXME: too broad; most likely this fails because of bad options
         # (e.g. index file entry), validate options and narrow scope of except
         logger.exception(f"error reading {entry}")
-        raise
+        raise err from None
     entry.update(schema={"fields": idxcoldict, "primaryKey": entry["idxcols"]})
     # FIXME: should we wrap this in a similar try: ... except: ...
     res = _resource(entry, basepath=f"{pkg_dir}", infer=True)

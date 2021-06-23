@@ -21,7 +21,7 @@ def import_from(module: str, name: str):
         mod = import_module(module)
     except ImportError as err:
         msg = f"Missing optional dependency '{module}', use pip or conda to install"
-        logger.exception(msg)
+        logger.error(msg)
         raise err from None
     else:
         return getattr(mod, name) if name else mod
