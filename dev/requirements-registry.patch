@@ -2,28 +2,22 @@ diff --git a/requirements-docs.txt b/requirements-docs.txt
 index a045b10..fdfee92 100644
 --- a/requirements-docs.txt
 +++ b/requirements-docs.txt
-@@ -1,7 +1,7 @@
+@@ -1,5 +1,5 @@
  frictionless>=4.0.2,<4.1
 -friendly-data-registry
++git+git://github.com/sentinel-energy/friendly_data_registry#egg=friendly_data_registry
  jinja2
  sphinx
  sphinx-rtd-theme
- numpydoc
- pyyaml
-+git+git://github.com/sentinel-energy/friendly_data_registry#egg=friendly_data_registry
 diff --git a/requirements.txt b/requirements.txt
 index aec8c11..7aa54b2 100644
 --- a/requirements.txt
 +++ b/requirements.txt
-@@ -1,6 +1,5 @@
+@@ -1,6 +1,6 @@
  fire
  frictionless>=4.0.2,<4.1
 -friendly-data-registry
++git+git://github.com/sentinel-energy/friendly_data_registry#egg=friendly_data_registry
  glom>=19.10
  jinja2
  numexpr
-@@ -11,3 +10,4 @@ pyyaml
- requests
- tabulate
- xarray
-+git+git://github.com/sentinel-energy/friendly_data_registry#egg=friendly_data_registry
