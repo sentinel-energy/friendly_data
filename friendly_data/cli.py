@@ -98,11 +98,11 @@ def license_prompt() -> _license_t:  # pragma: no cover, interactive function
 def _metadata(
     mandatory: List[str],
     *,
-    name: str,
-    title: str,
-    licenses: str,
-    description: str,
-    keywords: str,
+    name: str = "",
+    title: str = "",
+    licenses: str = "",
+    description: str = "",
+    keywords: str = "",
     metadata: _path_t = "",
 ) -> Dict:
     if metadata:
@@ -386,15 +386,7 @@ def from_iamc(config: str, idxpath: str, iamcpath: str, export: str):
 
     pyam = import_from("pyam", "")
 
-    meta = _metadata(
-        ["name"],
-        metadata=config,
-        name="",
-        title="",
-        licenses="",
-        description="",
-        keywords="",
-    )
+    meta = _metadata(["name"], metadata=config)
     conv = IAMconv.from_file(config, idxpath)
     iamdf = pyam.IamDataFrame(iamcpath)
     resources = conv.from_iamdf(iamdf, basepath=export)
