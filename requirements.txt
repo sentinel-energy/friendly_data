@@ -9,4 +9,3 @@ pandas>=1.0
 pyyaml
 requests
 tabulate
-xarray
