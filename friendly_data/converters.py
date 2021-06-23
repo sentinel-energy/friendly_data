@@ -28,7 +28,7 @@ Type mapping between the frictionless specification and pandas types:
 from itertools import product
 from logging import getLogger
 from pathlib import Path
-from typing import cast, Dict, Iterable, List, overload, Union
+from typing import cast, Dict, Iterable, List, overload, TYPE_CHECKING
 
 from frictionless import Resource
 from glom import glom, Iter, Invoke, Match, MatchError, Or, T
@@ -362,8 +362,8 @@ def from_dst(
     return resources
 
 
-# weak dependency on pyam; damn plotly!
-pyam = import_from("pyam", "")
+if TYPE_CHECKING:
+    from pyam import IamDataFrame
 
 
 class IAMconv:
@@ -385,6 +385,8 @@ class IAMconv:
 
     """
 
+    # weak dependency on pyam; damn plotly!
+    pyam = import_from("pyam", "")
     _IAMC_IDX = pyam.IAMC_IDX + ["year"]
 
     @classmethod
@@ -412,7 +414,7 @@ class IAMconv:
             logger.warning(f"{entry['path']}: empty dataframe, check index entry")
 
     @classmethod
-    def iamdf2df(cls, iamdf: pyam.IamDataFrame) -> pd.DataFrame:
+    def iamdf2df(cls, iamdf: "IamDataFrame") -> pd.DataFrame:
         """Convert :class:`pyam.IamDataFrame` to :class:`pandas.DataFrame`"""
         return iamdf.as_pandas().drop(columns="exclude").set_index(cls._IAMC_IDX)
 
@@ -423,7 +425,7 @@ class IAMconv:
 
     @classmethod
     def from_iamdf_simple(
-        cls, iamdf: pyam.IamDataFrame, basepath: _path_t, datapath: _path_t
+        cls, iamdf: "IamDataFrame", basepath: _path_t, datapath: _path_t
     ) -> Resource:
         """Simple conversion to data package in IAM long format"""
         return from_df(cls.iamdf2df(iamdf), basepath, datapath)
@@ -566,7 +568,7 @@ class IAMconv:
         self._warn_empty(_df, entry)
         return from_df(_df, basepath=basepath, datapath=entry["path"])
 
-    def from_iamdf(self, iamdf: pyam.IamDataFrame, basepath: _path_t) -> List[Resource]:
+    def from_iamdf(self, iamdf: "IamDataFrame", basepath: _path_t) -> List[Resource]:
         """Write an IAMC dataframe
 
         Parameters
@@ -604,9 +606,7 @@ class IAMconv:
         df : pandas.DataFrame
 
         """
-        defaults = filter_dict(
-            self.indices, set(pyam.IAMC_IDX + ["year"]) - set(df.index.names)
-        )
+        defaults = filter_dict(self.indices, set(self._IAMC_IDX) - set(df.index.names))
         return df.assign(**defaults).set_index(list(defaults), append=True)
 
     def to_df(self, files: Iterable[_path_t], basepath: _path_t = "") -> pd.DataFrame:
@@ -699,6 +699,6 @@ class IAMconv:
         """
         df = self.to_df(files, basepath=basepath)
         if wide:
-            df = pyam.IamDataFrame(df)
+            df = self.pyam.IamDataFrame(df)
         Path(output).parent.mkdir(parents=True, exist_ok=True)
         df.to_csv(output)
