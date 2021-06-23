@@ -3,12 +3,15 @@ name: {{ name }}
 title: {{ title }}
 {% endif %}
 {% if description is not undefined %}
-description: {{ description }}
+
+description:
+{{ description | wordwrap(78) }}
 {% endif %}
 {% if keywords is not undefined %}
-keywords: {{ keywords }}
+
+keywords: {{ keywords | join(", ") }}
 {% endif %}
-licenses: {{ licenses }}
+licenses: {{ licenses | join(", ") }}
 
 resources:
 ---
