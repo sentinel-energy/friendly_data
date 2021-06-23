@@ -106,7 +106,7 @@ def _metadata(
     metadata: _path_t = "",
 ) -> Dict:
     if metadata:
-        meta = dwim_file(metadata)["metadata"]
+        meta = dwim_file(metadata)["metadata"]  # type: ignore[call-overload]
         if "licenses" in meta:
             lic = glom(meta, ("licenses", Coalesce([get_license], get_license)))
             meta["licenses"] = lic if isinstance(lic, list) else [lic]
@@ -149,21 +149,18 @@ def _create(
     if export:
         pkgpath, export = Path(pkgpath), Path(export)
         idxpath = idxpath_from_pkgpath(pkgpath) if pkgpath.is_dir() else pkgpath
+        path_spec = Iter("path").map(lambda p: idxpath.parent / p)  # type: ignore[union-attr]
         if idxpath:  # create a uniquified list of files
             files = chain(
                 [idxpath],
                 set(
                     chain(
-                        glom(
-                            pkgindex.from_file(idxpath),
-                            Iter("path").map(lambda p: idxpath.parent / p),
-                        ),
-                        map(Path, fpaths),
+                        glom(pkgindex.from_file(idxpath), path_spec), map(Path, fpaths)
                     )
                 ),
             )
         else:
-            files = fpaths
+            files = fpaths  # type: ignore[assignment]
         # NOTE: if idxpath was found, first of the returned files is the index
         # file that was copied in the export directory, extract it to pkgpath
         fpaths = copy_files(files, export, pkgpath)
@@ -403,7 +400,7 @@ def from_iamc(config: str, idxpath: str, iamcpath: str, export: str):
     resources = conv.from_iamdf(iamdf, basepath=export)
     pkg = create_pkg(meta, resources, basepath=export, infer=False)
     files = write_pkg(pkg, export)
-    indices = dwim_file(config)["indices"]
+    indices = dwim_file(config)["indices"]  # type: ignore[call-overload]
     indices = filter_dict(indices, set(indices) - set(conv._IAMC_IDX))
     src = Path(idxpath).parent
     if not src.samefile(export):

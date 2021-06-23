@@ -172,12 +172,7 @@ def posixpathstr(fpath: _path_t) -> str:
 
 
 @overload
-def dwim_file(fpath: _path_t) -> Dict:
-    ...  # pragma: no cover, overload
-
-
-@overload
-def dwim_file(fpath: _path_t) -> List:
+def dwim_file(fpath: _path_t) -> Union[Dict, List]:
     ...  # pragma: no cover, overload
 
 
