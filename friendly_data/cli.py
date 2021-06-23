@@ -13,7 +13,6 @@ from tabulate import tabulate
 
 from friendly_data import logger_config
 from friendly_data._types import _license_t, _path_t
-from friendly_data.converters import IAMconv
 from friendly_data.dpkg import create_pkg, idxpath_from_pkgpath
 from friendly_data.dpkg import pkg_from_files
 from friendly_data.dpkg import read_pkg
@@ -386,6 +385,8 @@ def from_iamc(config: str, idxpath: str, iamcpath: str, export: str):
         Path to export data package to
 
     """
+    from friendly_data.iamc import IAMconv
+
     pyam = import_from("pyam", "")
 
     meta = _metadata(
@@ -428,6 +429,8 @@ def to_iamc(config: str, idxpath: str, iamcpath: str, *, wide: bool = False):
         Enable wide IAMC format
 
     """
+    from friendly_data.iamc import IAMconv
+
     conv = IAMconv.from_file(config, idxpath)
     files = conv.res_idx.get("path")
     conv.to_csv(files, output=iamcpath, wide=wide)
