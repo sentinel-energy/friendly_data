@@ -37,8 +37,9 @@ addopts = "-ra -q"
 [tool.coverage.run]
 omit = ["*/__init__.py", "*/__main__.py", "*/_types.py"]
 
-# [tool.mypy]
-# ignore_missing_imports = "True"
+[tool.mypy]
+ignore_missing_imports = true
+files = "friendly_data"
 
 [tool.black]
 # line-length = 79
