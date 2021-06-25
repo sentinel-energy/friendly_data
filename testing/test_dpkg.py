@@ -1,3 +1,4 @@
+from copy import deepcopy
 from itertools import chain
 from operator import contains
 from pathlib import Path
@@ -11,6 +12,7 @@ import pytest
 
 from friendly_data.converters import _schema, _source_type
 from friendly_data.dpkg import create_pkg
+from friendly_data.dpkg import entry_from_res
 from friendly_data.dpkg import fullpath
 from friendly_data.dpkg import index_levels
 from friendly_data.dpkg import idxpath_from_pkgpath
@@ -22,7 +24,7 @@ from friendly_data.dpkg import pkgindex
 from friendly_data.dpkg import update_pkg
 from friendly_data.dpkg import write_pkg
 from friendly_data.helpers import match, noop_map, select, is_windows
-from friendly_data.io import relpaths
+from friendly_data.io import dwim_file, relpaths
 from friendly_data.metatools import get_license
 import friendly_data_registry as registry
 
@@ -248,6 +250,15 @@ def test_res_from_entry():
         res = res_from_entry(entry, pkgdir)
         assert isinstance(res, Resource)
         assert glom(res, "schema.primaryKey") == entry["idxcols"]
+
+
+def test_entry_from_res():
+    pkgdir = Path("testing/files/alias_test")
+    idx = dwim_file(pkgdir / "index.yaml")
+    for entry in idx:
+        expected = deepcopy(entry)
+        res = res_from_entry(entry, pkgdir)
+        assert entry_from_res(res) == expected
 
 
 @pytest.mark.parametrize("idx_t", [".yaml", ".json"])

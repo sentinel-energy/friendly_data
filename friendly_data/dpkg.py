@@ -583,14 +583,16 @@ def entry_from_res(res: Resource) -> Dict:
         {
             "name": "name",
             "path": "path",
-            "idxcols": Coalesce("schema.primaryKeys", default=SKIP),
+            "idxcols": Coalesce("schema.primaryKey", default=SKIP),
         },
     )
     alias = glom(
         res,
         (
             "schema.fields",
-            Iter(Coalesce("alias", default=SKIP)).map(T.items()).flatten().all(),
+            Iter(match({"alias": str, str: object}))
+            .map(lambda i: (i["name"], i["alias"]))
+            .all(),
             dict,
         ),
     )
