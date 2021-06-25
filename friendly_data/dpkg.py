@@ -9,7 +9,7 @@ from typing import Dict, Iterable, List, Optional, Tuple, TypeVar, Union, overlo
 from zipfile import ZipFile
 
 from frictionless import Detector, Layout, Package, Resource
-from glom import Assign, Coalesce, glom, Invoke, Iter, Spec, T
+from glom import Assign, Coalesce, glom, Invoke, Iter, Spec, SKIP, T
 from glom import Match, MatchError, Optional as optmatch, Or
 import pandas as pd
 
@@ -562,6 +562,41 @@ def res_from_entry(entry: Dict, pkg_dir: _path_t) -> Resource:
         .all(),
     )
     return res
+
+
+def entry_from_res(res: Resource) -> Dict:
+    """Create an index entry from a ``Resource`` object
+
+    Parameters
+    ----------
+    res : Resource
+        A resource object
+
+    Returns
+    -------
+    Dict
+        A dictionary that is an index entry
+
+    """
+    entry = glom(
+        res,
+        {
+            "name": "name",
+            "path": "path",
+            "idxcols": Coalesce("schema.primaryKeys", default=SKIP),
+        },
+    )
+    alias = glom(
+        res,
+        (
+            "schema.fields",
+            Iter(Coalesce("alias", default=SKIP)).map(T.items()).flatten().all(),
+            dict,
+        ),
+    )
+    if alias:
+        entry["alias"] = alias
+    return entry
 
 
 def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pkgindex]:
