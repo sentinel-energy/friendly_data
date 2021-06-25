@@ -106,7 +106,11 @@ def _metadata(
     metadata: _path_t = "",
 ) -> Dict:
     if metadata:
-        meta = dwim_file(metadata)["metadata"]  # type: ignore[call-overload]
+        try:
+            meta = dwim_file(metadata)["metadata"]  # type: ignore[call-overload]
+        except KeyError as err:
+            logger.error(f"{err}: section missing from {metadata}")
+            sys.exit(1)
         if "licenses" in meta:
             lic = glom(meta, ("licenses", Coalesce([get_license], get_license)))
             meta["licenses"] = lic if isinstance(lic, list) else [lic]
