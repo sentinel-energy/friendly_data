@@ -169,4 +169,4 @@ jobs:
           pip install mypy{,_extensions}
           echo y | mypy --install-types
       - name: Type check w/ mypy
-        run: mypy --pretty
+        run: mypy --check-untyped-defs --pretty
