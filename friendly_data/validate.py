@@ -87,7 +87,7 @@ def summarise_errors(report: List[Dict]) -> pd.DataFrame:
     Parameters
     ----------
     report : List[Dict]
-        List of errors as returned by :func:`friendly_data.validate.check_pkg`
+        List of errors as returned by :func:`check_pkg`
 
     Returns
     -------
@@ -204,8 +204,8 @@ def check_schema(
 def summarise_diff(
     diff: Tuple[bool, Set[str], Dict[str, Tuple[str, str]], List[Tuple]]
 ) -> str:
-    """Summarise the schema diff from :func:`friendly_data.validate.check_schema`
-    results as a ``pandas.DataFrame``.
+    """Summarise the schema diff from :func:`check_schema` results as a
+    ``pandas.DataFrame``.
 
     """
 

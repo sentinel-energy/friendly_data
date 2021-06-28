@@ -223,7 +223,7 @@ def update_pkg(pkg: Package, resource: str, schema_update: Dict, fields: bool = 
     .. deprecated:: 0.2
 
        This function is not used any more, instead the schema is updated per
-       resource in :func:`~friendly_data.dpkg.res_from_entry`.
+       resource in :func:`res_from_entry`.
 
     Parameters
     ----------
@@ -291,7 +291,7 @@ class pkgindex(List[Dict]):
     - "sheet": sheet name or position (0-indexed) to use as dataset (optional,
       Excel only)
 
-    While iterating over an index, always use :method:`~pkgindex.records` to
+    While iterating over an index, always use :meth:`~pkgindex.records` to
     ensure all necessary keys are present.
 
     """
@@ -427,8 +427,7 @@ def get_aliased_cols(cols: Iterable[str], col_t: str, alias: Dict[str, str]) -> 
     -------
     Dict
         Schema for each column, the column name is the key, and the schema is
-        the value; see the doctring of :func:`friendly_data.dpkg.index_levels`
-        for more.
+        the value; see the doctring of :func:`index_levels` for more.
 
     """
     alias = noop_map(alias if isinstance(alias, dict) else {})
@@ -509,7 +508,7 @@ def res_from_entry(entry: Dict, pkg_dir: _path_t) -> Resource:
     """Create a resource from an index entry.
 
     Entry must have the keys: ``path``, ``idxcols``, ``alias``; so use
-    :method:`pkgindex.records` to iterate over the index.
+    :meth:`pkgindex.records` to iterate over the index.
 
     Parameters
     ----------
@@ -661,7 +660,7 @@ def pkg_from_files(
     fpath : Union[str, Path]
         Path to the package directory or index file.  Note the index file has
         to be at the top level directory of the datapackage.  See
-        :func:`~friendly_data.dpkg.pkgindex.from_file`
+        :meth:`pkgindex.from_file`
 
     fpaths : List[Union[str, Path]]
         A list of paths to datasets/resources not in the index.  If any of the

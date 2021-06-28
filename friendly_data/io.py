@@ -138,7 +138,7 @@ def path_in(fpaths: Iterable[_path_t], testfile: _path_t) -> bool:
 def path_not_in(fpaths: Iterable[_path_t], testfile: _path_t) -> bool:
     """Function to test if a path is absent from a list of paths.
 
-    Opposite of :func:`~friendly_data.io.path_in`.
+    Opposite of :func:`path_in`.
 
     Parameters
     ----------
@@ -241,7 +241,7 @@ class HttpCache:
     ``$TMPDIR/friendly_data_cache/``.  The file name is of the form
     ``http-<checksum-of-url-template>-<checksum-of-url>``.  The cache is
     updated every 24 hours.  A user may also force a cache cleanup by calling
-    the :meth:`remove()` method.
+    :meth:`remove`.
 
     Parameters
     ----------
