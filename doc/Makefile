@@ -8,7 +8,7 @@ SPHINXBUILD   ?= sphinx-build
 SOURCEDIR     = .
 BUILDDIR      = _build
 
-REPO_RAW      = https://raw.githubusercontent.com/sentinel-energy/friendly_data_example/master/
+REPO_RAW      = https://raw.githubusercontent.com/sentinel-energy/friendly_data_example/master
 DATA_CSV      = $(REPO_RAW)/data/flow_in_sum.csv
 TECH_CSV      = $(REPO_RAW)/technology.csv
 
@@ -39,4 +39,4 @@ tutorial/flow_in_sum.csv:
 	rm -f $@.tmp
 
 tutorial/technology.csv:
-	curl -s $(TECH_CSV) | sed -ne 1p -e '/electric_heater\|light_transport_ev/p' > $@
+	wget -q $(TECH_CSV) -O - | sed -ne 1p -e '/electric_heater\|light_transport_ev/p' > $@
