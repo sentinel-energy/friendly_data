@@ -7,8 +7,7 @@ from pathlib import Path
 import sys
 from typing import Dict, Iterable, List
 
-from glom import glom, Iter
-from glom.core import Coalesce
+from glom import Coalesce, glom, Iter
 from tabulate import tabulate
 
 from friendly_data import logger_config

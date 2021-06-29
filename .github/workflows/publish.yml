@@ -32,7 +32,7 @@ jobs:
       - name: Build docs
         run: |
           python -m friendly_data.doc > doc/api/registry.rst
-          make -C doc html
+          make -C doc tutorial/flow_in_sum.csv tutorial/technology.csv html
           # make -C doc latexpdf html
       - name: Publish pages
         uses: peaceiris/actions-gh-pages@v3

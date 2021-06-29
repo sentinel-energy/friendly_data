@@ -23,7 +23,7 @@ class MyMock(MagicMock):
 
 
 sys.path.insert(0, "../")
-mocked_modules = ["glom", "glom.matching", "pandas", "pyam", "xarray"]
+mocked_modules = ["glom", "glom.matching", "pandas", "pyam", "tabulate", "xarray"]
 sys.modules.update((mod, MyMock(name=mod)) for mod in mocked_modules)
 
 # -- Project information -----------------------------------------------------
@@ -33,7 +33,7 @@ copyright = "2021, SENTINEL Project"
 author = "SENTINEL Project"
 
 # The full version, including alpha/beta/rc tags
-release = "0.1.dev0"
+release = "0.2.2.dev"
 
 
 # -- General configuration ---------------------------------------------------

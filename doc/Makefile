@@ -8,6 +8,10 @@ SPHINXBUILD   ?= sphinx-build
 SOURCEDIR     = .
 BUILDDIR      = _build
 
+REPO_RAW      = https://raw.githubusercontent.com/sentinel-energy/friendly_data_example/master/
+DATA_CSV      = $(REPO_RAW)/data/flow_in_sum.csv
+TECH_CSV      = $(REPO_RAW)/technology.csv
+
 # Put it first so that "make" without argument is like "make help".
 help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
@@ -26,3 +30,13 @@ ecosystem.txt:
 _static/images/ecosystem.png: ecosystem.txt
 	wget --no-clobber https://code.orgmode.org/bzg/org-mode/raw/master/contrib/scripts/ditaa.jar
 	java -Dfile.encoding=UTF-8 -jar ditaa.jar $< $@
+
+tutorial/flow_in_sum.csv:
+	wget -q $(DATA_CSV) -O $@.tmp
+	head -n3 $@.tmp > $@
+	echo ...,...,...,...,...,... >> $@
+	sed -ne '/light_transport_ev/p' $@.tmp | head -n2 >> $@
+	rm -f $@.tmp
+
+tutorial/technology.csv:
+	curl -s $(TECH_CSV) | sed -ne 1p -e '/electric_heater\|light_transport_ev/p' > $@
