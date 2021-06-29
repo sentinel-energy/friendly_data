@@ -79,7 +79,7 @@ the technology names are not particularly descriptive, so you probably
 want to replace them with something more commonly used in an IAMC
 dataset.  These alternate names can be specified in a separate CSV
 file, and provided in the configuration file.  If we refer to the
-`example data pacakge`_, we will find a ``conf.yaml`` file, which has
+`example data package`_, we will find a ``conf.yaml`` file, which has
 a section like this::
 
   indices:
