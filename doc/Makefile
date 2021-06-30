@@ -32,11 +32,7 @@ _static/images/ecosystem.png: ecosystem.txt
 	java -Dfile.encoding=UTF-8 -jar ditaa.jar $< $@
 
 tutorial/flow_in_sum.csv:
-	wget -q $(DATA_CSV) -O $@.tmp
-	head -n3 $@.tmp > $@
-	echo ...,...,...,...,...,... >> $@
-	sed -ne '/light_transport_ev/p' $@.tmp | head -n2 >> $@
-	rm -f $@.tmp
+	wget -q $(DATA_CSV) -O - | ./trim-csv.awk > $@
 
 tutorial/technology.csv:
 	wget -q $(TECH_CSV) -O - | sed -ne 1p -e '/electric_heater\|light_transport_ev/p' > $@
