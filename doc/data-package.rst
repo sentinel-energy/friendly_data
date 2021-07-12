@@ -1,16 +1,7 @@
-Overview
-========
+Data package
+============
 
-SENTINEL partners work with a variety of models in diverse computing
-environments.  The *Friendly data* format [#]_ has been designed to
-facilitate interoperability in this diverse ecosystem by prioritising
-ease of sharing.  Since we have to cope with a variety of research
-requirements, and workflows, the format is fairly flexible, and to a
-great extent self-descriptive.  As the author of a model or dataset is
-the most knowledgeable person about their work, we rely on the author
-to describe it accurately, and provide tools to simplify the process.
-A typical description of a dataset includes metadata and structural
-information.
+The *Friendly data* format [#]_ has been designed to facilitate interoperability in this diverse ecosystem by prioritising ease of sharing.
 
 **Metadata** of a dataset typically establishes the context for the
 dataset.  It can consist of properties like:
@@ -34,8 +25,6 @@ top of the *frictionless datapackage* specification_.
 
 .. _specification: https://frictionlessdata.io/
 
-What is a data package?
-++++++++++++++++++++++++++
 
 A data package consists of a set of data files, any related source
 code, relevant licenses, and a ``datapackage.json`` file that records
