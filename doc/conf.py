@@ -29,8 +29,8 @@ sys.modules.update((mod, MyMock(name=mod)) for mod in mocked_modules)
 # -- Project information -----------------------------------------------------
 
 project = "friendly_data"
-copyright = "2021, SENTINEL Project"
-author = "SENTINEL Project"
+copyright = "2021, Suvayu Ali and contributors"
+author = "Suvayu Ali"
 
 # The full version, including alpha/beta/rc tags
 release = "0.2.2.dev"
@@ -70,6 +70,10 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # a list of builtin themes.
 #
 html_theme = "sphinx_rtd_theme"
+
+html_theme_options = {
+    "collapse_navigation": False,
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
