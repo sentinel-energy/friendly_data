@@ -290,7 +290,9 @@ def from_df(
     fullpath.parent.mkdir(parents=True, exist_ok=True)
     if rename:
         df = df.rename(columns=alias)
-    df.to_csv(fullpath)
+    # don't write index if default/unnamed index
+    writeidx = df.index.name is not None or bool(df.index.names)
+    df.to_csv(fullpath, index=writeidx)
 
     coldict = get_aliased_cols(df.columns, "cols", {} if rename else alias)
     _, idxcoldict = index_levels(df, df.index.names, alias)
