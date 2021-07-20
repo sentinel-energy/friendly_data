@@ -243,6 +243,36 @@ def test_index_levels(is_df, csvfile, idxcols):
     # TODO: aliased columns
 
 
+@pytest.mark.parametrize("is_df", [False, True])
+@pytest.mark.parametrize(
+    "idxcols",
+    [
+        # 5 cases, partial (region) and completely set enum (in registry),
+        # string (loc_*) or int (spore) enum not set (not in registry), and
+        # datetime types (timestep) FIXME: doesn't cover completely set enum
+        ("loc_from", "loc_to"),  # string enum not set
+        ("spore", "region"),  # int enum not set, + partial
+        ("spore", "loc_from", "loc_to"),  # int & string enum not set
+        ("timestep", "spore", "loc_from", "loc_to"),  # datetime & enum not set
+        ("timestep", "region", "spore", "loc_from", "loc_to"),  # all + partial
+    ],
+)
+def test_index_levels2(is_df, idxcols):
+    csvfile = Path("testing/files/index_levels/transmission_flows.csv")
+    file_or_df = pd.read_csv(csvfile, index_col=idxcols) if is_df else csvfile
+    file_or_df, coldict = index_levels(file_or_df, idxcols)
+    assert all(col in coldict for col in idxcols)
+    for col in idxcols:
+        if col == "timestep":
+            continue
+        if registry.get(col, "idxcols"):
+            nvals = len(file_or_df.index.get_level_values(col).unique())
+            assert glom(coldict, (f"{col}.constraints.enum", len)) == nvals
+        else:
+            # when not in the registry, metadata will always be incomplete
+            pass
+
+
 def test_res_from_entry():
     pkgdir = Path("testing/files/mini-ex")
     idxfile = pkgindex.from_file(pkgdir / "index.yaml")

@@ -438,12 +438,11 @@ def get_aliased_cols(cols: Iterable[str], col_t: str, alias: Dict[str, str]) -> 
     return coldict
 
 
-_file_or_df_t = Union[_path_t, pd.DataFrame]
-
-
 def index_levels(
-    file_or_df: _file_or_df_t, idxcols: Iterable[str], alias: Dict[str, str] = {}
-) -> Tuple[_file_or_df_t, Dict]:
+    file_or_df: Union[_path_t, pd.DataFrame],
+    idxcols: Iterable[str],
+    alias: Dict[str, str] = {},
+) -> Tuple[pd.DataFrame, Dict]:
     """Read a dataset and determine the index levels
 
     Parameters
@@ -459,10 +458,11 @@ def index_levels(
 
     Returns
     -------
-    Tuple[Union[str, Path, pd.DataFrame], Dict]
+    Tuple[pd.DataFrame, Dict]
 
-        Tuple of path to the dataset, and the schema of each column as a dictionary.
-        If `idxcols` was ["foo", "bar"], the dictionary might look like::
+        Tuple of the dataset, and the schema of each index column as a
+        dictionary.  If `idxcols` was ["foo", "bar"], the dictionary might look
+        like::
 
           {
               "foo": {
@@ -484,14 +484,37 @@ def index_levels(
 
     """
     coldict = get_aliased_cols(idxcols, "idxcols", alias)
+    # 4 cases:
+    # 1) in registry, and enum constraints set:
+    #    {"constraints": {"enum": And(list, len)}, str: str}
+    # 2) in registry, but enum constraints unset: `enum_partial` below
+    # 3) in registry, but enum not applicable (e.g. datetime): nothing to match
+    # 4) not in registry; this has a few possibilities, the type could be
+    #    string, integer, or boolean, but the metadata isn't readily available.
+    #    It could be deduced from the dataframe, but that is a bit messy as it
+    #    requires reverse lookup of `converters._pd_types`.  There should be a
+    #    cost to not using the registry, and this is it - it will not be enum
+    #    constrained:
+    #    And(
+    #        {"type": Or("string", "integer", "boolean"), str: str},
+    #        lambda i: "constraints" not in i,
+    #    )
+    #
     # select columns with an enum constraint where the enum values are empty
-    select_cols = match({"constraints": {"enum": []}, str: str})
+    enum_partial = {"constraints": {"enum": []}, str: str}
+    select_cols = match(enum_partial)
     cols = glom(coldict.values(), Iter().filter(select_cols).map("name").all())
+
     if isinstance(file_or_df, pd.DataFrame):
+        if not cols:
+            return file_or_df, coldict
         diff = list(set(idxcols) - set(cols))
         idx = file_or_df.index.droplevel(diff)
     else:
-        idx = pd.read_csv(file_or_df, index_col=cols).index
+        file_or_df = pd.read_csv(file_or_df, index_col=cols)
+        if not cols:
+            return file_or_df, coldict
+        idx = file_or_df.index
     if isinstance(idx, pd.MultiIndex):
         levels = {col: list(lvls) for col, lvls in zip(idx.names, idx.levels)}
     else:
