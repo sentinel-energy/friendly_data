@@ -242,7 +242,7 @@ def to_mfdst(
 
 
 def from_df(
-    df: pd.DataFrame,
+    df: Union[pd.DataFrame, pd.Series],
     basepath: _path_t,
     datapath: _path_t = "",
     alias: Dict[str, str] = {},
@@ -284,7 +284,10 @@ def from_df(
 
     """
     if not datapath:
-        datapath = f"{'_'.join(sanitise(col) for col in df.columns)}.csv"
+        if isinstance(df, pd.Series):
+            datapath = f"{df.name}.csv"
+        else:
+            datapath = f"{'_'.join(sanitise(col) for col in df.columns)}.csv"
     fullpath = Path(basepath) / datapath
     # ensure parent directory exists
     fullpath.parent.mkdir(parents=True, exist_ok=True)
@@ -294,13 +297,15 @@ def from_df(
     writeidx = df.index.name is not None or bool(df.index.names)
     df.to_csv(fullpath, index=writeidx)
 
-    coldict = get_aliased_cols(df.columns, "cols", {} if rename else alias)
-    _, idxcoldict = index_levels(df, df.index.names, alias)
+    cols = [df.name] if isinstance(df, pd.Series) else df.columns
+    coldict = get_aliased_cols(cols, "cols", {} if rename else alias)
+    idxcols = df.index.names if isinstance(df.index, pd.MultiIndex) else [df.name]
+    _, idxcoldict = index_levels(df, idxcols, alias)
     spec = {
         "path": f"{datapath}",
         "schema": {
             "fields": {**idxcoldict, **coldict},
-            "primaryKey": list(df.index.names),
+            "primaryKey": list(idxcols),
         },
     }
     return _resource(spec, basepath=basepath)

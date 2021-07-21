@@ -505,7 +505,7 @@ def index_levels(
     select_cols = match(enum_partial)
     cols = glom(coldict.values(), Iter().filter(select_cols).map("name").all())
 
-    if isinstance(file_or_df, pd.DataFrame):
+    if isinstance(file_or_df, (pd.DataFrame, pd.Series)):
         if not cols:
             return file_or_df, coldict
         diff = list(set(idxcols) - set(cols))
