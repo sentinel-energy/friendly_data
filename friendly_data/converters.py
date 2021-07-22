@@ -299,15 +299,20 @@ def from_df(
 
     cols = [df.name] if isinstance(df, pd.Series) else df.columns
     coldict = get_aliased_cols(cols, "cols", {} if rename else alias)
-    idxcols = df.index.names if isinstance(df.index, pd.MultiIndex) else [df.name]
-    _, idxcoldict = index_levels(df, idxcols, alias)
+    if writeidx:
+        idxcols = (
+            df.index.names if isinstance(df.index, pd.MultiIndex) else [df.index.name]
+        )
+        _, idxcoldict = index_levels(df, idxcols, alias)
+    else:
+        idxcols = []
+        idxcoldict = {}
     spec = {
         "path": f"{datapath}",
-        "schema": {
-            "fields": {**idxcoldict, **coldict},
-            "primaryKey": list(idxcols),
-        },
+        "schema": {"fields": {**idxcoldict, **coldict}},
     }
+    if writeidx:
+        spec["schema"]["primaryKey"] = list(idxcols)
     return _resource(spec, basepath=basepath)
 
 
