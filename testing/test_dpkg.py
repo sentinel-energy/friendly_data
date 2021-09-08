@@ -327,7 +327,7 @@ def test_pkg_from_files(pkg_meta, caplog):
     pkgdir = Path("testing/files/mini-ex")
     files = list(chain(pkgdir.glob("inputs/*"), pkgdir.glob("outputs/*")))
     # with index file
-    _, pkg, idx = pkg_from_files(pkg_meta, pkgdir / "index.json", files)
+    _, pkg, idx = pkg_from_files(pkg_meta, pkgdir / "index.yaml", files)
     # files not in index: inheritance.csv, and loc_coordinates.csv
     assert len(pkg["resources"]) - len(idx) == 2
 
