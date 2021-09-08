@@ -151,6 +151,9 @@ def to_df(resource: Resource, noexcept: bool = False, **kwargs) -> pd.DataFrame:
 
     # set 'primaryKey' as index_col, a list is interpreted as a MultiIndex
     index_col = glom(resource, ("schema.primaryKey"), default=False)
+    if isinstance(index_col, list):
+        # guard against schema, that includes an index column
+        [schema.pop(col) for col in index_col if col in schema]
 
     # FIXME: skip_rows is 1-indexed, whereas skiprows is either an offset or
     # 0-indexed (see FIXME in `_resource`)
