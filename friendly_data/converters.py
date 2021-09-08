@@ -315,7 +315,7 @@ def from_df(
         "schema": {"fields": {**idxcoldict, **coldict}},
     }
     if writeidx:
-        spec["schema"]["primaryKey"] = list(idxcols)
+        spec["schema"]["primaryKey"] = list(idxcols)  # type: ignore[index]
     return _resource(spec, basepath=basepath)
 
 
