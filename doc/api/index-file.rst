@@ -1,7 +1,9 @@
 .. _index-file:
 
-Keys supported by the Package Index file
-----------------------------------------
+The Package Index file
+----------------------
+
+The set of keys that can be used in a package index file is documented here.
 
 **path** (string)
 

@@ -1,10 +1,13 @@
 Data package
 ============
 
-The *Friendly data* format [#]_ has been designed to facilitate interoperability in this diverse ecosystem by prioritising ease of sharing.
+The *Friendly data* format [#]_ has been designed to facilitate
+interoperability in a diverse ecosystem by prioritising ease of
+sharing.  A data package includes several datasets, and a description
+of the datasets that includes semantic and structural metadata.
 
-**Metadata** of a dataset typically establishes the context for the
-dataset.  It can consist of properties like:
+The *semantic metadata* of a dataset typically establishes the context
+for the dataset.  It can consist of properties like:
 
 - a computer program friendly name so that they can be referred to
   easily from software,
@@ -14,51 +17,68 @@ dataset.  It can consist of properties like:
 - license information so that others know the terms of use, and
 - citation information.
 
-Whereas **structural information** should state the type information
-of a dataset, specify any constraints, and assumptions implicit in the
-data.  To avoid duplication of effort, our implementation builds on
-top of the *frictionless datapackage* specification_.
+And *structural metadata* includes type information of columns in a
+dataset, states any constraints, and assumptions implicit in the data.
+
+A data package is a collection of datasets, any related source code,
+relevant licenses, and a ``datapackage.json`` file that records all
+the metadata.  This is based on a widely recognised standard called
+*frictionless data*; further details can be found on the `frictionless
+documentation`_ page.
+
+
+.. figure:: _static/images/friendly_data_schematic_alt.png
+   :width: 90%
+   :align: center
+
+   A typical data package consists of a collection of datasets,
+   e.g. CSV files, and related metadata in the ``datapackage.json``
+   files.  There are two kinds of metadata: a) package wide semantic
+   information providing context, terms of use, etc, and b) structural
+   information, e.g. column names and types.
+
+The figure above is a graphical depiction of what a data package looks
+like.  The three tables are three separate datasets stored in CSV
+files.  And the metadata in the accompanying ``datapackage.json`` file
+include semantic metadata like name, title, description, license,
+keywords, etc, and structural information of all the columns present
+in the CSV files; e.g. here you can see ``region``, ``technology``,
+are strings, but ``energy_eff`` is a number.  Each dataset has an
+entry in the metadata file, which states its name, relative path, and
+structure (or *schema*) of the table in it.  Structural information
+includes column names, the type of data stored in each column (number,
+integer, string, etc), instructions on how to identify missing values,
+or how to uniquely identify each row in a dataset (otherwise known as
+the "primary key").  Comprehensive documentation of all possibilities
+can be found in the `table schema`_ section of the frictionless
+documentation [#]_.
+
+Creating a data package manually can be tedious, so the developers of
+the *frictionless* specification maintain a `web-based user
+interface`_ (web UI).  While it can be used for smaller or simpler
+data packages, it is not aware of any energy modelling specific
+terminology or conventions.  The web UI is meant to be easy to use,
+and requires no knowledge of programming.
+
+Friendly data conforms to this specification, however it adds a few
+energy modelling specific conventions designed to facilitate
+interoperation between various models.  You can either use the command
+line interface (CLI) or the Python API to create or manage a Friendly
+data packages.  While the underlying Frictionless data specification
+provides alternate implementations of the datapackage format in other
+programming languages, Friendly data is only available in Python.
+However, since the underlying design uses established file formats,
+e.g. using *JSON* for metadata, and *CSV* for dataset; there is no
+barrier to reading a data package in other languages.
+
 
 .. [#] We use the term "data format" to refer to the general structure
        of the data and its metadata, instead of a specific file type
        like *CSV*, *Excel*, etc.
 
-.. _specification: https://frictionlessdata.io/
+.. [#] In the frictionless documentation, datasets are often referred
+       as *data resources* as that is a more generic synonym.
 
-
-A data package consists of a set of data files, any related source
-code, relevant licenses, and a ``datapackage.json`` file that records
-all this information in a single place.  It is based on a widely
-recognised standard called *frictionless data*; further details of the
-specification can be found on their `online documentation`_.  This
-file also includes specific information about the structure of each
-dataset (or *resource*) included in the datapackage.  A resource can
-be any kind of file, like *CSV*, *Excel*, etc.  At the moment, only
-tabular resources are supported (you can still add other kinds of
-files, just that the framework won't be able to read them or do
-anything meaningful with it).  Each data resource has an entry which
-states its name, relative path, and structure (or *schema*) of the
-data within it.  Structural information includes column names, the
-type of data stored in each column (number, integer, string, etc),
-instructions on how to identify missing values, or how to uniquely
-identify each row in a dataset (otherwise known as the "primary key").
-
-There is a `web-based user interface`_ (web UI) provided by the
-original developers of the *frictionless data* specification.  While
-it can be used for smaller or simpler data packages, it does not
-support any of the SENTINEL specific additions.  The web UI is meant
-to be easy to use, and requires no knowledge of programming.
-
-The Friendly data library conforms to this specification, however it
-adds a few other SENTINEL specific conventions designed to facilitate
-interoperation between various models.  You can either use the command
-line interface (CLI) or the Python API to create or manage data
-packages.  While the underlying frictionless data specification
-provides alternate implementations of the datapackage format in other
-programming languages, at the moment Friendly data is only available
-in Python.  However, since the underlying design uses established file
-formats, e.g. using *JSON* for metadata, and *CSV* for dataset; there
-is no barrier to reading a data package using other languages.
-
-.. _`online documentation`: https://specs.frictionlessdata.io/
+.. _`frictionless documentation`: https://specs.frictionlessdata.io/
+.. _`table schema`: https://specs.frictionlessdata.io/table-schema/
 .. _`web-based user interface`: https://create.frictionlessdata.io/
