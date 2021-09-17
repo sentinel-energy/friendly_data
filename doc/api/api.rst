@@ -43,6 +43,11 @@ Time series API
 
 .. automodule:: friendly_data.tseries
 
+Conversion to IAMC
+==================
+
+.. automodule:: friendly_data.iamc
+
 Internal interfaces
 -------------------
 
