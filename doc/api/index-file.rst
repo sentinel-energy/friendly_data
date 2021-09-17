@@ -3,7 +3,12 @@
 The Package Index file
 ----------------------
 
-The set of keys that can be used in a package index file is documented here.
+Column values that are unique across a dataset can be used to identify
+a specific row.  These columns are referred to as index columns [#]_,
+alternatively they are also referred to as the *primary key*.  Using a
+*package index file* we can combine column metadata and specify these
+index columns, column aliases, etc.  The set of keys that can be used
+in a package index file is documented below.
 
 **path** (string)
 
@@ -11,7 +16,8 @@ The set of keys that can be used in a package index file is documented here.
 
 **idxcols** (list of strings)
 
-    Column names that should be considered part of the index of a dataset
+    Column names that should be considered part of the index of a
+    dataset (or primary key)
 
 **skip** (positive integer)
 
@@ -26,7 +32,7 @@ The set of keys that can be used in a package index file is documented here.
 **alias** (mapping or dictionary)
 
     A mapping of column names in the dataset that should be mapped to
-    another column in the registry; e.g. you use ``node`` for
+    another column in the registry; say you use ``node`` for
     locations, and you want the corresponding column to be mapped to
     ``region`` in the registry.  This can be specified with an index
     entry like this::
@@ -42,3 +48,7 @@ The set of keys that can be used in a package index file is documented here.
     Python format string)::
 
       Installed Capacity|{carrier}|{technology}
+
+
+.. [#] It is similar to index of a book, which allows you to jump to a
+       specific page in the book by looking up a keyword.

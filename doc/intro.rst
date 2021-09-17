@@ -5,14 +5,14 @@ Frictionless energy data, or ``friendly_data``, is two things:
 
 Its design goal is a common medium to facilitate the flow of data between energy and environmental models in a way that can be automated, while able to deal with the fact that different models use different internal data formats, unit conventions, or variable naming schemes.
 
-.. figure:: _static/images/friendly_data_schematic_alt.png
+.. figure:: _static/images/friendly_data_schematic_alt_2.png
    :width: 90%
    :align: center
 
    A typical data package consists of a collection of datasets, and
    related metadata.  There are two kinds of metadata: a) package wide
    semantic information providing context, terms of use, etc, and b)
-   structural information about the included datasets.
+   structural information about the included datasets, or schema.
 
 
 Friendly data packages
