@@ -19,20 +19,19 @@ column.  Within the ``friendly_data`` framework we refer to them as
    Schematic representation of a data package, composed of multiple
    datasets, where metadata for various columns are taken from the
    registry.  *Note*: the last column in the last dataset is not
-   present in the registry, denoting that there is flexibility to
-   deviate from the registry when necessary.
+   present in the registry, denoting that it is possible to add
+   columns not present in the registry.
 
 While a table (dataset/data resource) in a data package can have any
-number of columns of either kind, it is often helpful during analysis
-to designate an index.  Friendly data implements this by having an
-external registry that records all columns that are generally useful
-in the context of SENTINEL models, and categorising these columns as
-one or the other.  These could be something like ``capacity_factor``
-or energy storage capacity costs (``cost_storage_cap``), or
-coordinates of a site or location (``loc_coordinates``), or something
-much more generic like ``timestep`` indicating the timesteps of a
-demand profile.  Among the aforementioned columns, ``timestep`` is the
-only index-column.
+number of columns, it is often helpful during analysis to designate an
+index.  Friendly data implements this by having an external registry
+that records all columns that are generally useful in the context of
+energy models, and categorising these columns.  Some example columns
+could be ``capacity_factor`` or energy storage capacity
+(``storage_capacity``), or coordinates of a site or location, or
+something much more generic like ``timestep`` indicating the timesteps
+of a demand profile.  Among the aforementioned columns, ``timestep``
+is the only index-column.
 
 .. figure:: _static/images/registry-flow-update.png
    :width: 90%
@@ -45,16 +44,15 @@ only index-column.
 In the beginning the registry will be evolving with time, and proposal
 for inclusion of new columns to suit your models, or renaming existing
 columns, or any other relavant changes are welcome.  The goal is to
-reach a consensus on conventions that suit most of the SENTINEL
-partners.
+reach a consensus on conventions that suit most energy modellers.
 
 Besides naming and classifying columns, the registry also has type
 information; e.g. ``timestep`` is of type ``datetime`` (timestamp with
 date), GPS coordinates are pairs of coordinates, so it would be a
 fractional number (``number``), ``technology`` on the other hand is
-the name of technologies, so they are strings.  It can also include
-constraints, e.g. ``capacity_factor`` is a ``number`` between ``0``
-and ``1``, or ``technology`` can take one of a set of predefined
+the name of a technology, so they are strings.  The metadata can also
+include constraints, e.g. ``capacity_factor`` is a ``number`` between
+``0`` and ``1``, or ``technology`` can take one of a set of predefined
 values.  Now you might notice that, while everyone will agree with the
 constraint on ``capacity_factor``, the constraint on ``technology``
 will be different for different models.  So this element is
@@ -73,7 +71,9 @@ Column schema
 +++++++++++++
 
 The column schema can be specified either in YAML or JSON format.  The
-general structure is a ``Mapping`` (set of key-value pairs)::
+general structure is a ``Mapping`` (set of key-value pairs).  Both forms are shown below.
+
+JSON::
 
   {
     "name": "energy_eff",
@@ -85,7 +85,16 @@ general structure is a ``Mapping`` (set of key-value pairs)::
     }
   }
 
-while only the ``name`` property is mandatory in the *frictionless*
+YAML::
+
+  name: energy_eff
+  type: number
+  format: default
+  constraints:
+    minimum: 0
+    maximum: 1
+
+While only the ``name`` property is mandatory in the *frictionless*
 specification, for SENTINEL archive we also expect the ``type``
 property.  Constraints on the field can be specified by providing the
 ``constraints`` key.  It can take values like ``required``,
