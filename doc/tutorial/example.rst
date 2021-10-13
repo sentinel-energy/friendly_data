@@ -22,7 +22,6 @@ be::
   {
     "name": "capacity_factor",
     "type": "number",
-    "format": "default",
     "constraints": {
         "minimum": 0,
         "maximum": 1
@@ -34,7 +33,6 @@ The first column, ``technology``, should have an entry like this::
   {
     "name": "technology",
     "type": "string",
-    "format": "default",
     "constraints": {
 	"enum": [
 	    "ccgt",
@@ -44,12 +42,11 @@ The first column, ``technology``, should have an entry like this::
   }
 
 The enum property signifies that the column can only have values
-present in this set.  The ``timestep`` column looks like this::
+present in this list.  The ``timestep`` column looks like this::
 
   {
     "name": "timesteps",
-    "type": "datetime",
-    "format": "default"
+    "type": "datetime"
   }
 
 To describe our dataset, we need to mark the columns ``technology``
@@ -61,7 +58,6 @@ like this::
       {
         "name": "technology",
         "type": "string",
-        "format": "default",
         "constraints": {
           "enum": [
               "ac_transmission",
@@ -71,13 +67,11 @@ like this::
       },
       {
         "name": "timestep",
-        "type": "datetime",
-        "format": "default"
+        "type": "datetime"
       },
       {
         "name": "capacity_factor",
         "type": "number",
-        "format": "default",
         "constraints": {
           "minimum": 0,
           "maximum": 1
@@ -100,12 +94,13 @@ where, the key ``primaryKey`` indicates the set of index columns.
 Introducing the index file
 ++++++++++++++++++++++++++
 
-The implementation of *Friendly data* simplifies the above process by
-introducing an "index" file.  In essence, much like the index of a
-book, it is the "index" of a data package.  An index file lists
-datasets within the data package, and identifies columns in each
-dataset that are to be treated as the primary key (or index).
-Sometimes an index file entry may also contain other related info.
+Creating the metadata shown above can be tedious.  So *Friendly data*
+simplifies the process by introducing an "index" file.  In essence,
+much like the index of a book, it is the "index" of a data package.
+An index file lists datasets within the data package, and identifies
+columns in each dataset that are to be treated as the primary key (or
+index).  Sometimes an index file entry may also contain other related
+info.
 
 Let us examine how that might look using the capacity factor dataset
 as an example.  The corresponding entry would look like this::
@@ -121,6 +116,5 @@ about a dataset, e.g. if you need to skip ``n`` lines from the top
 when reading the corresponding file, you can simply add the key
 ``skip: n``.  All datasets need not be included in the index, just
 that if a dataset is not included, it does not gain from the
-structured metadata already recorded in the *Friendly data registry*,
-but is otherwise perfectly valid; more details about the index file
-can be found at :ref:`index-file`.
+structured metadata already recorded in the *Friendly data registry*;
+more details about the index file can be found at :ref:`index-file`.
