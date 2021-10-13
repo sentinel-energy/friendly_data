@@ -641,7 +641,7 @@ def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pkgindex]
 
     Returns
     -------
-    Tuple[Path, Package, pandas.DataFrame]
+    Tuple[Path, Package, pkgindex]
         The package directory, the `Package` object, and the index.
 
     Examples
