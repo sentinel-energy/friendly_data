@@ -34,7 +34,7 @@ from glom import glom, Iter, T
 import pandas as pd
 import xarray as xr
 
-from friendly_data._types import _path_t
+from friendly_data._types import _path_t, _dfseries_t
 from friendly_data.dpkg import _resource
 from friendly_data.dpkg import fullpath
 from friendly_data.dpkg import get_aliased_cols
@@ -79,7 +79,7 @@ def _source_type(source: _path_t) -> str:
     return source_t
 
 
-def _reader(fpath, **kwargs) -> Union[pd.Series, pd.DataFrame]:
+def _reader(fpath, **kwargs) -> _dfseries_t:
     reader = cast(Callable, import_from("pandas", _pd_readers[_source_type(fpath)]))
     return reader(fpath, **kwargs)
 

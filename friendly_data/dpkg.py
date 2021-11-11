@@ -15,7 +15,7 @@ import pandas as pd
 
 from friendly_data.io import dwim_file, path_not_in, posixpathstr, relpaths
 from friendly_data.helpers import match, noop_map, is_windows
-from friendly_data._types import _path_t
+from friendly_data._types import _path_t, _dfseries_t
 import friendly_data_registry as registry
 
 logger = getLogger(__name__)
@@ -439,15 +439,15 @@ def get_aliased_cols(cols: Iterable[str], col_t: str, alias: Dict[str, str]) -> 
 
 
 def index_levels(
-    file_or_df: Union[_path_t, pd.DataFrame],
+    file_or_df: Union[_path_t, _dfseries_t],
     idxcols: Iterable[str],
     alias: Dict[str, str] = {},
-) -> Tuple[pd.DataFrame, Dict]:
+) -> Tuple[_dfseries_t, Dict]:
     """Read a dataset and determine the index levels
 
     Parameters
     ----------
-    file_or_df : Union[str, Path, pd.DataFrame]
+    file_or_df : Union[str, Path, pd.DataFrame, pd.Series]
         A dataframe, or the path to a CSV file
 
     idxcols : Iterable[str]
