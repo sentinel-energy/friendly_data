@@ -99,19 +99,24 @@ def test_df_to_resource(tmp_path, pkg_w_alias):
     df.columns = ["unit", "energy_in"]
     df.index.names = ["technology", "node"]
     alias = {"node": "region", "energy_in": "flow_in"}
-    res = from_df(df, basepath=tmp_path, alias=alias)
-    res_alias = glom(
-        res,
-        (
-            "schema.fields",
-            Iter()
-            .filter(lambda i: "alias" in i)
-            .map(({1: "name", 2: "alias"}, T.values()))
-            .all(),
-            dict,
-        ),
-    )
-    assert res_alias == alias
+    for r in (True, False):
+        res = from_df(df, basepath=tmp_path, alias=alias, rename=r)
+        res_alias = glom(
+            res,
+            (
+                "schema.fields",
+                Iter()
+                .filter(lambda i: "alias" in i)
+                .map(({1: "name", 2: "alias"}, T.values()))
+                .all(),
+                dict,
+            ),
+        )
+
+        if r:
+            assert not res_alias
+        else:
+            assert res_alias == alias
 
 
 @pytest.mark.skip
