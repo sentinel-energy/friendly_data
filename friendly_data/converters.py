@@ -25,7 +25,7 @@ Type mapping between the frictionless specification and pandas types:
 
 """
 
-from logging import getLogger
+from logging import getLogger, warn
 from pathlib import Path
 from typing import Callable, cast, Dict, Iterable, List, Union
 
@@ -295,18 +295,28 @@ def from_df(
     # ensure parent directory exists
     fullpath.parent.mkdir(parents=True, exist_ok=True)
     if rename:
-        df = df.rename(columns=alias)
+        # work w/ a copy, not very memory efficient
+        _df = df.rename(alias, axis=1)  # noop for pd.series
+        _df.index = _df.index.rename(alias)
+    else:
+        _df = df
     # don't write index if default/unnamed index
-    writeidx = df.index.name is not None or bool(df.index.names)
-    df.to_csv(fullpath, index=writeidx)
+    defaultidx = (
+        False if isinstance(_df.index, pd.MultiIndex) else _df.index.name is None
+    )
+    _df.to_csv(fullpath, index=not defaultidx)
 
-    cols = [df.name] if isinstance(df, pd.Series) else df.columns
+    cols = [_df.name] if isinstance(_df, pd.Series) else _df.columns
     coldict = get_aliased_cols(cols, "cols", {} if rename else alias)
-    if writeidx:
+    if not defaultidx:
         idxcols = (
-            df.index.names if isinstance(df.index, pd.MultiIndex) else [df.index.name]
+            _df.index.names
+            if isinstance(_df.index, pd.MultiIndex)
+            else [_df.index.name]
         )
-        _, idxcoldict = index_levels(df, idxcols, alias)
+        if None in idxcols:
+            warn(f"index doesn't have valid names: {idxcols}")
+        _, idxcoldict = index_levels(_df, idxcols, alias)
     else:
         idxcols = []
         idxcoldict = {}
@@ -314,7 +324,7 @@ def from_df(
         "path": f"{datapath}",
         "schema": {"fields": {**idxcoldict, **coldict}},
     }
-    if writeidx:
+    if not defaultidx:
         spec["schema"]["primaryKey"] = list(idxcols)  # type: ignore[index]
     return _resource(spec, basepath=basepath)
 
