@@ -80,12 +80,14 @@ def _resource(spec: Dict, basepath: _path_t = "", infer=True) -> Resource:
         return spec
     assert "path" in spec, f"Incomplete resource spec: {spec}"
     opts = {}
+    layout_opts = {"header": True}
     if spec.get("skip"):
         # FIXME: `offset_rows` doesn't seem to work, so workaround with
         # `skip_rows` (`frictionless` expects a 1-indexed array).  `pandas` on
         # the other hand uses a 0-indexed list, which has to be accounted for
         # in `to_df`
-        opts["layout"] = Layout(skip_rows=[i + 1 for i in range(spec["skip"])])
+        layout_opts["skip_rows"] = [i + 1 for i in range(spec["skip"])]
+    opts["layout"] = Layout(**layout_opts)
     if spec.get("schema"):
         opts["detector"] = Detector(schema_patch=spec["schema"])
     res = Resource(path=str(spec["path"]), basepath=str(basepath), **opts)
