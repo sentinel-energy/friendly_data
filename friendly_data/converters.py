@@ -249,7 +249,7 @@ def from_df(
     basepath: _path_t,
     datapath: _path_t = "",
     alias: Dict[str, str] = {},
-    rename: bool = False,
+    rename: bool = True,
 ) -> Resource:
     """Write dataframe to a CSV file, and return a data package resource.
 
@@ -277,7 +277,7 @@ def from_df(
         column name in the dataframe, and the value is a column in the
         registry.
 
-    rename : bool (default: False)
+    rename : bool (default: True)
         Rename aliased columns to match the registry when writing to the CSV.
 
     Returns
