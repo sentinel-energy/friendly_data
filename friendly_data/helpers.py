@@ -7,7 +7,7 @@ from importlib import import_module
 from logging import getLogger
 import re
 import sys
-from typing import Dict, Iterable
+from typing import Dict, Iterable, List, Tuple
 
 from glom import Check, Match, SKIP
 import pandas as pd
@@ -95,6 +95,30 @@ def idx_lvl_values(idx: pd.MultiIndex, name: str) -> pd.Index:
 
     """
     return idx.levels[idx.names.index(name)]
+
+
+def idxslice(lvls: Iterable[str], selection: Dict[str, List]) -> Tuple:
+    """Create an index slice tuple from a set of level names, and selection mapping
+
+    NOTE: The order of ``lvls`` should match the order of the levels in the
+    index exactly; typically, ``mydf.index.names``.
+
+    Parameters
+    ----------
+    lvls : Iterable[str]
+        Complete set of levels in the index
+
+    selection : Dict[str, List]
+        Selection set; the key is a level name, and the value is a list of
+        values to select
+
+    Returns
+    -------
+    Tuple
+        Tuple of values, with ``slice(None)`` for skipped levels (matches anything)
+
+    """
+    return tuple(selection[lvl] if lvl in selection else slice(None) for lvl in lvls)
 
 
 def select(spec, **kwargs):
