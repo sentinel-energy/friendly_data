@@ -16,7 +16,7 @@ logger = getLogger(__name__)
 
 
 def import_from(module: str, name: str):
-    """Import `name` from `module`, if `name` is empty, return module"""
+    """Import ``name`` from ``module``, if ``name`` is empty, return module"""
     try:
         mod = import_module(module)
     except ImportError as err:

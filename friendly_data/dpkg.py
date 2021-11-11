@@ -107,8 +107,8 @@ def create_pkg(
 ):
     """Create a datapackage from metadata and resources.
 
-    If `resources` point to files that exist, their schema are inferred and
-    added to the package.  If `basepath` is a non empty string, it is treated
+    If ``resources`` point to files that exist, their schema are inferred and
+    added to the package.  If ``basepath`` is a non empty string, it is treated
     as the parent directory, and all resource file paths are checked relative
     to it.
 
@@ -119,7 +119,7 @@ def create_pkg(
 
     fpaths : Iterable[Union[str, Path, Dict]]
         An iterator over different resources.  Resources are paths to files,
-        relative to `basepath`.
+        relative to ``basepath``.
 
     basepath : str (default: empty string)
         Directory where the package files are located
@@ -164,15 +164,15 @@ def create_pkg(
 def read_pkg(pkg_path: _path_t, extract_dir: Optional[_path_t] = None):
     """Read a  datapackage
 
-    If `pkg_path` points to a `datapackage.json` file, read it as is.  If it
+    If ``pkg_path`` points to a ``datapackage.json`` file, read it as is.  If it
     points to a zip archive.  The archive is first extracted before opening it.
-    If `extract_dir` is not provided, the current directory of the zip archive
-    is used.  If it is a directory, look for a `datapackage.json` inside.
+    If ``extract_dir`` is not provided, the current directory of the zip archive
+    is used.  If it is a directory, look for a ``datapackage.json`` inside.
 
     Parameters
     ----------
     pkg_path : Union[str, Path]
-        Path to the `datapackage.json` file, or a zip archive
+        Path to the ``datapackage.json`` file, or a zip archive
 
     extract_dir : Union[str, Path]
         Path to which the zip archive is extracted
@@ -236,8 +236,8 @@ def update_pkg(pkg: Package, resource: str, schema_update: Dict, fields: bool = 
         Resource name FIXME: cannot handle duplicate names in subdirectories
 
     schema_update : Dict
-        Updated fields in the schema, if `field` is `False`, can be used to
-        update `missingValues`, or `primaryKey`.  When updating the schema, it
+        Updated fields in the schema, if ``fields`` is ``False``, can be used to
+        update ``missingValues``, or ``primaryKey``.  When updating the schema, it
         looks like this ('foo'/'bar' are names of the fields being updated)::
 
           {
@@ -259,7 +259,7 @@ def update_pkg(pkg: Package, resource: str, schema_update: Dict, fields: bool = 
     Returns
     -------
     bool
-        Return the `Package.valid` flag; `True` if the update was valid.
+        Return the ``Package.valid`` flag; ``True`` if the update was valid.
 
     """
     logger.warning("update_pkg: this function has been deprecated")
@@ -384,16 +384,16 @@ class pkgindex(List[Dict]):
         Raises
         ------
         glom.MatchError
-            If `keys` has an unsupported value
+            If ``keys`` has an unsupported value
 
         """
         spec = {k: Coalesce(k, default=None) for k in self._validate_keys(keys)}
         return glom(self, Iter().map(spec).all())
 
     def get(self, key: str) -> List:
-        """Get the value of `key` from all records as a list.
+        """Get the value of ``key`` from all records as a list.
 
-        If `key` is absent, the corresponding value is set to ``None``.
+        If ``key`` is absent, the corresponding value is set to ``None``.
 
         Parameters
         ----------
@@ -403,7 +403,7 @@ class pkgindex(List[Dict]):
         Returns
         -------
         List
-            List of records with values corresponding to `key`.
+            List of records with values corresponding to ``key``.
 
         """
         return glom(self, [Coalesce(self._validate_keys(key), default=None)])
@@ -460,10 +460,10 @@ def index_levels(
 
     Returns
     -------
-    Tuple[pd.DataFrame, Dict]
+    Tuple[Union[pd.DataFrame, pd.Series], Dict]
 
         Tuple of the dataset, and the schema of each index column as a
-        dictionary.  If `idxcols` was ["foo", "bar"], the dictionary might look
+        dictionary.  If ``idxcols`` was ["foo", "bar"], the dictionary might look
         like::
 
           {
@@ -644,7 +644,7 @@ def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pkgindex]
     Returns
     -------
     Tuple[Path, Package, pkgindex]
-        The package directory, the `Package` object, and the index.
+        The package directory, the ``Package`` object, and the index.
 
     Examples
     --------
@@ -770,7 +770,7 @@ def write_pkg(
         Path to write to
 
     idx : Union[pkgindex, List] (optional)
-        Package index written to `pkgdir/index.json`
+        Package index written to ``pkgdir/index.json``
 
     Returns
     -------
