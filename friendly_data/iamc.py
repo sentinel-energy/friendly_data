@@ -1,7 +1,17 @@
+"""Interface to convert a Friendly dataset to IAMC format
+
+Configuration can be done using two separate files, A global config file (in
+YAML format) can set options like mapping an index column to the corresponding
+IAMC names, and setting default values for mandatory columns.  Whereas per
+dataset configuration like, identifying index columns, mapping a dataset to its
+IAMC variable name, defining column aliases, and aggregations can be done in an
+index file (in YAML format).
+
+"""
 from itertools import product
 from logging import getLogger
 from pathlib import Path
-from typing import cast, Dict, Iterable, List, TYPE_CHECKING
+from typing import cast, Dict, Iterable, List, TYPE_CHECKING, Tuple
 
 from frictionless import Resource
 from glom import glom, Iter, Invoke, Match, MatchError, Or, T
@@ -11,7 +21,7 @@ from friendly_data._types import _path_t
 from friendly_data.converters import _reader, from_df, to_df
 from friendly_data.dpkg import pkgindex
 from friendly_data.dpkg import res_from_entry
-from friendly_data.helpers import idx_lvl_values
+from friendly_data.helpers import idx_lvl_values, idxslice
 from friendly_data.helpers import import_from
 from friendly_data.helpers import filter_dict
 from friendly_data.helpers import is_fmtstr
@@ -107,7 +117,6 @@ class IAMconv:
         -------
         IAMconv
 
-
         """
         basepath = Path(idxpath).parent
         conf = cls._validate(cast(Dict, dwim_file(confpath)))
@@ -139,6 +148,9 @@ class IAMconv:
         indices : Dict[str, pd.Series]
             Index column definitions
 
+        basepath : Union[str, Path]
+            Path where the IAMC output will be written
+
         """
         # levels are for user defined idxcols, default for mandatory idxcols
         self.indices = {
@@ -151,8 +163,43 @@ class IAMconv:
         self.basepath = Path(basepath)
 
     def index_levels(self, idxcols: Iterable) -> Dict[str, pd.Series]:
+        """Index levels for user defined index columns
+
+        Parameters
+        ----------
+        idxcols : Iterable[str]
+            Iterable of index column names
+
+        Returns
+        -------
+        Dict[str, pd.Series]
+            Different values for a given set of index columns
+
+        """
         # only for user defined idxcols
-        return {col: self.indices[col] for col in idxcols if col not in self._IAMC_IDX}
+        return filter_dict(self.indices, set(idxcols) - set(self._IAMC_IDX))
+
+    def resolve_idxcol_defaults(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Find missing IAMC indices and set them to the default value from config
+
+        The IAMC format requires the following indices: `self._IAMC_IDX`; if
+        any of them are missing, the corresponding index level is created, and
+        the level values are set to a constant specified in the config.
+
+        Parameters
+        ----------
+        df : pandas.DataFrame
+
+        Returns
+        -------
+        pandas.DataFrame
+            Dataframe with default index columns resolved
+
+        """
+        defaults = filter_dict(self.indices, set(self._IAMC_IDX) - set(df.index.names))
+        return cast(
+            pd.DataFrame, df.assign(**defaults).set_index(list(defaults), append=True)
+        )
 
     def _varwidx(self, entry: Dict, df: pd.DataFrame, basepath: _path_t) -> Resource:
         """Write a dataframe that includes index columns in the IAMC variable
@@ -183,7 +230,10 @@ class IAMconv:
                 glom(_lvls.values(), Invoke(product).star([T.values])),
             )
         }
-        _df = df.reset_index("variable").query("variable.str.lower() == list(@values)")
+        _df = cast(
+            pd.DataFrame,
+            df.reset_index("variable").query("variable.str.lower() == list(@values)"),
+        )
         self._warn_empty(_df, entry)
         # FIXME: maybe instead of str.split, put a tuple, and expand
         idxcols = _df.variable.str.lower().map(values).str.split("|", expand=True)
@@ -252,20 +302,53 @@ class IAMconv:
         ]
         return resources
 
-    def resolve_iamc_idxcol_defaults(self, df: pd.DataFrame):
-        """Find missing IAMC indices and set them to the default value from config
+    def iamcify(self, df: pd.DataFrame) -> pd.DataFrame:
+        useridxlvls = list(set(df.index.names) - set(self._IAMC_IDX))
+        # ensure all user defined index columns are removed before concatinating
+        df = (
+            df.rename(columns={df.columns[0]: "value"})
+            .set_index("variable", append=True)
+            .reset_index(useridxlvls, drop=True)
+        )
+        df.index = df.index.reorder_levels(self._IAMC_IDX)
+        return df
 
-        The IAMC format requires the following indices: `self._IAMC_IDX`; if
-        any of them are missing, the corresponding index level is created, and
-        the level values are set to a constant specified in the config.
+    def agg_idxcol(self, df: pd.DataFrame, col: str, entry: Dict) -> List[pd.DataFrame]:
+        """Aggregate values and generate IAMC dataframes
 
         Parameters
         ----------
-        df : pandas.DataFrame
+        df : pd.DataFrame
+            Dataframe to aggregate from
+
+        col : str
+            Column to perform aggregation on
+
+        entry : Dict
+            Index entry with aggregation rules
+
+        Returns
+        -------
+        List[pd.DataFrame]
+            List of IAMC dataframes
 
         """
-        defaults = filter_dict(self.indices, set(self._IAMC_IDX) - set(df.index.names))
-        return df.assign(**defaults).set_index(list(defaults), append=True)
+        dfs = []
+        for lvls, var in glom(entry["agg"][col], [(T.values(), tuple)]):
+            rest = df.index.names.difference([col])
+            _df = cast(
+                pd.DataFrame,
+                df.query(f"{col} in @lvls").groupby(rest).sum().assign(variable=var),
+            )
+            dfs.append(self.iamcify(_df))
+        return dfs
+
+    def agg_vals_all(self, entry: Dict) -> Tuple[str, List[str]]:
+        """Find all values in index column that are present in an aggregate rule"""
+        assert len(entry["agg"]) == 1, "only support aggregating one column"
+        col, conf = entry["agg"].copy().popitem()
+        vals = glom(conf, (Iter().map(T["values"]).flatten().all(), set, list))
+        return col, vals
 
     def to_df(self, files: Iterable[_path_t], basepath: _path_t = "") -> pd.DataFrame:
         """Convert CSV files to IAMC format according to configuration in the index
@@ -287,10 +370,11 @@ class IAMconv:
         dfs = []
         for fpath in files:
             # NOTE: res_from_entry requires: "path", "idxcols", "alias"; later
-            # in the iteration, "iamc" is required
+            # in the iteration, "iamc" & "agg" is required
+            keys = ["path", "idxcols", "alias", "iamc", "agg"]
             _entries = [
                 entry
-                for entry in self.res_idx.records(["path", "idxcols", "alias", "iamc"])
+                for entry in self.res_idx.records(keys)
                 if f"{fpath}" == entry["path"]
             ]
             if _entries:
@@ -300,32 +384,55 @@ class IAMconv:
             else:
                 continue
             df = to_df(res_from_entry(entry, basepath if basepath else self.basepath))
-            df = self.resolve_iamc_idxcol_defaults(df)
+            df = self.resolve_idxcol_defaults(df)
             lvls = self.index_levels(df.index.names)
+
+            if entry["agg"]:
+                col, _agg_vals = self.agg_vals_all(entry)
+                df_agg = cast(pd.DataFrame, df.query(f"{col} in @_agg_vals"))
+                dfs.extend(self.agg_idxcol(df_agg, col, entry))
+
+                _vals = lvls[col].index
+                df = cast(pd.DataFrame, df.query(f"{col} in @_vals"))
+
+                # NOTE: need to remove aggregated levels, then calculate the
+                # intersection with the levels that are in the current dataframe
+                _lvls = {
+                    col: vals.loc[
+                        vals.index.difference(_agg_vals).intersection(
+                            idx_lvl_values(df.index, col)
+                        )
+                    ]
+                    for col, vals in lvls.items()
+                }
+            else:
+                # NOTE: need to calculate the intersection of levels that are
+                # in the current dataframe and the levels defined in the config
+                _lvls = {
+                    col: vals.loc[
+                        vals.index.intersection(idx_lvl_values(df.index, col))
+                    ]
+                    for col, vals in lvls.items()
+                }
+
             if is_fmtstr(entry["iamc"]):
-                # NOTE: need to calculate the subset of levels that are in the
-                # current dataframe; this is b/c MultiIndex.set_levels accepts
-                # a sequence of level values for every level FIXME: check if
-                # data in file is consistent with index definition
-                _lvls = {col: lvls[col][idx_lvl_values(df.index, col)] for col in lvls}
-                iamc_variable = (
-                    df.index.set_levels(levels=_lvls.values(), level=_lvls.keys())
-                    .to_frame()
-                    .reset_index(list(_lvls), drop=True)
-                    .apply(lambda r: entry["iamc"].format(**r.to_dict()), axis=1)
+                sel = idxslice(
+                    df.index.names,
+                    {col: val.index for col, val in _lvls.items()},
                 )
+                df = df.loc[sel]
+                df.index = df.index.remove_unused_levels()
+                iamc_variable = pd.DataFrame(
+                    {
+                        col: df.index.get_level_values(col).map(val)
+                        for col, val in _lvls.items()
+                    },
+                    index=df.index,
+                ).apply(lambda r: entry["iamc"].format(**r.to_dict()), axis=1)
             else:
                 iamc_variable = entry["iamc"]
-            useridxlvls = list(set(df.index.names) - set(self._IAMC_IDX))
-            # ensure all user defined index columns are removed before concatinating
-            df = (
-                df.rename(columns={df.columns[-1]: "value"})
-                .reset_index(useridxlvls, drop=True)
-                .assign(variable=iamc_variable)
-                .set_index("variable", append=True)
-            )
-            df.index = df.index.reorder_levels(self._IAMC_IDX)
-            dfs.append(df)
+            df = df.assign(variable=iamc_variable)
+            dfs.append(self.iamcify(df))
         df = pd.concat(dfs, axis=0)
         if df.empty:
             logger.warning("empty data set, check config and index file")

@@ -8,7 +8,6 @@ frameworks like ``pandas``, ``xarray``, etc.  Currently supported:
  ``xarray`` (via ``pandas``)    :class:``xarray.DataArray``,
                                 :class:``xarray.Dataset``,
                                 multi-file :class:``xarray.Dataset``
-  ``pyam`` (IAMC)		*soon*
 =============================  ======================================
 
 Type mapping between the frictionless specification and pandas types:
