@@ -1,80 +1,98 @@
-- path: nameplate_capacity.csv
-  iamc: Capacity|Electricity|{technology}
+- agg:
+    technology:
+    - values:
+      - coal_power_plant
+      - ccgt
+      variable: Fixed Cost|Electricity|Fossil
+    - values:
+      - hydro_reservoir
+      - hydro_run_of_river
+      variable: Fixed Cost|Electricity|Hydro
+    - values:
+      - open_field_pv
+      - roof_mounted_pv
+      variable: Fixed Cost|Electricity|Solar|PV
+    - values:
+      - wind_onshore
+      - wind_offshore
+      variable: Fixed Cost|Electricity|Wind
+  alias:
+    locs: region
+    techs: technology
+  iamc: Fixed Cost|Electricity|{technology}
   idxcols:
-  - model
-  - scenario
-  - region
+  - locs
+  - techs
   - unit
-  - year
-  - technology
-- path: emissions.csv
-  iamc: Emissions|{ghg}
+  path: annual_cost_per_nameplate_capacity.csv
+- alias:
+    locs: region
+    techs: technology
+  iamc: Emission Rate|CO2|Electricity|{technology}
   idxcols:
-  - model
-  - scenario
-  - region
+  - locs
+  - techs
   - unit
-  - year
-  - ghg
-- path: resource.csv
-  iamc: Final Energy|{technology}
-  idxcols:
-  - model
-  - scenario
-  - region
-  - unit
-  - year
-  - technology
-- path: gdp.csv
-  iamc: GDP|PPP
-  idxcols:
-  - model
-  - scenario
-  - region
-  - unit
-  - year
-- path: area.csv
-  iamc: Land Cover
-  idxcols:
-  - model
-  - scenario
-  - region
-  - unit
-  - year
-- path: population.csv
-  iamc: Population
-  idxcols:
-  - model
-  - scenario
-  - region
-  - unit
-  - year
-- path: demand.csv
+  path: emissions_per_flow_in.csv
+- agg:
+    technology:
+    - values:
+      - dac
+      variable: Carbon Sequestration|Direct Air Capture
+    - values:
+      - hydro_reservoir
+      - hydro_run_of_river
+      variable: Primary Energy|Hydro
+    - values:
+      - open_field_pv
+      - roof_mounted_pv
+      variable: Primary Energy|Solar
+    - values:
+      - wind_onshore
+      - wind_offshore
+      variable: Primary Energy|Wind
+    - values:
+      - diesel_supply
+      - kerosene_supply
+      - coal_power_plant
+      - methane_supply
+      variable: Primary Energy|Fossil
+  alias:
+    locs: region
+    techs: technology
   iamc: Primary Energy|{technology}
   idxcols:
-  - model
   - scenario
-  - region
+  - carriers
+  - techs
+  - locs
   - unit
   - year
-  - technology
-- path: electricity.csv
-  iamc: Secondary Energy|Electricity|{technology}
-  idxcols:
-  - model
-  - scenario
-  - region
-  - unit
-  - year
-  - technology
-- path: electricity_agg.csv
-  iamc: Secondary Energy|Electricity
-  idxcols:
-  - model
-  - scenario
-  - region
-  - unit
-  - year
+  path: flow_out_sum.csv
+- agg:
+    technology:
+    - values:
+      - hydro_reservoir
+      - hydro_run_of_river
+      variable: Capacity|Electricity|Hydro
+    - values:
+      - open_field_pv
+      - roof_mounted_pv
+      variable: Capacity|Electricity|Solar|PV
+    - values:
+      - wind_onshore
+      - wind_offshore
+      variable: Capacity|Electricity|Wind
   alias:
-    electricity_agg: electricity
+    locs: region
+    techs: technology
+  iamc: Capacity|{carriers}|{technology}
+  idxcols:
+  - scenario
+  - carriers
+  - techs
+  - locs
+  - unit
+  - year
+  path: nameplate_capacity.csv
 - path: dummy.csv

@@ -1,11 +1,11 @@
-name,iamc,description
-coal,Coal,
-gas,Gas,
-nuclear,Nuclear,
-electricity,Electricity,
-liquids,,
-solids,,
-transportation,,
-fossil,,
-oil,,
-hydro,,
+name,iamc
+coal_power_plant,Coal
+ccgt,Gas|CCGT
+pumped_hydro,Hydro|Pumped Storage
+hydro_reservoir,Hydro|Reservoir
+hydro_run_of_river,Hydro|Run of River
+nuclear,Nuclear
+wind_offshore,Wind|Offshore
+wind_onshore,Wind|Onshore
+waste_supply,Primary Energy|Other
+dac,Direct Air Capture
