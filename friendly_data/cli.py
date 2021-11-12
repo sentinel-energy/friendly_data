@@ -367,42 +367,6 @@ def remove(pkgpath: str, *fpaths: str, rm_from_disk: bool = False) -> str:
     return "\n".join(msgs)
 
 
-def from_iamc(config: str, idxpath: str, iamcpath: str, export: str):
-    """Convert a dataset from IAMC format to friendly data package
-
-    Parameters
-    ----------
-    config : str
-        Config file
-
-    idxpath : str
-        Index file
-
-    iamcpath : str
-        IAMC dataset
-
-    export : str
-        Path to export data package to
-
-    """
-    from friendly_data.iamc import IAMconv
-
-    pyam = import_from("pyam", "")
-
-    meta = _metadata(["name"], metadata=config)
-    conv = IAMconv.from_file(config, idxpath)
-    iamdf = pyam.IamDataFrame(iamcpath)
-    resources = conv.from_iamdf(iamdf, basepath=export)
-    pkg = create_pkg(meta, resources, basepath=export, infer=False)
-    files = write_pkg(pkg, export)
-    indices = dwim_file(config)["indices"]  # type: ignore[call-overload]
-    indices = filter_dict(indices, set(indices) - set(conv._IAMC_IDX))
-    src = Path(idxpath).parent
-    if not src.samefile(export):
-        copy_files([idxpath, *list(src / f for f in indices.values())], export)
-    return f"Package metadata: {files[0]}"
-
-
 def to_iamc(config: str, idxpath: str, iamcpath: str, *, wide: bool = False):
     """Aggregate datasets into an IAMC dataset
 
@@ -469,7 +433,6 @@ def main():  # pragma: no cover, CLI entry point
             "registry": page,
             "list-licenses": list_licenses,
             "license-info": license_info,
-            "from-iamc": from_iamc,
             "to-iamc": to_iamc,
             "describe": describe,
         }

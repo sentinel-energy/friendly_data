@@ -19,7 +19,6 @@ from friendly_data.cli import remove
 from friendly_data.cli import _update
 from friendly_data.cli import update
 from friendly_data.cli import to_iamc
-from friendly_data.cli import from_iamc
 from friendly_data.io import dwim_file
 
 from .conftest import assert_log
@@ -237,18 +236,8 @@ def test_iamc(tmp_iamc):
     _, pkgdir = tmp_iamc
     confpath = pkgdir / "config.yaml"
     idxpath = pkgdir / "index.yaml"
-    iamcpath = pkgdir / "mini.csv"
-    exportdir = pkgdir / "outdir"
-
-    assert from_iamc(confpath, idxpath, iamcpath, exportdir)
-    # 10 index entries, 1 dummy => 9 data files, + 2 index definitions
-    assert len(list(exportdir.glob("*.csv"))) == 11
-    exported_idxpath = exportdir / "index.yaml"
-    assert exported_idxpath.exists()
-    assert (exportdir / "datapackage.json").exists()
-
-    newiamc = pkgdir / "new.csv"
-    assert to_iamc(confpath, exported_idxpath, newiamc)
+    newiamc = pkgdir / "iamc-out.csv"
+    assert to_iamc(confpath, idxpath, newiamc)
     assert newiamc.exists()
 
 
