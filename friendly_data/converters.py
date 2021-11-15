@@ -34,7 +34,7 @@ import pandas as pd
 import xarray as xr
 
 from friendly_data._types import _path_t, _dfseries_t
-from friendly_data.dpkg import _resource
+from friendly_data.dpkg import resource_
 from friendly_data.dpkg import fullpath
 from friendly_data.dpkg import get_aliased_cols
 from friendly_data.dpkg import index_levels
@@ -155,7 +155,7 @@ def to_df(resource: Resource, noexcept: bool = False, **kwargs) -> pd.DataFrame:
         [schema.pop(col) for col in index_col if col in schema]
 
     # FIXME: skip_rows is 1-indexed, whereas skiprows is either an offset or
-    # 0-indexed (see FIXME in `_resource`)
+    # 0-indexed (see FIXME in `resource_`)
     skiprows = glom(resource, ("layout.skipRows", len), default=None)
 
     # don't let the user override the options we use
@@ -325,7 +325,7 @@ def from_df(
     }
     if not defaultidx:
         spec["schema"]["primaryKey"] = list(idxcols)  # type: ignore[index]
-    return _resource(spec, basepath=basepath)
+    return resource_(spec, basepath=basepath)
 
 
 def from_dst(

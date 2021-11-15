@@ -53,7 +53,7 @@ def fullpath(resource: Resource) -> Path:
     return Path(resource.basepath) / resource["path"]
 
 
-def _resource(spec: Dict, basepath: _path_t = "", infer=True) -> Resource:
+def resource_(spec: Dict, basepath: _path_t = "", infer=True) -> Resource:
     """Create a Resource object based on the dictionary
 
     Parameters
@@ -155,7 +155,7 @@ def create_pkg(
         if not keep(spec["path"]):
             continue
         # NOTE: noop when Resource
-        _res = _resource(spec, basepath=basepath, infer=infer)
+        _res = resource_(spec, basepath=basepath, infer=infer)
         pkg.add_resource(_res)
 
     return _ensure_posix(pkg)
@@ -575,7 +575,7 @@ def res_from_entry(entry: Dict, pkg_dir: _path_t) -> Resource:
         raise err from None
     entry.update(schema={"fields": idxcoldict, "primaryKey": entry["idxcols"]})
     # FIXME: should we wrap this in a similar try: ... except: ...
-    res = _resource(entry, basepath=f"{pkg_dir}", infer=True)
+    res = resource_(entry, basepath=f"{pkg_dir}", infer=True)
     # set of value columns
     cols = glom(res.schema.fields, (Iter("name"), set)) - set(entry["idxcols"])
     coldict = get_aliased_cols(cols, "cols", entry["alias"])
