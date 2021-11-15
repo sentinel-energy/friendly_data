@@ -219,65 +219,6 @@ def read_pkg(pkg_path: _path_t, extract_dir: Optional[_path_t] = None):
     return _ensure_posix(pkg)
 
 
-def update_pkg(pkg: Package, resource: str, schema_update: Dict, fields: bool = True):
-    """Update package resource schema
-
-    .. deprecated:: 0.2
-
-       This function is not used any more, instead the schema is updated per
-       resource in :func:`res_from_entry`.
-
-    Parameters
-    ----------
-    pkg : Package
-        Package object
-
-    resource : str
-        Resource name FIXME: cannot handle duplicate names in subdirectories
-
-    schema_update : Dict
-        Updated fields in the schema, if ``fields`` is ``False``, can be used to
-        update ``missingValues``, or ``primaryKey``.  When updating the schema, it
-        looks like this ('foo'/'bar' are names of the fields being updated)::
-
-          {
-              "foo": {
-                  "name": "foo",
-                  "type": "datetime",
-                  "format": "default"
-              },
-              "bar": {
-                  "name": "bar",
-                  "type": "integer",
-                  "format": "default"
-              }
-          }
-
-    fields : bool (default: True)
-        If the schema update is a field, or not
-
-    Returns
-    -------
-    bool
-        Return the ``Package.valid`` flag; ``True`` if the update was valid.
-
-    """
-    logger.warning("update_pkg: this function has been deprecated")
-    assert "resources" in pkg, "Package should have at least one resource"
-    res, *_ = [res for res in pkg["resources"] if res["name"] == resource]
-    if fields:
-        for field in res["schema"]["fields"]:
-            if field["name"] in schema_update:
-                field.update(schema_update[field["name"]])
-    else:
-        # FIXME: do the following checks w/o asserts
-        assert "fields" not in schema_update, "cannot add fields to schema"
-        # prevents from adding additional keys
-        assert set(schema_update) - {"primaryKey", "missingValues"} == set()
-        res["schema"].update(schema_update)
-    return pkg.metadata_valid
-
-
 class pkgindex(List[Dict]):
     """Data package index (a subclass of ``list``)
 

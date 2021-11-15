@@ -21,7 +21,6 @@ from friendly_data.dpkg import pkg_from_index
 from friendly_data.dpkg import read_pkg
 from friendly_data.dpkg import res_from_entry
 from friendly_data.dpkg import pkgindex
-from friendly_data.dpkg import update_pkg
 from friendly_data.dpkg import write_pkg
 from friendly_data.helpers import match, noop_map, select, is_windows
 from friendly_data.io import dwim_file, relpaths
@@ -108,56 +107,6 @@ def test_pkg_read_error(tmp_pkgdir):
         read_pkg(dest)
     with pytest.raises(FileNotFoundError, match=f"{path}: not found"):
         read_pkg(pkg_json)
-
-
-def test_pkg_update(rnd_pkg):
-    # update a single column in a dataset
-    resource_name = "sample-ok-1"
-    update = {"time": {"name": "time", "type": "string", "format": "default"}}
-    assert update_pkg(rnd_pkg, resource_name, update)
-    res, *_ = glom(
-        rnd_pkg,
-        (
-            "resources",
-            [select(T["name"], equal_to=resource_name)],
-            "0.schema.fields",
-            [select(T["name"], equal_to="time")],
-        ),
-    )
-    assert update["time"] == res
-
-    # update multiple columns in a dataset
-    update = {
-        "time": {"name": "time", "type": "datetime", "format": "default"},
-        "QWE": {"name": "QWE", "type": "string", "format": "default"},
-    }
-    assert update_pkg(rnd_pkg, resource_name, update)
-    res = glom(
-        rnd_pkg,
-        (
-            "resources",
-            [select(T["name"], equal_to=resource_name)],
-            "0.schema.fields",
-            [select(T["name"], one_of=update.keys())],
-        ),
-    )
-    assert list(update.values()) == res
-
-    # update missing values, index columns
-    resource_name = "sample-ok-2"
-    update = {"primaryKey": ["lvl", "TRE", "IUY"]}
-    assert update_pkg(rnd_pkg, resource_name, update, fields=False)
-    res = glom(
-        rnd_pkg,
-        (
-            "resources",
-            [select(T["name"], equal_to=resource_name)],
-            "0.schema.primaryKey",
-        ),
-    )
-    assert update["primaryKey"] == res
-
-    # FIXME: test assertions inside update_pkg
 
 
 @pytest.mark.parametrize("ext", [".yaml", ".yml", ".json"])
