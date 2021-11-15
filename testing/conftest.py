@@ -1,3 +1,5 @@
+from contextlib import contextmanager
+import os
 from pathlib import Path
 import re
 from shutil import copytree
@@ -42,6 +44,14 @@ def expected_schema(df, type_map=default_type_map):
             df = pd.read_csv(df)  # path
     # noop if a key (type) is not in `type_map`, remains unaltered
     return df.dtypes.astype(str).map(type_map).to_dict()
+
+
+@contextmanager
+def chdir(dirpath):
+    cwd = Path.cwd()
+    os.chdir(dirpath)
+    yield
+    os.chdir(cwd)
 
 
 @pytest.fixture
