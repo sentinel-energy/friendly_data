@@ -471,6 +471,31 @@ def index_levels(
     return file_or_df, coldict
 
 
+def set_idxcols(fpath: _path_t, basepath: _path_t = "") -> Resource:
+    """Create a resource object for a file, with index columns set
+
+    Parameters
+    ----------
+    fpath : Union[str, Path]
+        Path to a dataset (resource), e.g. a CSV file, relative to `basepath`
+
+    basepath : Union[str, Path], default: empty string (current directory)
+        Path to directory to consider as the data package basepath
+
+    Returns
+    -------
+    Resource
+        Resource object with the index columns set according to the registry
+
+    """
+    res = resource_({"path": fpath}, basepath=basepath)
+    all_idxcols = glom(registry.getall()["idxcols"], ["name"])
+    idxcols = glom(
+        res, ("schema.fields", Iter("name").filter(lambda i: i in all_idxcols).all())
+    )
+    return glom(res, Assign("schema.primaryKey", idxcols))
+
+
 def res_from_entry(entry: Dict, pkg_dir: _path_t) -> Resource:
     """Create a resource from an index entry.
 

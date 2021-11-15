@@ -11,7 +11,7 @@ import pandas as pd
 import pytest
 
 from friendly_data.converters import _schema, _source_type
-from friendly_data.dpkg import create_pkg
+from friendly_data.dpkg import create_pkg, set_idxcols
 from friendly_data.dpkg import entry_from_res
 from friendly_data.dpkg import fullpath
 from friendly_data.dpkg import index_levels
@@ -220,6 +220,13 @@ def test_index_levels2(is_df, idxcols):
         else:
             # when not in the registry, metadata will always be incomplete
             pass
+
+
+def test_set_idxcols():
+    pkgdir = Path("testing/files/iamc")
+    res = set_idxcols("nameplate_capacity.csv", pkgdir)
+    # scenario, unit, year
+    assert len(glom(res, "schema.primaryKey")) == 3
 
 
 def test_res_from_entry():
