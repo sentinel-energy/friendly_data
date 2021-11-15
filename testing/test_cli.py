@@ -6,7 +6,7 @@ from typing import cast, List
 from glom import glom, Iter
 import pytest
 
-from friendly_data.cli import _metadata
+from friendly_data.cli import _metadata, generate_index_file
 from friendly_data.cli import create
 from friendly_data.cli import describe
 from friendly_data.cli import list_licenses
@@ -21,7 +21,7 @@ from friendly_data.cli import update
 from friendly_data.cli import to_iamc
 from friendly_data.io import dwim_file
 
-from .conftest import assert_log
+from .conftest import assert_log, chdir
 
 
 def test_metadata(caplog):
@@ -230,6 +230,22 @@ def test_license_display(caplog):
         license_info(bad_license)
     assert err.value.code == 1
     assert_log(caplog, f"no matching license with id: {bad_license}", "ERROR")
+
+
+def test_generate_index_file(tmp_iamc):
+    _, pkgdir = tmp_iamc
+    idxpath = pkgdir / "index.yaml"
+    idxpath.unlink()
+    # matches: {,annual_cost_per_}nameplate_capacity.csv
+    fpaths = [f.relative_to(pkgdir) for f in pkgdir.glob("*nameplate*.csv")]
+    with chdir(pkgdir):
+        generate_index_file(*fpaths)
+    assert idxpath.exists()
+    idx = dwim_file(idxpath)
+    assert len(idx) == 2
+    # nameplate_capacity: scenario, unit, year
+    # annual_cost_per_nameplate_capacity: unit
+    assert glom(idx, Iter("idxcols").map(len).all()) == [3, 1]
 
 
 def test_iamc(tmp_iamc):

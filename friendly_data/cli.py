@@ -12,14 +12,14 @@ from tabulate import tabulate
 
 from friendly_data import logger_config
 from friendly_data._types import _license_t, _path_t
-from friendly_data.dpkg import create_pkg, idxpath_from_pkgpath
+from friendly_data.dpkg import entry_from_res
+from friendly_data.dpkg import idxpath_from_pkgpath
 from friendly_data.dpkg import pkg_from_files
-from friendly_data.dpkg import read_pkg
 from friendly_data.dpkg import pkgindex
+from friendly_data.dpkg import read_pkg
+from friendly_data.dpkg import set_idxcols
 from friendly_data.dpkg import write_pkg
 from friendly_data.helpers import consume
-from friendly_data.helpers import filter_dict
-from friendly_data.helpers import import_from
 from friendly_data.helpers import is_windows
 from friendly_data.helpers import sanitise
 from friendly_data.io import copy_files
@@ -367,6 +367,19 @@ def remove(pkgpath: str, *fpaths: str, rm_from_disk: bool = False) -> str:
     return "\n".join(msgs)
 
 
+def generate_index_file(*fpaths: str):
+    """Generate an index file from a set of dataset files
+
+    Parameters
+    ----------
+    fpaths : Tuple[str]
+        List of datasets/resources to include in the index
+
+    """
+    idx = [entry_from_res(set_idxcols(f)) for f in fpaths]
+    dwim_file("index.yaml", idx)
+
+
 def to_iamc(config: str, idxpath: str, iamcpath: str, *, wide: bool = False):
     """Aggregate datasets into an IAMC dataset
 
@@ -433,6 +446,7 @@ def main():  # pragma: no cover, CLI entry point
             "registry": page,
             "list-licenses": list_licenses,
             "license-info": license_info,
+            "generate-index-file": generate_index_file,
             "to-iamc": to_iamc,
             "describe": describe,
         }
