@@ -245,7 +245,12 @@ def test_generate_index_file(tmp_iamc):
     assert len(idx) == 2
     # nameplate_capacity: scenario, unit, year
     # annual_cost_per_nameplate_capacity: unit
-    assert glom(idx, Iter("idxcols").map(len).all()) == [3, 1]
+    for entry in idx:
+        indices = entry["idxcols"]
+        if "annual" in entry["path"]:
+            assert len(indices) == 1
+        else:
+            assert len(indices) == 3
 
 
 def test_iamc(tmp_iamc):
