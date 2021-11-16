@@ -5,7 +5,7 @@
 
 from logging import getLogger
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Tuple, TypeVar, Union, overload
+from typing import Any, Dict, Iterable, List, Optional, Tuple, TypeVar, Union, overload
 from zipfile import ZipFile
 
 from frictionless import Detector, Layout, Package, Resource
@@ -80,7 +80,7 @@ def resource_(spec: Dict, basepath: _path_t = "", infer=True) -> Resource:
         return spec
     assert "path" in spec, f"Incomplete resource spec: {spec}"
     opts = {}
-    layout_opts = {"header": True}
+    layout_opts: Dict[str, Any] = {"header": True}
     if spec.get("skip"):
         # FIXME: `offset_rows` doesn't seem to work, so workaround with
         # `skip_rows` (`frictionless` expects a 1-indexed array).  `pandas` on
