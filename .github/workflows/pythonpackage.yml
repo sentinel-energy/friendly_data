@@ -61,7 +61,7 @@ jobs:
           pip install -e .
       - name: Test w/ pytest
         run: |
-          pytest
+          pytest --cov=friendly_data
       - name: Code coverage
         uses: codecov/codecov-action@v1.0.5
         with:
