@@ -367,17 +367,20 @@ def remove(pkgpath: str, *fpaths: str, rm_from_disk: bool = False) -> str:
     return "\n".join(msgs)
 
 
-def generate_index_file(*fpaths: str):
+def generate_index_file(idxpath: str, *fpaths: str):
     """Generate an index file from a set of dataset files
 
     Parameters
     ----------
+    idxpath : str
+        Path where the index file (YAML format) should be written
+
     fpaths : Tuple[str]
         List of datasets/resources to include in the index
 
     """
     idx = [entry_from_res(set_idxcols(f)) for f in fpaths]
-    dwim_file("index.yaml", idx)
+    dwim_file(idxpath, idx)
 
 
 def to_iamc(config: str, idxpath: str, iamcpath: str, *, wide: bool = False):
