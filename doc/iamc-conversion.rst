@@ -104,7 +104,7 @@ In the same configuration snippet, you can see there's a key for
 specifies a string.  If a ``model`` column does not exist in your
 dataset, this string will be taken as the default value for such a
 column.  This leaves only the ``value`` column, which is nothing but
-the data column, in our example that is ``flow_in_sum``.  And we have
+the data column, in our example that is ``flow_out_sum``.  And we have
 our data in IAMC format!
 
 .. csv-table:: Data in IAMC format

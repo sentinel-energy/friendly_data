@@ -12,7 +12,7 @@ REPO_RAW      = https://raw.githubusercontent.com/sentinel-energy/friendly_data_
 DATA_CSV      = $(REPO_RAW)/data/flow_out_sum.csv
 TECH_CSV      = $(REPO_RAW)/technology.csv
 
-TRIMMED       = _static/data/flow_in_sum.csv _static/data/iamc.csv
+TRIMMED       = _static/data/flow_out_sum.csv _static/data/iamc.csv
 
 # Put it first so that "make" without argument is like "make help".
 help:
