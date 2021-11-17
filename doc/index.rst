@@ -10,6 +10,7 @@ Contents
    :maxdepth: 2
 
    data-package
+   installation
    registry
    cli
    hands-on
