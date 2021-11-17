@@ -9,10 +9,9 @@ SOURCEDIR     = .
 BUILDDIR      = _build
 
 REPO_RAW      = https://raw.githubusercontent.com/sentinel-energy/friendly_data_example/master
-DATA_CSV      = $(REPO_RAW)/data/flow_out_sum.csv
-TECH_CSV      = $(REPO_RAW)/technology.csv
-
-TRIMMED       = _static/data/flow_out_sum.csv _static/data/iamc.csv
+DATA_DIR      = _static/data
+DATA_CSV      = $(DATA_DIR)/flow_out_sum.csv $(DATA_DIR)/iamc.csv
+TECH_CSV      = $(DATA_DIR)/technology.csv
 
 # Put it first so that "make" without argument is like "make help".
 help:
@@ -33,8 +32,8 @@ _static/images/ecosystem.png: ecosystem.txt
 	wget --no-clobber https://code.orgmode.org/bzg/org-mode/raw/master/contrib/scripts/ditaa.jar
 	java -Dfile.encoding=UTF-8 -jar ditaa.jar $< $@
 
-$(TRIMMED):
-	wget -q $(DATA_CSV) -O - | ./trim-csv.awk > $@
+$(DATA_CSV):
+	wget -q $(subst $(DATA_DIR)/,$(REPO_RAW)/,$@) -O - | ./trim-csv.awk > $@
 
-_static/data/technology.csv:
-	wget -q $(TECH_CSV) -O - | sed -ne 1p -e '/wind_onshore\|wind_offshore\|nuclear/p' > $@
+$(TECH_CSV):
+	wget -q $(subst $(DATA_DIR)/,$(REPO_RAW)/,$@) -O - | sed -ne 1p -e '/wind_onshore\|wind_offshore\|nuclear/p' > $@
