@@ -42,7 +42,7 @@ columns.
 Any new column suggestion should be in the YAML format, and should
 match the following structure:
 
-.. code-block::
+.. code-block:: yaml
 
    name: <column_name>
    type: <type>
@@ -50,7 +50,7 @@ match the following structure:
      ...
 
    description: >-
-     Free text description of your column.  This can include
+     Free text description of the column.  This can include
      restructured text syntax for simple formatting.  This text
      will be included in the online documentation.
 
@@ -62,8 +62,8 @@ If you want to specify ``constraints``, you can find a complete list
 of all supported properties on the `frictionless documentation`_ page.
 
 
-Where to add your new column?
-+++++++++++++++++++++++++++++
+Where to add the new column?
+++++++++++++++++++++++++++++
 
 As discussed above, there are two kinds of columns, and in the
 repository they are separated into two folders.  Index column
