@@ -33,7 +33,9 @@ _static/images/ecosystem.png: ecosystem.txt
 	java -Dfile.encoding=UTF-8 -jar ditaa.jar $< $@
 
 $(DATA_CSV):
+	mkdir -p $(DATA_DIR)
 	wget -q $(subst $(DATA_DIR)/,$(REPO_RAW)/,$@) -O - | ./trim-csv.awk > $@
 
 $(TECH_CSV):
+	mkdir -p $(DATA_DIR)
 	wget -q $(subst $(DATA_DIR)/,$(REPO_RAW)/,$@) -O - | sed -ne 1p -e '/wind_onshore\|wind_offshore\|nuclear/p' > $@
