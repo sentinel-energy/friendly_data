@@ -37,8 +37,8 @@ The ``friendly_data`` tool
 - An online metadata registry allows teams to share and agree on
   variable names and definitions and makes the generation of metadata
   for a data package quick and easy.
-- Automated conversion to and from the `IAMC timeseries scenario data
-  format <https://pyam-iamc.readthedocs.io/en/stable/data.html>`_.
+- Automated conversion to the `IAMC timeseries scenario data format
+  <https://pyam-iamc.readthedocs.io/en/stable/data.html>`_.
 - Written in Python, with a library API:
 
   - thus linking directly to the rich Python ecosystem of data

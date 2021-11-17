@@ -49,6 +49,44 @@ in a package index file is documented below.
 
       Installed Capacity|{carrier}|{technology}
 
+**agg** (mapping or dictionary)
+
+    A mapping of index column name to a list of aggregation rules (for
+    IAMC conversion) which is another mapping of the form::
+
+      values:
+      - open_field_pv
+      - roof_mounted_pv
+      variable: Primary Energy|Solar
+
+    As there can be multiple rules for a column, they are included as
+    a list.  A complete index entry with aggregation rules looks like::
+
+      - agg:
+        technology:
+        - values:
+          - dac
+          variable: Carbon Sequestration|Direct Air Capture
+        - values:
+          - hydro_reservoir
+          - hydro_run_of_river
+          variable: Primary Energy|Hydro
+        - values:
+          - open_field_pv
+          - roof_mounted_pv
+          variable: Primary Energy|Solar
+      iamc: Primary Energy|{technology}
+      idxcols:
+      - carrier
+      - technology
+      - year
+      path: flow_out_sum.csv
+
+    With the above entry, when converting to IAMC format, all data
+    points with technology ``open_field_pv`` and ``roof_mounted_pv``
+    will be added together under the IAMC variable name ``Primary
+    Energy|Solar``.  Note that multiple index columns cannot be
+    combined in this manner; only one is possible.
 
 .. [#] It is similar to index of a book, which allows you to jump to a
        specific page in the book by looking up a keyword.

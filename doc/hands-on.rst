@@ -17,4 +17,3 @@ interface (CLI), and from a Python program using the Python API.
 .. include:: tutorial/registry-intro.rst
 .. include:: tutorial/example.rst
 .. include:: tutorial/metadata.rst
-.. include:: tutorial/iamc-conversion.rst

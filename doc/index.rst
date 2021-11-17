@@ -13,6 +13,7 @@ Contents
    registry
    cli
    hands-on
+   iamc-conversion
    advanced
    devnotes
 

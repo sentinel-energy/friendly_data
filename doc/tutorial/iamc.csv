@@ -1,6 +1,0 @@
-model,scenario,region,variable,unit,year,value
-calliope,climate_neutrality,AUT,Hourly power consumption|Yearly|Electricity|Heating,twh,2050,27.39620468870247
-calliope,climate_neutrality,BEL,Hourly power consumption|Yearly|Electricity|Heating,twh,2050,43.24801979081346
-...,...,...,...,...,...,...
-calliope,climate_neutrality,AUT,Hourly power consumption|Yearly|Electricity|Road,twh,2050,29.348459228522366
-calliope,climate_neutrality,BEL,Hourly power consumption|Yearly|Electricity|Road,twh,2050,42.41184567122542
