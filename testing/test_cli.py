@@ -235,7 +235,7 @@ def test_license_display(caplog):
 def test_generate_index_file(tmp_iamc):
     _, pkgdir = tmp_iamc
     idxpath = pkgdir / "myindex.yaml"
-    idxpath.unlink(missing_ok=True)
+    # idxpath.unlink(missing_ok=True)  # missing_ok is not supported in 3.7
     # matches: {,annual_cost_per_}nameplate_capacity.csv
     fpaths = [f.relative_to(pkgdir) for f in pkgdir.glob("*nameplate*.csv")]
     with chdir(pkgdir):
