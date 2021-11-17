@@ -7,7 +7,7 @@ from pathlib import Path
 import sys
 from typing import Dict, Iterable, List
 
-from glom import Coalesce, glom, Iter
+from glom import glom, Iter
 from tabulate import tabulate
 
 from friendly_data import logger_config
@@ -30,6 +30,7 @@ from friendly_data.metatools import _fetch_license
 from friendly_data.metatools import check_license
 from friendly_data.metatools import get_license
 from friendly_data.metatools import lic_metadata
+from friendly_data.metatools import resolve_licenses
 from friendly_data.doc import get_template, page
 
 logger = logger_config(fmt="{name}: {levelname}: {message}")
@@ -110,9 +111,7 @@ def _metadata(
         except KeyError as err:
             logger.error(f"{err}: section missing from {metadata}")
             sys.exit(1)
-        if "licenses" in meta:
-            lic = glom(meta, ("licenses", Coalesce([get_license], get_license)))
-            meta["licenses"] = lic if isinstance(lic, list) else [lic]
+        meta = resolve_licenses(meta)
     else:
         meta = {
             "name": name if name else sanitise(title),

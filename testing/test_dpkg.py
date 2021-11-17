@@ -50,7 +50,7 @@ def test_source_type_heuristics():
 
 def test_pkg_creation():
     pkgdir = Path("testing/files/random")
-    pkg_meta = {"name": "test", "licenses": get_license("CC0-1.0")}
+    pkg_meta = {"name": "test", "licenses": "CC0-1.0"}
     pkg = create_pkg(pkg_meta, relpaths(pkgdir, "data/sample-ok-?.csv"), pkgdir)
     for resource in pkg["resources"]:
         # match datapackage field type for datetime

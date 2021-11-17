@@ -7,7 +7,8 @@ import logging
 from operator import contains
 from typing import Callable, Dict, Iterable, List, Tuple
 
-from glom import Assign, glom, Iter, Spec
+from glom import Assign, Coalesce, glom, Iter, Spec
+from glom import Match, MatchError
 
 from friendly_data.helpers import filter_dict
 from friendly_data.io import HttpCache
@@ -79,6 +80,20 @@ def lic_metadata(
         .all(),
     )
     return res
+
+
+def resolve_licenses(meta: Dict) -> Dict:
+    """Check and fix if licenses are specified correctly in the metadata"""
+    if "license" in meta:
+        logger.warning("'license': should be plural! renaming")
+        meta["licenses"] = meta.pop("license")
+    if "licenses" in meta:
+        try:
+            glom(meta, Match({"licenses": [dict], str: object}))
+        except MatchError:
+            lic = glom(meta, ("licenses", Coalesce([get_license], get_license)))
+            meta["licenses"] = lic if isinstance(lic, list) else [lic]
+    return meta
 
 
 def get_license(lic: str, group: str = "all") -> _license_t:

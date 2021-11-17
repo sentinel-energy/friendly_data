@@ -15,6 +15,7 @@ import pandas as pd
 
 from friendly_data.io import dwim_file, path_not_in, posixpathstr, relpaths
 from friendly_data.helpers import match, noop_map, is_windows
+from friendly_data.metatools import resolve_licenses
 from friendly_data._types import _path_t, _dfseries_t
 import friendly_data_registry as registry
 
@@ -139,7 +140,7 @@ def create_pkg(
     # TODO: filter out and handle non-tabular (custom) data
     existing = glom(meta.get("resources", []), Iter("path").map(Path).all())
     basepath = basepath if basepath else getattr(meta, "basepath", basepath)
-    pkg = Package(meta, basepath=str(basepath))
+    pkg = Package(resolve_licenses(meta), basepath=str(basepath))
 
     def keep(res: _path_t) -> bool:
         if Path(res) in existing:
