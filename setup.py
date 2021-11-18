@@ -19,7 +19,7 @@ extra_requirements = {
 
 setup(
     name="friendly_data",
-    version="0.3",
+    version="0.3.1",
     description="A frictionless data package implementation for energy system data.",
     long_description=Path("README.rst").read_text(),
     long_description_content_type="text/x-rst",
