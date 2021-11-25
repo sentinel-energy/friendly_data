@@ -8,9 +8,10 @@ IAMC variable name, defining column aliases, and aggregations can be done in an
 index file (in YAML format).
 
 """
+from itertools import chain
 from logging import getLogger
 from pathlib import Path
-from typing import cast, Dict, Iterable, List, Tuple
+from typing import cast, Dict, Iterable, List, Tuple, Union
 
 from glom import glom, Iter, Match, MatchError, Or, T
 import pandas as pd
@@ -74,7 +75,10 @@ class IAMconv:
     @classmethod
     def _warn_empty(cls, df: pd.DataFrame, entry: Dict):
         if df.empty:
-            logger.warning(f"{entry['path']}: empty dataframe, check index entry")
+            # prefer name over path because when name is present, it is more
+            # likely to be more meaningful
+            path_or_name = entry["name"] if "name" in entry else entry["path"]
+            logger.warning(f"{path_or_name}: empty dataframe, check index entry")
 
     @classmethod
     def from_file(cls, confpath: _path_t, idxpath: _path_t) -> "IAMconv":
@@ -257,16 +261,71 @@ class IAMconv:
         vals = glom(conf, (Iter().map(T["values"]).flatten().all(), set, list))
         return col, vals
 
-    def to_df(self, files: Iterable[_path_t], basepath: _path_t = "") -> pd.DataFrame:
-        """Convert CSV files to IAMC format according to configuration in the index
+    def _match_item(
+        self, item: Union[_path_t, Tuple[str, pd.DataFrame]]
+    ) -> Tuple[Dict, pd.DataFrame]:
+        """Match a file or dataframe to an index entry (internal method)
 
         Parameters
         ----------
-        files : Iterable[Union[str, Path]]
-            List of files to collate and convert to IAMC
+        item : Union[Union[str, Path], Tuple[str, pd.DataFrame]]
+            The item to find in the index.  A file is matched with the ``path``
+            key of the index entry, and the `key` of the dataframe is matched
+            with the ``name`` key in the entry.
 
-        basepath : Union[str, Path]
-            Data package base path
+        Returns
+        -------
+        Tuple[Dict, pandas.DataFrame]
+            The dictionary is the index entry; when ``item`` is a file, the
+            index entry is used to read the file into a dataframe, and in case
+            of a dataframe, it is passed on transparently.
+
+        """
+        if isinstance(item, tuple):
+            match_key = "name"
+            match_val = item[0]
+        else:
+            match_key = "path"
+            match_val = item
+
+        # NOTE: res_from_entry requires: "path", "idxcols", "alias"; later
+        # in the iteration, "iamc" & "agg" is required
+        keys = [match_key, "idxcols", "alias", "iamc", "agg"]
+        _entries = [
+            entry
+            for entry in self.res_idx.records(keys)
+            # convert to string for path comparison
+            if f"{match_val}" == entry[match_key]
+        ]
+        if _entries:
+            entry = _entries[0]
+            if len(_entries) > 1:
+                logger.warning(f"{entry[match_key]}: duplicate entries, picking first")
+        else:
+            return tuple()
+        if isinstance(item, tuple):
+            df = item[1]
+        else:
+            df = to_df(res_from_entry(entry, self.basepath))
+        return entry, df
+
+    def to_df(
+        self, files_or_dfs: Union[Iterable[_path_t], Dict[str, pd.DataFrame]]
+    ) -> pd.DataFrame:
+        """Convert CSV files/dataframes to IAMC format according to the index
+
+        Parameters
+        ----------
+        files_or_dfs : Union[Iterable[Union[str, Path]], Dict[str, pandas.DataFrame]]
+            List of files or a dictionary of dataframes, to be collated and
+            converted to IAMC format.  Each item must have an entry in the
+            package index the converter was initialised with, it is skipped
+            otherwise.  Files are matched by file ``path``, whereas dataframes
+            match when the dictionary key matches the index entry ``name``.
+
+            Note when the files are read, the basepath is set to whatever the
+            converter was initialised with.  If :meth:`IAMconv.from_file` was
+            used, it is the parent directory of the index file.
 
         Returns
         -------
@@ -275,81 +334,93 @@ class IAMconv:
 
         """
         dfs = []
-        for fpath in files:
-            # NOTE: res_from_entry requires: "path", "idxcols", "alias"; later
-            # in the iteration, "iamc" & "agg" is required
-            keys = ["path", "idxcols", "alias", "iamc", "agg"]
-            _entries = [
-                entry
-                for entry in self.res_idx.records(keys)
-                if f"{fpath}" == entry["path"]
-            ]
-            if _entries:
-                entry = _entries[0]
-                if len(_entries) > 1:
-                    logger.warning(f"{entry['path']}: duplicate entries, picking first")
-            else:
+        if isinstance(files_or_dfs, dict):
+            iterable = cast(Dict[str, pd.DataFrame], files_or_dfs.items())
+        else:
+            iterable = files_or_dfs
+
+        for item in iterable:
+            match = self._match_item(item)
+            if not match:
                 continue
-            df = to_df(res_from_entry(entry, basepath if basepath else self.basepath))
-            df = self.resolve_idxcol_defaults(df)
-            lvls = self.index_levels(df.index.names)
-
-            if entry["agg"]:
-                col, _agg_vals = self.agg_vals_all(entry)
-                df_agg = cast(pd.DataFrame, df.query(f"{col} in @_agg_vals"))
-                dfs.extend(self.agg_idxcol(df_agg, col, entry))
-
-                _vals = lvls[col].index
-                df = cast(pd.DataFrame, df.query(f"{col} in @_vals"))
-
-                # NOTE: need to remove aggregated levels, then calculate the
-                # intersection with the levels that are in the current dataframe
-                _lvls = {
-                    col: vals.loc[
-                        vals.index.difference(_agg_vals).intersection(
-                            idx_lvl_values(df.index, col)
-                        )
-                    ]
-                    for col, vals in lvls.items()
-                }
-            else:
-                # NOTE: need to calculate the intersection of levels that are
-                # in the current dataframe and the levels defined in the config
-                _lvls = {
-                    col: vals.loc[
-                        vals.index.intersection(idx_lvl_values(df.index, col))
-                    ]
-                    for col, vals in lvls.items()
-                }
-
-            if is_fmtstr(entry["iamc"]):
-                sel = idxslice(
-                    df.index.names,
-                    {col: val.index for col, val in _lvls.items()},
-                )
-                df = df.loc[sel]
-                df.index = df.index.remove_unused_levels()
-                iamc_variable = pd.DataFrame(
-                    {
-                        col: df.index.get_level_values(col).map(val)
-                        for col, val in _lvls.items()
-                    },
-                    index=df.index,
-                ).apply(lambda r: entry["iamc"].format(**r.to_dict()), axis=1)
-            else:
-                iamc_variable = entry["iamc"]
-            df = df.assign(variable=iamc_variable)
-            dfs.append(self.iamcify(df))
-        df = pd.concat(dfs, axis=0)
+            res = self.frames(*match)  # match -> entry, dataframe
+            dfs.append(res)
+        df = pd.concat(chain.from_iterable(dfs), axis=0)
         if df.empty:
             logger.warning("empty data set, check config and index file")
         return df
+
+    def frames(self, entry: Dict, df: pd.DataFrame) -> List[pd.DataFrame]:
+        """Convert the dataframe to IAMC format according to configuration in the entry
+
+        Parameters
+        ----------
+        entry : Dict
+            Index entry
+
+        df : pandas.DataFrame
+            The dataframe that is to be converted to IAMC format
+
+        Returns
+        -------
+        List[pandas.DataFrame]
+            List of ``pandas.DataFrame``s in IAMC format
+
+        """
+        dfs = []
+        df = self.resolve_idxcol_defaults(df)
+        lvls = self.index_levels(df.index.names)
+
+        if entry["agg"]:  # None if not defined
+            col, _agg_vals = self.agg_vals_all(entry)
+            df_agg = cast(pd.DataFrame, df.query(f"{col} in @_agg_vals"))
+            dfs.extend(self.agg_idxcol(df_agg, col, entry))
+
+            _vals = lvls[col].index
+            df = cast(pd.DataFrame, df.query(f"{col} in @_vals"))
+
+            # NOTE: need to remove aggregated levels, then calculate the
+            # intersection with the levels that are in the current dataframe
+            _lvls = {
+                col: vals.loc[
+                    vals.index.difference(_agg_vals).intersection(
+                        idx_lvl_values(df.index, col)
+                    )
+                ]
+                for col, vals in lvls.items()
+            }
+        else:
+            # NOTE: need to calculate the intersection of levels that are
+            # in the current dataframe and the levels defined in the config
+            _lvls = {
+                col: vals.loc[vals.index.intersection(idx_lvl_values(df.index, col))]
+                for col, vals in lvls.items()
+            }
+
+        if is_fmtstr(entry["iamc"]):
+            sel = idxslice(
+                df.index.names,
+                {col: val.index for col, val in _lvls.items()},
+            )
+            df = df.loc[sel]
+            df.index = df.index.remove_unused_levels()
+            iamc_variable = pd.DataFrame(
+                {
+                    col: df.index.get_level_values(col).map(val)
+                    for col, val in _lvls.items()
+                },
+                index=df.index,
+            ).apply(lambda r: entry["iamc"].format(**r.to_dict()), axis=1)
+        else:
+            iamc_variable = entry["iamc"]
+        _df = self.iamcify(df.assign(variable=iamc_variable))
+        dfs.append(_df)
+        return dfs
 
     def to_csv(
         self,
         files: Iterable[_path_t],
         output: _path_t,
-        basepath: _path_t = "",
         wide: bool = False,
     ):
         """Write converted IAMC data frame to a CSV file
@@ -369,7 +440,7 @@ class IAMconv:
             Write the CSN in wide format (with years as columns)
 
         """
-        df = self.to_df(files, basepath=basepath)
+        df = self.to_df(files)
         if wide:
             df = pyam.IamDataFrame(df)
         Path(output).parent.mkdir(parents=True, exist_ok=True)
