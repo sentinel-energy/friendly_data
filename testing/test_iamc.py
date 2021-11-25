@@ -116,5 +116,5 @@ def test_iamconv_agg_vals_all(iamconv):
 
 def test_iamconv_index_levels(iamconv):
     assert iamconv.index_levels(["technology"])
-    with pytest.raises(ValueError, match="index_levels.+only for user defined"):
+    with pytest.raises(ValueError, match="idxcols.+only for user defined"):
         iamconv.index_levels(["model", "scenario"])
