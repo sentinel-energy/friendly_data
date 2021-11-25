@@ -77,7 +77,7 @@ class IAMconv:
             logger.warning(f"{entry['path']}: empty dataframe, check index entry")
 
     @classmethod
-    def from_file(cls, confpath: _path_t, idxpath: _path_t, **kwargs) -> "IAMconv":
+    def from_file(cls, confpath: _path_t, idxpath: _path_t) -> "IAMconv":
         """Create a mapping of IAMC indicator variables with index columns
 
         Parameters
@@ -98,9 +98,7 @@ class IAMconv:
         """
         basepath = Path(idxpath).parent
         conf = cls._validate(cast(Dict, dwim_file(confpath)))
-        return cls(
-            pkgindex.from_file(idxpath), conf["indices"], basepath=basepath, **kwargs
-        )
+        return cls(pkgindex.from_file(idxpath), conf["indices"], basepath=basepath)
 
     @classmethod
     def read_indices(cls, path: _path_t, basepath: _path_t, **kwargs) -> pd.Series:
@@ -115,7 +113,41 @@ class IAMconv:
         # fallback when iamc name is missing; capitalized name is the most common
         return _lvls.fillna({i: i.capitalize() for i in _lvls.index})
 
-    def __init__(self, idx: pkgindex, indices: Dict, basepath: _path_t, **kwargs):
+    @property
+    def indices(self) -> Dict:
+        return self._indices
+
+    @indices.setter
+    def indices(self, indices: Dict):
+        """Index definitions
+
+        - Default value of mandatory index columns in case they are missing
+
+        - Different levels of user defined index columns; points to a 2-column
+          CSV file, with the "name" and "iamc" columns
+
+        """
+        self._indices = {
+            col: path_or_default
+            if col in self._IAMC_IDX
+            else self.read_indices(path_or_default, self.basepath)
+            for col, path_or_default in indices.items()
+        }
+
+    @property
+    def res_idx(self) -> pkgindex:
+        return self._res_idx
+
+    @res_idx.setter
+    def res_idx(self, idx: pkgindex):
+        """Package index
+
+        Each entry corresponds to a resource to be included in IAMC output.
+
+        """
+        self._res_idx = pkgindex(glom(idx, Iter().filter(T.get("iamc")).all()))
+
+    def __init__(self, idx: pkgindex, indices: Dict, basepath: _path_t):
         """Converter initialised with a set of IAMC variable index column defintions
 
         Parameters
@@ -123,22 +155,18 @@ class IAMconv:
         idx : `friendly_data.dpkg.pkgindex`
             Index of datasets with IAMC variable definitions
 
-        indices : Dict[str, pd.Series]
-            Index column definitions
+        indices : Dict[str, Union[int, float, str, Path]]
+            Index column definitions; a default value for an IAMC index column,
+            path to a 2-column CSV file defining levels for a user defined
+            index column (see :meth:`IAMconv.indices`)
 
         basepath : Union[str, Path]
-            Path where the IAMC output will be written
+            Top-level directory of the data package
 
         """
-        # levels are for user defined idxcols, default for mandatory idxcols
-        self.indices = {
-            col: path_or_default
-            if col in self._IAMC_IDX
-            else self.read_indices(path_or_default, basepath, **kwargs)
-            for col, path_or_default in indices.items()
-        }
-        self.res_idx = pkgindex(glom(idx, Iter().filter(T.get("iamc")).all()))
-        self.basepath = Path(basepath)
+        self.basepath = Path(basepath)  # order important, needed by @indices.setter
+        self.indices = indices
+        self.res_idx = idx
 
     def index_levels(self, idxcols: Iterable) -> Dict[str, pd.Series]:
         """Index levels for user defined index columns
