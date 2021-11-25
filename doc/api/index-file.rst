@@ -23,11 +23,13 @@ in a package index file is documented below.
 
     Number of lines to skip when reading the dataset
 
-**name** (string) *currently unused*
+**name** (string)
 
     Typically the name of a dataset is derived from its file name, but
-    in the future this key might be used to provide an alternate more
-    descriptive name to a dataset.
+    when working with the Python API, this key is used to map a
+    dataframe to an entry in the index file.  This can also be used to
+    map a table in a database to an entry (where the ``path`` key
+    points to the database, e.g. path to an sqlite file).
 
 **alias** (mapping or dictionary)
 
