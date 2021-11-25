@@ -24,6 +24,7 @@
   - locs
   - techs
   - unit
+  name: annual_cost_per_nameplate_capacity
   path: annual_cost_per_nameplate_capacity.csv
 - alias:
     locs: region
@@ -33,6 +34,7 @@
   - locs
   - techs
   - unit
+  name: emissions_per_flow_in
   path: emissions_per_flow_in.csv
 - agg:
     technology:
@@ -68,6 +70,7 @@
   - locs
   - unit
   - year
+  name: flow_out_sum
   path: flow_out_sum.csv
 - agg:
     technology:
@@ -94,5 +97,6 @@
   - locs
   - unit
   - year
+  name: nameplate_capacity
   path: nameplate_capacity.csv
 - path: dummy.csv

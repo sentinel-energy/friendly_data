@@ -11,6 +11,7 @@ import pytest
 from friendly_data.dpkg import fullpath
 from friendly_data.dpkg import read_pkg
 from friendly_data.dpkg import pkg_from_index
+from friendly_data.iamc import IAMconv
 from friendly_data.io import HttpCache
 from friendly_data.metatools import ODLS
 from friendly_data.helpers import noop_map
@@ -92,6 +93,12 @@ def tmp_iamc(tmp_path):
     dest = tmp_path / "iamc"
     copytree(src, dest)
     return src, dest
+
+
+@pytest.fixture
+def iamconv():
+    src = Path("testing/files/iamc")
+    return IAMconv.from_file(src / "config.yaml", src / "index.yaml")
 
 
 @pytest.fixture
