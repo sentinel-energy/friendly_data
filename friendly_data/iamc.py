@@ -182,8 +182,10 @@ class IAMconv:
             Different values for a given set of index columns
 
         """
-        # only for user defined idxcols
-        return filter_dict(self.indices, set(idxcols) - set(self._IAMC_IDX))
+        userdefined = set(idxcols) - set(self._IAMC_IDX)
+        if not userdefined:
+            raise ValueError(f"index_levels({idxcols=}): only for user defined idxcols")
+        return filter_dict(self.indices, userdefined)
 
     def resolve_idxcol_defaults(self, df: pd.DataFrame) -> pd.DataFrame:
         """Find missing IAMC indices and set them to the default value from config
