@@ -41,13 +41,10 @@ class IAMconv:
     definitions to do the disaggregation.  It also supports the reverse
     operation of aggregating multiple datasets into an IAMC dataset.
 
-    TODO:
+    **TODO:**
+
     - describe assumptions (e.g. case insensitive match) and fallbacks (e.g. missing title)
     - limitations (e.g. when no index column exists)
-
-    FIXME:
-    - basepath insconsistency
-    - df/iamdf/csv inconsistency
 
     """
 
@@ -118,11 +115,12 @@ class IAMconv:
         return _lvls.fillna({i: i.capitalize() for i in _lvls.index})
 
     @property
-    def indices(self) -> Dict:
-        return self._indices
+    def basepath(self):
+        """Data package basepath, directory the index file is located"""
+        return self._basepath
 
-    @indices.setter
-    def indices(self, indices: Dict):
+    @property
+    def indices(self) -> Dict:
         """Index definitions
 
         - Default value of mandatory index columns in case they are missing
@@ -131,6 +129,10 @@ class IAMconv:
           CSV file, with the "name" and "iamc" columns
 
         """
+        return self._indices
+
+    @indices.setter
+    def indices(self, indices: Dict):
         self._indices = {
             col: path_or_default
             if col in self._IAMC_IDX
@@ -140,15 +142,15 @@ class IAMconv:
 
     @property
     def res_idx(self) -> pkgindex:
+        """Package index
+
+        Each entry corresponds to a resource that maybe included in IAMC output.
+
+        """
         return self._res_idx
 
     @res_idx.setter
     def res_idx(self, idx: pkgindex):
-        """Package index
-
-        Each entry corresponds to a resource to be included in IAMC output.
-
-        """
         self._res_idx = pkgindex(glom(idx, Iter().filter(T.get("iamc")).all()))
 
     def __init__(self, idx: pkgindex, indices: Dict, basepath: _path_t):
@@ -168,7 +170,7 @@ class IAMconv:
             Top-level directory of the data package
 
         """
-        self.basepath = Path(basepath)  # order important, needed by @indices.setter
+        self._basepath = Path(basepath)  # order important, needed by @indices.setter
         self.indices = indices
         self.res_idx = idx
 
@@ -214,6 +216,7 @@ class IAMconv:
         )
 
     def iamcify(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Transform dataframe to match the IAMC (long) format"""
         useridxlvls = list(set(df.index.names) - set(self._IAMC_IDX))
         # ensure all user defined index columns are removed before concatinating
         df = (
