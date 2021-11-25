@@ -73,7 +73,7 @@ def test_iamconv_frames(iamconv):
 
 
 def test_iamconv_match(iamconv):
-    assert iamconv._match_item("foo.csv") == tuple()  # no match
+    assert iamconv._match_item("foo.csv") is None  # no match
 
     res = iamconv._match_item("nameplate_capacity.csv")  # exist in example data
     assert glom(res, Match((dict, pd.DataFrame)))

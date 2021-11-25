@@ -266,7 +266,7 @@ class IAMconv:
 
     def _match_item(
         self, item: Union[_path_t, Tuple[str, pd.DataFrame]]
-    ) -> Tuple[Dict, pd.DataFrame]:
+    ) -> Union[None, Tuple[Dict, pd.DataFrame]]:
         """Match a file or dataframe to an index entry (internal method)
 
         Parameters
@@ -289,7 +289,7 @@ class IAMconv:
             match_val = item[0]
         else:
             match_key = "path"
-            match_val = item
+            match_val = f"{item}"
 
         # NOTE: res_from_entry requires: "path", "idxcols", "alias"; later
         # in the iteration, "iamc" & "agg" is required
@@ -305,7 +305,7 @@ class IAMconv:
             if len(_entries) > 1:
                 logger.warning(f"{entry[match_key]}: duplicate entries, picking first")
         else:
-            return tuple()
+            return None
         if isinstance(item, tuple):
             df = item[1]
         else:
@@ -338,13 +338,13 @@ class IAMconv:
         """
         dfs = []
         if isinstance(files_or_dfs, dict):
-            iterable = cast(Dict[str, pd.DataFrame], files_or_dfs.items())
+            iterable = cast(Iterable, files_or_dfs.items())
         else:
             iterable = files_or_dfs
 
         for item in iterable:
             match = self._match_item(item)
-            if not match:
+            if match is None:
                 continue
             res = self.frames(*match)  # match -> entry, dataframe
             dfs.append(res)
