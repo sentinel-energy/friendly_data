@@ -1,12 +1,14 @@
+from pathlib import Path
+
 from glom import Assign, glom, Iter, T
 import numpy as np
 import pandas as pd
 import pytest
 
-from friendly_data.converters import from_df
+from friendly_data.converters import from_df, resolve_aliases
 from friendly_data.converters import from_dst
 from friendly_data.converters import to_df
-from friendly_data.dpkg import pkg_from_index
+from friendly_data.dpkg import entry_from_res, pkg_from_index
 
 from .conftest import expected_schema
 
@@ -87,6 +89,17 @@ def test_pkg_to_df_aliased_cols(pkg_w_alias):
     df = to_df(pkg_w_alias["resources"][1])
     assert "region" in df.index.names
     assert "flow_in" in df.columns
+
+
+def test_resolve_aliases(pkg_w_alias):
+    for res in pkg_w_alias.resources:
+        entry = entry_from_res(res)
+        path = Path(pkg_w_alias.basepath) / entry["path"]
+        _df = pd.read_csv(path, index_col=entry["idxcols"])
+        df = resolve_aliases(_df, entry["alias"])
+        assert "region" in df.index.names
+        if "flow_in" in entry["path"]:
+            assert "flow_in" in df.columns
 
 
 def test_df_to_resource(tmp_path, pkg_w_alias):

@@ -243,6 +243,32 @@ def to_mfdst(
     return xr.Dataset(dfs, **kwargs)
 
 
+def resolve_aliases(df: _dfseries_t, alias: Dict[str, str]) -> _dfseries_t:
+    """Return a copy of the dataframe with aliases resolved
+
+    Parameters
+    ----------
+    df : pd.DataFrame | pd.Series
+
+    alias : Dict[str, str]
+        A dictionary of column aliases if the dataframe has custom column names
+        that need to be mapped to columns in the registry.  The key is the
+        column name in the dataframe, and the value is a column in the
+        registry.
+
+    Returns
+    -------
+    pd.DataFrame | pd.Series
+        Since the column and index levels are renamed, a copy is returned so
+        that the original dataframe/series remains unaltered.
+
+    """
+    # work w/ a copy, not very memory efficient
+    _df = cast(_dfseries_t, df.rename(alias, axis=1))  # noop for pd.series
+    _df.index = _df.index.rename(alias)
+    return _df
+
+
 def from_df(
     df: _dfseries_t,
     basepath: _path_t,
@@ -293,12 +319,7 @@ def from_df(
     fullpath = Path(basepath) / datapath
     # ensure parent directory exists
     fullpath.parent.mkdir(parents=True, exist_ok=True)
-    if rename:
-        # work w/ a copy, not very memory efficient
-        _df = df.rename(alias, axis=1)  # noop for pd.series
-        _df.index = _df.index.rename(alias)
-    else:
-        _df = df
+    _df = resolve_aliases(df, alias) if rename else df
     # don't write index if default/unnamed index
     defaultidx = (
         False if isinstance(_df.index, pd.MultiIndex) else _df.index.name is None
