@@ -8,6 +8,7 @@ import pandas as pd
 import pandas._testing as tm
 import pytest
 
+from friendly_data.dpkg import entry_from_res
 from friendly_data.dpkg import fullpath
 from friendly_data.dpkg import read_pkg
 from friendly_data.dpkg import pkg_from_index
@@ -53,6 +54,12 @@ def chdir(dirpath):
     os.chdir(dirpath)
     yield
     os.chdir(cwd)
+
+
+def to_df_noalias(res):
+    entry = entry_from_res(res)
+    path = Path(res.basepath) / entry["path"]
+    return pd.read_csv(path, index_col=entry["idxcols"]), entry
 
 
 @pytest.fixture
