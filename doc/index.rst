@@ -13,6 +13,7 @@ Contents
    installation
    registry
    cli
+   config-file
    hands-on
    iamc-conversion
    advanced
