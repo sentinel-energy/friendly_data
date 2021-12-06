@@ -9,6 +9,8 @@ from friendly_data.dpkg import res_from_entry
 from friendly_data.io import dwim_file
 from friendly_data.iamc import IAMconv
 
+from .conftest import to_df_noalias
+
 
 def test_iamconv():
     pkgdir = Path("testing/files/iamc")
@@ -68,8 +70,13 @@ def test_iamconv_to_df_from_dfs(iamconv):
 
 def test_iamconv_frames(iamconv):
     entry = iamconv.res_idx[0]
-    res = iamconv.frames(entry, to_df(res_from_entry(entry, iamconv.basepath)))
+    df, _ = to_df_noalias(res_from_entry(entry, iamconv.basepath))
+    res = iamconv.frames(entry, df)
     assert glom(res, Match([pd.DataFrame]))
+    # check alias
+    df = res[0]
+    # alias: locs -> region, techs -> technology; only region in IAMC index
+    assert "region" in df.index.names
 
 
 def test_iamconv_match(iamconv):
