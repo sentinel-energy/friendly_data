@@ -26,7 +26,7 @@ Type mapping between the frictionless specification and pandas types:
 
 from logging import getLogger, warn
 from pathlib import Path
-from typing import Callable, cast, Dict, Iterable, List, Union
+from typing import Callable, cast, Dict, Iterable, List
 
 from frictionless import Resource
 from glom import glom, Iter, T
@@ -244,7 +244,7 @@ def to_mfdst(
 
 
 def from_df(
-    df: Union[pd.DataFrame, pd.Series],
+    df: _dfseries_t,
     basepath: _path_t,
     datapath: _path_t = "",
     alias: Dict[str, str] = {},
@@ -259,7 +259,7 @@ def from_df(
 
     Parameters
     ----------
-    df : pd.DataFrame
+    df : pd.DataFrame | pd.Series
         Dataframe to write
 
     basepath : Union[str, Path]
