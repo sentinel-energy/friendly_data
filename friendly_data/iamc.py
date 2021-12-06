@@ -17,7 +17,7 @@ from glom import glom, Iter, Match, MatchError, Or, T
 import pandas as pd
 
 from friendly_data._types import _path_t
-from friendly_data.converters import _reader, to_df
+from friendly_data.converters import _reader, resolve_aliases, to_df
 from friendly_data.dpkg import pkgindex
 from friendly_data.dpkg import res_from_entry
 from friendly_data.helpers import idx_lvl_values, idxslice
@@ -371,6 +371,7 @@ class IAMconv:
 
         """
         dfs = []
+        df = resolve_aliases(df, entry.get("alias", {}))
         df = self.resolve_idxcol_defaults(df)
         lvls = self.index_levels(df.index.names)
 
