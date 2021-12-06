@@ -37,7 +37,9 @@ in a package index file is documented below.
     another column in the registry; say you use ``node`` for
     locations, and you want the corresponding column to be mapped to
     ``region`` in the registry.  This can be specified with an index
-    entry like this::
+    entry like this:
+
+    .. code-block:: yaml
 
       - path: demand.csv
         idxcols: [node, timestep]
@@ -54,7 +56,9 @@ in a package index file is documented below.
 **agg** (mapping or dictionary)
 
     A mapping of index column name to a list of aggregation rules (for
-    IAMC conversion) which is another mapping of the form::
+    IAMC conversion) which is another mapping of the form:
+
+    .. code-block:: yaml
 
       values:
       - open_field_pv
@@ -62,7 +66,9 @@ in a package index file is documented below.
       variable: Primary Energy|Solar
 
     As there can be multiple rules for a column, they are included as
-    a list.  A complete index entry with aggregation rules looks like::
+    a list.  A complete index entry with aggregation rules looks like:
+
+    .. code-block:: yaml
 
       - agg:
         technology:
