@@ -8,9 +8,9 @@ import pytest
 from friendly_data.converters import from_df, resolve_aliases
 from friendly_data.converters import from_dst
 from friendly_data.converters import to_df
-from friendly_data.dpkg import entry_from_res, pkg_from_index
+from friendly_data.dpkg import pkg_from_index
 
-from .conftest import expected_schema
+from .conftest import expected_schema, to_df_noalias
 
 
 @pytest.mark.skip(reason="not sure how to test schema parsing")
@@ -93,9 +93,7 @@ def test_pkg_to_df_aliased_cols(pkg_w_alias):
 
 def test_resolve_aliases(pkg_w_alias):
     for res in pkg_w_alias.resources:
-        entry = entry_from_res(res)
-        path = Path(pkg_w_alias.basepath) / entry["path"]
-        _df = pd.read_csv(path, index_col=entry["idxcols"])
+        _df, entry = to_df_noalias(res)
         df = resolve_aliases(_df, entry["alias"])
         assert "region" in df.index.names
         if "flow_in" in entry["path"]:
