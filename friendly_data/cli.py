@@ -8,7 +8,6 @@ import sys
 from typing import Dict, Iterable, List
 
 from glom import glom, Iter
-from tabulate import tabulate
 
 from friendly_data import logger_config
 from friendly_data._types import _license_t, _path_t
@@ -48,6 +47,8 @@ def list_licenses() -> str:
         ASCII table with commonly used licenses
 
     """
+    from tabulate import tabulate
+
     keys = ("domain", "id", "maintainer", "title")
     return tabulate(lic_metadata(keys), headers="keys")
 
