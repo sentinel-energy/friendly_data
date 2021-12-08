@@ -8,5 +8,6 @@ numpy
 pandas>=1.0
 pyyaml
 requests
+rich
 tabulate
 xarray

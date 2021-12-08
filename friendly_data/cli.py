@@ -434,6 +434,24 @@ def describe(pkgpath: str):
     return tmpl.render(res)
 
 
+def describe_registry(column_type: str = ""):
+    """Describe columns defined in the registry
+
+    Parameters
+    ----------
+    column_type : str (default: empty string → all)
+        Column type to list; one of: "cols", or "idxcols".  If nothing is
+        provided (default), columns of both types are listed.
+
+    """
+    from rich.console import Console
+    from rich.markdown import Markdown
+
+    console = Console()
+    md = Markdown(page(markup="md", col_t=column_type))
+    console.print(md)
+
+
 def main():  # pragma: no cover, CLI entry point
     """Entry point for console scripts"""
     import os
@@ -445,7 +463,7 @@ def main():  # pragma: no cover, CLI entry point
             "create": create,
             "update": update,
             "remove": remove,
-            "registry": page,
+            "describe-registry": describe_registry,
             "list-licenses": list_licenses,
             "license-info": license_info,
             "generate-index-file": generate_index_file,
