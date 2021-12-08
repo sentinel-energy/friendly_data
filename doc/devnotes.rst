@@ -11,9 +11,13 @@ Adding dependencies
 Working with the data package API
 ---------------------------------
 
-- workaround for POSIX compliant paths on Windows
-- metadata extension:
+- workaround for POSIX compliant paths on Windows, filter paths
+  through ``friendly_data.dpkg._ensure_posix``
+
+- metadata extensions:
+
   - always use ``alias``-aware functions like
-    ``friendly_data.dpkg.get_aliased_cols``
+    :func:`friendly_data.dpkg.get_aliased_cols`
+
 - fill index levels (``enum`` values) using
-  ``friendly_data.dpkg.index_levels``
+  :func:`friendly_data.dpkg.index_levels`
