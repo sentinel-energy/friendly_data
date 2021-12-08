@@ -1,0 +1,21 @@
+- **{{ name }}** ({{ type }}): {{ title }}
+{% if description is not undefined %}
+  {{ description }}
+
+{% endif %}
+{% if constraints is not undefined %}
+  constraints:
+
+  {% for key, val in constraints.items() %}
+  | {{ key }} |{% if val is string %} `{{ val }}` {% elif val is sequence %} {{ ", ".join(val) if val else "..." }} {% else %} {{ val }} {% endif %}|
+  {% endfor %}
+{% endif %}
+
+{% if alias is not undefined %}
+  Common aliases:
+
+  {% for entry in alias %}
+  | {{ entry['name'] }} | {{ entry['description'] }} |
+  {% endfor %}
+{% endif %}
+

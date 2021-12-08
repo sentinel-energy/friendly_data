@@ -1,0 +1,7 @@
+{% for title, entries in sections %}
+# {{ title }}
+
+{% for entry in entries %}
+{{ entry }}
+{% endfor %}
+{% endfor %}
