@@ -28,5 +28,10 @@ setup(
     install_requires=requirements,
     extra_requirements=extra_requirements,
     package_data={"friendly_data": ["py.typed", "doc/*.template"]},
-    entry_points={"console_scripts": ["friendly_data = friendly_data.cli:main"]},
+    entry_points={
+        "console_scripts": [
+            "friendly_data = friendly_data.cli:main",
+            "friendly-data = friendly_data.cli:main",
+        ]
+    },
 )
