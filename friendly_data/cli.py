@@ -2,15 +2,18 @@
 
 """
 
+from datetime import datetime
 from itertools import chain
 from pathlib import Path
 import sys
 from typing import Dict, Iterable, List
 
+from frictionless import Package
 from glom import glom, Iter
 
 from friendly_data import logger_config
 from friendly_data._types import _license_t, _path_t
+from friendly_data.converters import to_df
 from friendly_data.dpkg import entry_from_res
 from friendly_data.dpkg import idxpath_from_pkgpath
 from friendly_data.dpkg import pkg_from_files
@@ -18,7 +21,7 @@ from friendly_data.dpkg import pkgindex
 from friendly_data.dpkg import read_pkg
 from friendly_data.dpkg import set_idxcols
 from friendly_data.dpkg import write_pkg
-from friendly_data.helpers import consume
+from friendly_data.helpers import consume, filter_dict
 from friendly_data.helpers import is_windows
 from friendly_data.helpers import sanitise
 from friendly_data.io import copy_files
@@ -409,13 +412,68 @@ def to_iamc(config: str, idxpath: str, iamcpath: str, *, wide: bool = False):
     return f"{', '.join(files)} -> {iamcpath}"
 
 
-def describe(pkgpath: str):
+def reports(pkg: Package, report_dir: str):
+    """Write HTML reports summarising all resources in the package
+
+    Parameters
+    ----------
+    pkg : Package
+
+    report_dir : str
+        Directory where reports are written
+
+    Returns
+    -------
+    int
+        Bytes written (index.html)
+    """
+    import pandas_profiling
+
+    _dir = Path(report_dir)
+    _dir.mkdir(parents=True, exist_ok=True)
+
+    title = pkg.get("title", pkg["name"])
+    res = {"title": title, "date": datetime.now().isoformat(), "resources": []}
+    for _res in pkg.resources:
+        df = to_df(_res, noexcept=True)
+        html = Path(_res["path"]).with_suffix(".html")
+        report = df.profile_report(
+            title=title,
+            dataset=filter_dict(_res, ["description"]),  # FIXME: add pkg url
+            variables={
+                "descriptions": glom(
+                    _res,
+                    (
+                        "schema.fields",
+                        Iter()
+                        .filter(lambda i: "description" in i)
+                        .map(lambda i: (i["name"], i["description"]))
+                        .all(),
+                        dict,
+                    ),
+                )
+            },
+        )
+        report.config.html.minify_html = False
+        report.to_file(_dir / html)
+        res["resources"].append({"path": html, "name": _res["name"]})
+
+    tmpl = get_template("index.html.template")
+    return (_dir / "index.html").write_text(tmpl.render(res))
+
+
+def describe(pkgpath: str, report_dir: str = ""):
     """Give a summary of the data package
 
     Parameters
     ----------
     pkgpath : str
         Path to the data package
+
+    report_dir : str (default: empty string)
+        If not empty, generate an HTML report and write to the directory
+        ``report``.  The directory will have an ``index.html`` file, and one
+        HTML file for each dataset.
 
     """
     try:
@@ -427,6 +485,10 @@ def describe(pkgpath: str):
     for k, v in pkg.items():
         if k in meta_f and v:
             res[k] = glom(v, ["name"]) if k == "licenses" else v
+
+    if report_dir:
+        res["report_dir"] = report_dir
+        reports(pkg, report_dir)
 
     tmpl = get_template("dpkg_describe.template")
     res["resources"] = glom(

@@ -20,3 +20,4 @@ path: {{ res["path"] }}
 fields: {{ res["fields"]|join(", ") }}
 ---
 {% endfor %}
+{% if report_dir is not undefined %}Reports written to: {{ report_dir }}/ {% endif %}

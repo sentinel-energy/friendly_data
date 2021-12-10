@@ -1,1 +1,2 @@
 pyam-iamc
+pandas-profiling
