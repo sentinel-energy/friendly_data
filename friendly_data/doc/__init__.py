@@ -33,7 +33,7 @@ def page(*, markup: str = "rst", col_t: str = "") -> str:
         col_types.pop("idxcols")
     elif col_t == "idxcols":
         col_types.pop("cols")
-    else:
+    elif col_t:
         logger.warning(f"{col_t}: unknown column type, will return all")
     contents = [
         (col_types[_col_t], [entry(schema, f, markup) for schema, f in schemas])
