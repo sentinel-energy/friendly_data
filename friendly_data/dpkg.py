@@ -245,13 +245,23 @@ class pkgindex(List[Dict]):
         "path": str,
         "idxcols": [str],
         "name": str,
+        "description": str,
         "skip": int,
         "alias": {str: str},
         "sheet": Or(int, str),
         "iamc": str,  # FIXME: Regex("^[0-9a-zA-Z_ |-{}]+$"),
         "agg": {str: [{"values": [str], "variable": str}]},
     }
-    _optional = ["idxcols", "name", "skip", "alias", "sheet", "iamc", "agg"]
+    _optional = [
+        "idxcols",
+        "name",
+        "description",
+        "skip",
+        "alias",
+        "sheet",
+        "iamc",
+        "agg",
+    ]
 
     @classmethod
     def from_file(cls, fpath: _path_t) -> "pkgindex":
@@ -303,6 +313,7 @@ class pkgindex(List[Dict]):
     def _validate_keys(cls, keys: List[str]) -> List[str]:
         ...  # pragma: no cover, overload
 
+    @classmethod
     def _validate_keys(cls, keys):
         if isinstance(keys, str):
             return glom(keys, Match(Or(*cls._key_map.keys())))
