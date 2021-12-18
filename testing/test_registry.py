@@ -6,12 +6,12 @@ from pkg_resources import resource_filename
 
 import pytest
 
-import friendly_data_registry as registry
+import friendly_data_registry as _registry
 
 
 @pytest.mark.parametrize("col, col_t", [("region", "idxcols"), ("storage", "cols")])
 def test_registry(col, col_t):
-    res = registry.get(col, col_t)
+    res = _registry.get(col, col_t)
     assert isinstance(res, dict)
 
 
@@ -19,8 +19,8 @@ def test_registry(col, col_t):
     "col, col_t, msg", [("notinreg", "cols", "notinreg: not in registry")]
 )
 def test_registry_warn(caplog, col, col_t, msg):
-    with caplog.at_level(logging.INFO, logger="friendly_data.registry"):
-        res = registry.get(col, col_t)
+    with caplog.at_level(logging.INFO, logger="friendly_data._registry"):
+        res = _registry.get(col, col_t)
         assert isinstance(res, dict)
         assert res == {}
         assert msg in caplog.text
@@ -38,12 +38,12 @@ def test_registry_warn(caplog, col, col_t, msg):
 )
 def test_registry_raise(col, col_t, expectation):
     with expectation:
-        res = registry.get(col, col_t)
+        res = _registry.get(col, col_t)
         assert isinstance(res, dict)
 
 
 def test_getall():
-    res = registry.getall()
+    res = _registry.getall()
     expected = ["cols", "idxcols"]
     assert sorted(res) == expected
     for col_t in expected:
