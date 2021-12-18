@@ -323,7 +323,7 @@ class pkgindex(List[Dict]):
     def records(self, keys: List[str]) -> Iterable[Dict]:
         """Return an iterable of index records.
 
-        Each record is guaranteed to have all the keys requested.  If a value
+        Each record is guaranteed to have all the requested keys.  If a value
         wasn't specified in the index file, it is set to ``None``.
 
         Parameters
