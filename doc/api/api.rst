@@ -14,6 +14,10 @@ Metadata tools
 Registry API
 ------------
 
+.. automodule:: friendly_data.registry
+
+----
+
 .. automodule:: friendly_data_registry
 
 Command Line Interface
