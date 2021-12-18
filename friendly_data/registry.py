@@ -143,6 +143,7 @@ def config_ctx(
         _custom.update(RegistrySchema(custom))
     except MatchError as err:
         logger.error(f"ignoring bad custom registry: {err}")
+        yield _custom
     else:
         yield _custom
     finally:

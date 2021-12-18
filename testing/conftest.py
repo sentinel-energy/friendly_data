@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 import re
 from shutil import copytree
+from typing import cast, Dict
 
 import pandas as pd
 import pandas._testing as tm
@@ -13,6 +14,7 @@ from friendly_data.dpkg import fullpath
 from friendly_data.dpkg import read_pkg
 from friendly_data.dpkg import pkg_from_index
 from friendly_data.iamc import IAMconv
+from friendly_data.io import dwim_file
 from friendly_data.io import HttpCache
 from friendly_data.metatools import ODLS
 from friendly_data.helpers import noop_map
@@ -46,6 +48,11 @@ def expected_schema(df, type_map=default_type_map):
             df = pd.read_csv(df)  # path
     # noop if a key (type) is not in `type_map`, remains unaltered
     return df.dtypes.astype(str).map(type_map).to_dict()
+
+
+def custom_registry():
+    conf = cast(Dict, dwim_file("testing/files/custom_registry/config.yaml"))
+    return conf["registry"]
 
 
 @contextmanager

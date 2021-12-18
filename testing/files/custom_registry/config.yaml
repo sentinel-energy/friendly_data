@@ -1,0 +1,14 @@
+registry:
+  idxcols:
+    - name: enduse
+      type: string
+      constraints:
+        enum:
+          - cooling
+          - heating
+          - hot_water
+  cols:
+    - name: capacity_factor
+      type: number
+      constraints:
+        maximum: 100
