@@ -51,8 +51,6 @@ def test_metadata(caplog):
     assert dict() == res
 
     mandatory = ["name", "keywords"]
-    # FIXME: don't know why 'match' isn't working
-    # with pytest.raises(ValueError, match=f"{mandatory}:.+"):
     with pytest.raises(SystemExit) as err:
         _metadata(
             mandatory,
@@ -77,7 +75,7 @@ def test_metadata_file(ext):
         licenses="",
         description="",
         keywords="",
-        metadata=conf.with_suffix(ext),
+        config=conf.with_suffix(ext),
     )
     assert all(k in res for k in mandatory)
 

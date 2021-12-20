@@ -33,6 +33,7 @@ from friendly_data.metatools import check_license
 from friendly_data.metatools import get_license
 from friendly_data.metatools import lic_metadata
 from friendly_data.metatools import resolve_licenses
+from friendly_data.registry import config_ctx
 from friendly_data.doc import get_template, page
 
 logger = logger_config(fmt="{name}: {levelname}: {message}")
@@ -107,28 +108,32 @@ def _metadata(
     licenses: str = "",
     description: str = "",
     keywords: str = "",
-    metadata: _path_t = "",
+    config: _path_t = "",
 ) -> Dict:
-    if metadata:
+    """Metadata from the config file is overriden by keyword arguments"""
+    if config:
         try:
-            meta = dwim_file(metadata)["metadata"]  # type: ignore[call-overload]
+            meta = dwim_file(config)["metadata"]  # type: ignore[call-overload]
         except KeyError as err:
-            logger.error(f"{err}: section missing from {metadata}")
-            sys.exit(1)
-        meta = resolve_licenses(meta)
+            logger.warning(f"{err}: section missing from {config}")
+            meta = {}
+        else:
+            meta = resolve_licenses(meta)
     else:
-        meta = {
-            "name": name if name else sanitise(title),
-            "title": title,
-            "description": description,
-            "keywords": keywords.split(),
-        }
-        if licenses:
-            meta["licenses"] = [get_license(licenses)]
-        elif "licenses" in mandatory:
-            meta["licenses"] = [license_prompt()]  # pragma: no cover
+        meta = {}
+    _meta = {
+        "name": name if name else sanitise(title),
+        "title": title,
+        "description": description,
+        "keywords": keywords.split(),
+    }
+    if licenses:
+        _meta["licenses"] = [get_license(licenses)]
+    elif "licenses" in mandatory and "licenses" not in meta:
+        _meta["licenses"] = [license_prompt()]  # pragma: no cover
 
-    meta = {k: v for k, v in meta.items() if v}
+    # override config file with values from flags
+    meta.update((k, v) for k, v in _meta.items() if v)
 
     check = [k for k in mandatory if k not in meta]  # mandatory fields
     if check:
@@ -189,9 +194,12 @@ def create(
     keywords: str = "",
     inplace: bool = False,
     export: str = "",
-    metadata: _path_t = "",
+    config: str = "",
 ):
     """Create a package from an index file and other files
+
+    Package metadata provided with command line flags override metadata from
+    the config file.
 
     Parameters
     ----------
@@ -227,9 +235,10 @@ def create(
         Create the data package in the provided directory instead of the
         current directory
 
-    metadata : str
-        Instead of passing metadata via flags, you may provide the metadata as
-        JSON or YAML
+    config : str
+        Config file in YAML format with metadata and custom registry.  The
+        metadata should be under a "metadata" section, and the custom registry
+        under a "registry" section.
 
     """
     if (not export) and (not inplace):
@@ -246,10 +255,11 @@ def create(
         "licenses": licenses,
         "description": description,
         "keywords": keywords,
-        "metadata": metadata,
+        "config": config,
     }
     meta = _metadata(["name", "licenses"], **meta)  # type: ignore[arg-type]
-    files = _create(meta, idxpath, fpaths, export=export)
+    with config_ctx(conffile=config):
+        files = _create(meta, idxpath, fpaths, export=export)
     return f"Package metadata: {files[0]}"
 
 
@@ -270,7 +280,7 @@ def update(
     licenses: str = "",
     description: str = "",
     keywords: str = "",
-    metadata: _path_t = "",
+    config: str = "",
 ):
     """Update metadata and datasets in a package.
 
@@ -299,9 +309,10 @@ def update(
     licenses : str
         License
 
-    metadata : str
-        Instead of passing metadata via flags, you may provide the metadata as
-        JSON or YAML
+    config : str
+        Config file in YAML format with metadata and custom registry.  The
+        metadata should be under a "metadata" section, and the custom registry
+        under a "registry" section.
 
     """
     meta = {
@@ -310,7 +321,7 @@ def update(
         "licenses": licenses,
         "description": description,
         "keywords": keywords,
-        "metadata": metadata,
+        "config": config,
     }
     meta = _metadata([], **meta)  # type: ignore[arg-type]
     pkg = read_pkg(pkgpath)
@@ -319,7 +330,8 @@ def update(
     if len(fpaths) == 0:
         files = write_pkg(pkg, pkgpath)
     else:
-        files = _update(pkg, pkgpath, fpaths)
+        with config_ctx(conffile=config):
+            files = _update(pkg, pkgpath, fpaths)
     return f"Package metadata: {files[0]}"
 
 
@@ -370,7 +382,7 @@ def remove(pkgpath: str, *fpaths: str, rm_from_disk: bool = False) -> str:
     return "\n".join(msgs)
 
 
-def generate_index_file(idxpath: str, *fpaths: str):
+def generate_index_file(idxpath: str, *fpaths: str, config: str = ""):
     """Generate an index file from a set of dataset files
 
     Parameters
@@ -381,8 +393,13 @@ def generate_index_file(idxpath: str, *fpaths: str):
     fpaths : Tuple[str]
         List of datasets/resources to include in the index
 
+    config : str
+        Config file in YAML format with custom registry.  It should be defined
+        under a "registry" section.
+
     """
-    idx = [entry_from_res(set_idxcols(f)) for f in fpaths]
+    with config_ctx(conffile=config):
+        idx = [entry_from_res(set_idxcols(f)) for f in fpaths]
     dwim_file(idxpath, idx)
 
 
@@ -427,7 +444,7 @@ def reports(pkg: Package, report_dir: str):
     int
         Bytes written (index.html)
     """
-    import pandas_profiling
+    import pandas_profiling as _
 
     _dir = Path(report_dir)
     _dir.mkdir(parents=True, exist_ok=True)
@@ -462,7 +479,7 @@ def reports(pkg: Package, report_dir: str):
     return (_dir / "index.html").write_text(tmpl.render(res))
 
 
-def describe(pkgpath: str, report_dir: str = ""):
+def describe(pkgpath: str, config: str = "", report_dir: str = ""):
     """Give a summary of the data package
 
     Parameters
@@ -474,6 +491,10 @@ def describe(pkgpath: str, report_dir: str = ""):
         If not empty, generate an HTML report and write to the directory
         ``report``.  The directory will have an ``index.html`` file, and one
         HTML file for each dataset.
+
+    config : str
+        Config file in YAML format with custom registry.  It should be defined
+        under a "registry" section.
 
     """
     try:
@@ -488,7 +509,8 @@ def describe(pkgpath: str, report_dir: str = ""):
 
     if report_dir:
         res["report_dir"] = report_dir
-        reports(pkg, report_dir)
+        with config_ctx(conffile=config):
+            reports(pkg, report_dir)
 
     tmpl = get_template("dpkg_describe.template")
     res["resources"] = glom(
