@@ -9,4 +9,5 @@
   idxcols:
   - technology
   - node
+  - unit
   alias: {node: region, energy_in: flow_in}

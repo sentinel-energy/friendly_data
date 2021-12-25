@@ -107,8 +107,8 @@ def test_df_to_resource(tmp_path, pkg_w_alias):
     assert (tmp_path / fpath).exists()
     assert fpath == res["path"]
 
-    df.columns = ["unit", "energy_in"]
-    df.index.names = ["technology", "node"]
+    df.columns = ["energy_in"]
+    df.index.names = ["technology", "node", "unit"]
     alias = {"node": "region", "energy_in": "flow_in"}
     for r in (True, False):
         res = from_df(df, basepath=tmp_path, alias=alias, rename=r)
