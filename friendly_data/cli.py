@@ -6,7 +6,7 @@ from datetime import datetime
 from itertools import chain
 from pathlib import Path
 import sys
-from typing import Dict, Iterable, List
+from typing import Any, Dict, Iterable, List
 
 from frictionless import Package
 from glom import glom, Iter
@@ -121,7 +121,7 @@ def _metadata(
             meta = resolve_licenses(meta)
     else:
         meta = {}
-    _meta = {
+    _meta: Dict[str, Any] = {
         "name": name if name else sanitise(title),
         "title": title,
         "description": description,

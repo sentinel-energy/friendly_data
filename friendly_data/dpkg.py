@@ -306,10 +306,12 @@ class pkgindex(List[Dict]):
             raise err from None
 
     @overload
+    @classmethod
     def _validate_keys(cls, keys: str) -> str:
         ...  # pragma: no cover, overload
 
     @overload
+    @classmethod
     def _validate_keys(cls, keys: List[str]) -> List[str]:
         ...  # pragma: no cover, overload
 

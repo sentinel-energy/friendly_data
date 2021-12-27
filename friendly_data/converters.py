@@ -365,7 +365,7 @@ def to_mfdst(
     :func:`to_df` : see for details on ``noexcept``
 
     """
-    data_vars = {}
+    data_vars: Dict[Hashable, xr.DataArray] = {}
     for res in resources:
         df = to_df(res, noexcept)
         if df.empty and noexcept:
