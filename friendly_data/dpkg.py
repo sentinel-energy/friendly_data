@@ -544,7 +544,7 @@ def res_from_entry(entry: Dict, pkg_dir: _path_t) -> Resource:
         raise ValueError(msg)
     try:
         _, idxcoldict = index_levels(
-            pkg_dir / entry["path"], entry["idxcols"], entry["alias"]
+            Path(pkg_dir) / entry["path"], entry["idxcols"], entry["alias"]
         )
     except Exception as err:
         # FIXME: too broad; most likely this fails because of bad options
