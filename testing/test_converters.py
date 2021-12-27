@@ -5,10 +5,18 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from friendly_data.converters import from_df, resolve_aliases
+from friendly_data.converters import from_df
 from friendly_data.converters import from_dst
+from friendly_data.converters import resolve_aliases
+from friendly_data.converters import to_da
 from friendly_data.converters import to_df
-from friendly_data.dpkg import pkg_from_index
+from friendly_data.converters import to_dst
+from friendly_data.converters import to_mfdst
+from friendly_data.converters import xr_metadata
+from friendly_data.converters import xr_da
+from friendly_data.dpkg import pkg_from_index, read_pkg, res_from_entry
+
+from friendly_data.io import dwim_file
 
 from .conftest import expected_schema, to_df_noalias
 
@@ -128,6 +136,82 @@ def test_df_to_resource(tmp_path, pkg_w_alias):
             assert not res_alias
         else:
             assert res_alias == alias
+
+
+def test_xr_metadata(pkg_w_alias):
+    # 1: alias, unit, 2: alias
+    df1, df2 = [to_df(res) for res in pkg_w_alias.resources]
+
+    df1_res, coords1, attrs1 = xr_metadata(df1)
+    assert df1.index.names == df1_res.index.names
+    assert set(df1.index.names) == set(coords1)
+    assert attrs1 == {}
+
+    df2_res, coords2, attrs2 = xr_metadata(df2)
+    assert set(df2.index.names) - set(df2_res.index.names) == {"unit"}
+    assert set(df2.index.names) - set(coords2) == {"unit"}
+    assert set(attrs2) == {"unit"}
+
+
+def test_xr_da(pkg_w_alias):
+    # 1: alias, 2: alias, unit
+    df1, df2 = [to_df(res) for res in pkg_w_alias.resources]
+
+    df_aligned, coords, attrs = xr_metadata(df1)
+    arr1 = xr_da(df_aligned, 0, coords=coords, attrs=attrs)
+    arr2 = xr_da(df_aligned, df1.columns[0], coords=coords, attrs=attrs)
+    assert arr1.equals(arr2)  # column specification
+    assert list(arr1.coords) == df1.index.names
+    arr = xr_da(df_aligned, 0, coords=coords, attrs=attrs)
+    assert arr.attrs == {}
+
+    df_aligned, coords, attrs = xr_metadata(df2)
+    arr = xr_da(df_aligned, 0, coords=coords, attrs=attrs)
+    assert set(df2.index.names) - set(arr.coords) == {"unit"}
+    assert "unit" in arr.attrs
+
+    df3 = df2.assign(foo=3)
+    df_aligned, coords, attrs = xr_metadata(df3)
+    arr1 = xr_da(df_aligned, 1, coords=coords, attrs=attrs)
+    arr2 = xr_da(df_aligned, "foo", coords=coords, attrs=attrs)
+    # assert arr1.name == arr2.name == "foo"
+    arr1.data = arr2.data = np.where(np.isnan(arr1.data), 3, arr1.data)
+    expected = np.full_like(arr1.data, 3)
+    assert (arr1.data == expected).all() and (arr2.data == expected).all()
+
+
+def test_to_da(pkg_w_alias):
+    # alias, unit
+    res = pkg_w_alias.resources[1]  # "unit" is excluded from dims
+    assert len(to_da(res).dims) == glom(res, ("schema.primaryKey", len)) - 1
+
+    res["path"] = res["path"] + ".bad"
+    assert to_da(res, noexcept=True).data == None
+
+    # multicol
+    entry = dwim_file("testing/files/xr/index.yaml")[0]
+    res = res_from_entry(entry, "testing/files/xr")
+    with pytest.raises(ValueError, match="only 1 column supported"):
+        to_da(res)
+
+
+def test_to_dst(pkg_w_alias):
+    # alias, unit
+    res = pkg_w_alias.resources[1]  # "unit" is excluded from dims
+    assert len(to_dst(res).dims) == glom(res, ("schema.primaryKey", len)) - 1
+
+    res["path"] = res["path"] + ".bad"
+    assert not to_dst(res, noexcept=True).data_vars
+
+    # multicol
+    entry = dwim_file("testing/files/xr/index.yaml")[0]
+    res = res_from_entry(entry, "testing/files/xr")
+    assert len(to_dst(res).data_vars) == 2
+
+
+def test_to_mfdst(pkg_w_alias):
+    dst = to_mfdst(pkg_w_alias.resources)
+    assert len(dst.data_vars) == 2
 
 
 @pytest.mark.skip

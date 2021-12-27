@@ -26,7 +26,7 @@ Type mapping between the frictionless specification and pandas types:
 
 from logging import getLogger, warn
 from pathlib import Path
-from typing import Callable, cast, Dict, Iterable, List
+from typing import Callable, cast, Dict, Hashable, Iterable, List, Tuple, Union
 
 from frictionless import Resource
 from glom import glom, Iter, T
@@ -199,34 +199,156 @@ def to_df(resource: Resource, noexcept: bool = False, **kwargs) -> pd.DataFrame:
         return df
 
 
-def to_da(resource: Resource, noexcept: bool = False, **kwargs) -> xr.DataArray:
-    """Reads a data package resource as an `xarray.DataArray`
+def xr_metadata(df: pd.DataFrame) -> Tuple[pd.DataFrame, Dict, Dict]:
+    """Extract metadata to create xarray data array/datasets
 
-    Additional keyword arguments are passed on to :class:`xarray.Dataset`.  See
-    :func:`to_df` for more details on the other arguments.
+    All indices except unit is extracted as coordinates, and "unit" is
+    extracted as metadata attribute.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+
+    Returns
+    -------
+    Tuple[pandas.DataFrame, Dict, Dict]
+        The dataframe with units removed, dictionary of coordinates, dictionary
+        with constant attributes like units
+
+    """
+    const = ["unit"]  # remove if you need multiple unit support for one table
+    if isinstance(df.index, pd.MultiIndex):
+        names = df.index.names
+        levels = df.index.levels
+    else:
+        names = [df.index.name]
+        levels = [df.index]
+    coords = {name: lvls for name, lvls in zip(names, levels) if name not in const}
+    attrs = {name: lvls[0] for name, lvls in zip(names, levels) if name in const}
+    idx_aligned = pd.MultiIndex.from_product(coords.values())
+    if const[0] in df.index.names:  # FIXME: resolve items in const set in index
+        df = df.reset_index(const, drop=True)
+    df = df.reindex(idx_aligned)
+    return df, coords, attrs
+
+
+def xr_da(
+    df: pd.DataFrame,
+    col: Union[int, Hashable],
+    *,
+    coords: Dict,
+    attrs: Dict = {},
+    **kwargs,
+) -> xr.DataArray:
+    """Create an xarray data array from a data frame
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+    col : Union[int, Hashable]
+        Column to use to create the data array, either use the column number,
+        or column name
+    coords : Dict
+        Dictionary of coordinate arrays
+    attrs : Dict
+        Dictionary of metadata attributes like unit
+
+    Returns
+    -------
+    xarray.DataArray
+
+    """
+    indexer = getattr(df, "iloc" if isinstance(col, int) else "loc")
+    arr = indexer[:, col].values
+    if isinstance(arr, pd.api.extensions.ExtensionArray):
+        arr = arr.to_numpy()
+    data = arr.reshape(tuple(map(len, coords.values())))
+    return xr.DataArray(
+        data=data, coords=coords, dims=coords.keys(), attrs=attrs, **kwargs
+    )
+
+
+def to_da(resource: Resource, noexcept: bool = False, **kwargs) -> xr.DataArray:
+    """Reads a data package resource as an :class:`xarray.DataArray`
+
+    This function is restricted to tables with only one value column
+    (equivalent to a `pandas.Series`).  All indices are treated as
+    :class:`xarray.core.coordinates.DataArrayCoordinates` and dimensions.  The
+    array is reshaped to match the dimensions.  Any unit index is extracted and
+    attached as an attribute to the data array.  It is assumed that the whole
+    table uses the same unit.
+
+    Additional keyword arguments are passed on to :class:`xarray.DataArray`.
+
+    Parameters
+    ----------
+    resource : frictionless.Resource
+        List of data package resource objects
+    noexcept : bool (default: False)
+        Whether to suppress an exception
+    **kwargs
+        Additional keyword arguments that are passed on to
+        :class:`xarray.DataArray`
+
+    See Also
+    --------
+    :func:`to_df` : see for details on ``noexcept``
 
     """
     df = to_df(resource, noexcept)
-    return xr.DataArray(df, **kwargs)
+    if df.empty and noexcept:
+        return xr.DataArray(data=None)
+    df, coords, attrs = xr_metadata(df)
+    if len(df.columns) > 1:
+        raise ValueError(f"{df.columns}: only 1 column supported")
+    return xr_da(df, 0, coords=coords, attrs=attrs, **kwargs)
 
 
 def to_dst(resource: Resource, noexcept: bool = False, **kwargs) -> xr.Dataset:
-    """Reads a data package resource as an `xarray.Dataset`
+    """Reads a data package resource as an :class:`xarray.Dataset`
 
-    Additional keyword arguments are passed on to :class:`xarray.Dataset`.  See
-    :func:`to_df` for more details on the other arguments.
+    Unlike :func:`to_da`, this function works for all tables.  All indices are
+    treated as :class:`xarray.core.coordinates.DataArrayCoordinates` and
+    dimensions.  The arrays is reshaped to match the dimensions.  Any unit
+    index is extracted and attached as an attribute to each data arrays.  It is
+    assumed that all columns in the whole table uses the same unit.
+
+    Additional keyword arguments are passed on to :class:`xarray.Dataset`.
+
+    Parameters
+    ----------
+    resource : frictionless.Resource
+        List of data package resource objects
+    noexcept : bool (default: False)
+        Whether to suppress an exception
+    **kwargs
+        Additional keyword arguments that are passed on to
+        :class:`xarray.Dataset`
+
+    See Also
+    --------
+    :func:`to_df` : see for details on ``noexcept``
 
     """
     df = to_df(resource, noexcept)
-    return xr.Dataset({resource["name"]: df}, **kwargs)
+    if df.empty and noexcept:
+        return xr.Dataset()
+    df, coords, attrs = xr_metadata(df)
+    data_vars = {col: xr_da(df, col, coords=coords, attrs=attrs) for col in df.columns}
+    return xr.Dataset(data_vars=data_vars, **kwargs)
 
 
 def to_mfdst(
     resources: Iterable[Resource], noexcept: bool = False, **kwargs
 ) -> xr.Dataset:
-    """Reads a list of data package resources as an `xarray.DataArray`
+    """Reads a list of data package resources as an :class:`xarray.Dataset`
 
-    See :func:`to_df` for more details.
+    This function reads multiple resources/files and converts each column into
+    a data array (identical to :func:`to_dst`), which are then combined into
+    one :class:`xarray.Dataset`.  Note that any value column that is present
+    more than once in the data package is overwritten by the last one.  If you
+    want support for duplicates, you should use :func:`to_dst` and handle the
+    duplicates yourself.
 
     Parameters
     ----------
@@ -238,9 +360,21 @@ def to_mfdst(
         Additional keyword arguments that are passed on to
         :class:`xarray.Dataset`
 
+    See Also
+    --------
+    :func:`to_df` : see for details on ``noexcept``
+
     """
-    dfs = {res["name"]: to_df(res, noexcept) for res in resources}
-    return xr.Dataset(dfs, **kwargs)
+    data_vars = {}
+    for res in resources:
+        df = to_df(res, noexcept)
+        if df.empty and noexcept:
+            continue
+        df, coords, attrs = xr_metadata(df)
+        data_vars.update(
+            (col, xr_da(df, col, coords=coords, attrs=attrs)) for col in df.columns
+        )
+    return xr.Dataset(data_vars=data_vars, **kwargs)
 
 
 def resolve_aliases(df: _dfseries_t, alias: Dict[str, str]) -> _dfseries_t:

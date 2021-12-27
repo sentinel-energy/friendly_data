@@ -1,0 +1,8 @@
+- name: multicol
+  path: multicol.csv
+  idxcols:
+  - locs
+  - techs
+  alias:
+    locs: region
+    techs: technology
