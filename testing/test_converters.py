@@ -186,7 +186,7 @@ def test_to_da(pkg_w_alias):
     assert len(to_da(res).dims) == glom(res, ("schema.primaryKey", len)) - 1
 
     res["path"] = res["path"] + ".bad"
-    assert to_da(res, noexcept=True).data == None
+    assert to_da(res, noexcept=True).data == None  # cannot do `is None`
 
     # multicol
     entry = dwim_file("testing/files/xr/index.yaml")[0]
