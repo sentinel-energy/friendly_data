@@ -43,7 +43,8 @@ class IAMconv:
 
     **TODO:**
 
-    - describe assumptions (e.g. case insensitive match) and fallbacks (e.g. missing title)
+    - describe assumptions (e.g. case insensitive match) and fallbacks
+      (e.g. missing title)
     - limitations (e.g. when no index column exists)
 
     """
@@ -380,7 +381,7 @@ class IAMconv:
             df_agg = cast(pd.DataFrame, df.query(f"{col} in @_agg_vals"))
             dfs.extend(self.agg_idxcol(df_agg, col, entry))
 
-            _vals = lvls[col].index
+            _vals = lvls[col].index  # noqa: F841, used by query below
             df = cast(pd.DataFrame, df.query(f"{col} in @_vals"))
 
             # NOTE: need to remove aggregated levels, then calculate the

@@ -99,7 +99,7 @@ def _schema(resource: Resource, type_map: Dict[str, str]) -> Dict[str, str]:
         Dictionary with column names as key, and types as values
 
     """
-    remap_types = lambda t: (t["name"], type_map[t["type"]])
+    remap_types = lambda t: (t["name"], type_map[t["type"]])  # noqa: E731
     return glom(resource, ("schema.fields", [remap_types], dict))
 
 

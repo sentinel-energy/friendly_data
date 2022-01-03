@@ -159,23 +159,19 @@ def _create(
 ) -> List[Path]:
     if export:
         pkgpath, export = Path(pkgpath), Path(export)
-        idxpath = idxpath_from_pkgpath(pkgpath) if pkgpath.is_dir() else pkgpath
-        path_spec = Iter("path").map(lambda p: idxpath.parent / p)  # type: ignore[union-attr]
-        if idxpath:  # create a uniquified list of files
+        idxp = idxpath_from_pkgpath(pkgpath) if pkgpath.is_dir() else pkgpath
+        spec = Iter("path").map(lambda p: idxp.parent / p)  # type: ignore[union-attr]
+        if idxp:  # create a uniquified list of files
             files = chain(
-                [idxpath],
-                set(
-                    chain(
-                        glom(pkgindex.from_file(idxpath), path_spec), map(Path, fpaths)
-                    )
-                ),
+                [idxp],
+                set(chain(glom(pkgindex.from_file(idxp), spec), map(Path, fpaths))),
             )
         else:
             files = fpaths  # type: ignore[assignment]
         # NOTE: if idxpath was found, first of the returned files is the index
         # file that was copied in the export directory, extract it to pkgpath
         fpaths = copy_files(files, export, pkgpath)
-        if idxpath:
+        if idxp:
             pkgpath, *fpaths = fpaths
         else:  # if no index was found, set export directory to new pkgpath
             pkgpath = export
@@ -444,7 +440,7 @@ def reports(pkg: Package, report_dir: str):
     int
         Bytes written (index.html)
     """
-    import pandas_profiling as _
+    import pandas_profiling as _  # noqa: F401
 
     _dir = Path(report_dir)
     _dir.mkdir(parents=True, exist_ok=True)

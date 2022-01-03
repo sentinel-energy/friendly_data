@@ -9,7 +9,7 @@ from typing import Any, Dict, Iterable, List, Optional, Tuple, TypeVar, Union, o
 from zipfile import ZipFile
 
 from frictionless import Detector, Layout, Package, Resource
-from glom import Assign, Coalesce, glom, Invoke, Iter, Spec, SKIP, T
+from glom import Assign, Coalesce, glom, Invoke, Iter, Spec, SKIP
 from glom import Match, MatchError, Optional as optmatch, Or
 import pandas as pd
 
@@ -285,7 +285,7 @@ class pkgindex(List[Dict]):
         MatchError
             If the file contains any unknown keys
 
-        """
+        """  # noqa: E501
         idx = dwim_file(Path(fpath))
         if not isinstance(idx, list):
             raise ValueError(f"{fpath}: bad index file")

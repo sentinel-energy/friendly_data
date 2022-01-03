@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from glom import Assign, glom, Iter, T
 import numpy as np
 import pandas as pd
@@ -14,7 +12,7 @@ from friendly_data.converters import to_dst
 from friendly_data.converters import to_mfdst
 from friendly_data.converters import xr_metadata
 from friendly_data.converters import xr_da
-from friendly_data.dpkg import pkg_from_index, read_pkg, res_from_entry
+from friendly_data.dpkg import pkg_from_index, res_from_entry
 
 from friendly_data.io import dwim_file
 
@@ -186,7 +184,8 @@ def test_to_da(pkg_w_alias):
     assert len(to_da(res).dims) == glom(res, ("schema.primaryKey", len)) - 1
 
     res["path"] = res["path"] + ".bad"
-    assert to_da(res, noexcept=True).data == None  # cannot do `is None`
+    # wrapped in an array, cannot do `is None`
+    assert to_da(res, noexcept=True).data == None  # noqa: E711
 
     # multicol
     entry = dwim_file("testing/files/xr/index.yaml")[0]

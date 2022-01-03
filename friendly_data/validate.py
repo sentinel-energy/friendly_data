@@ -179,7 +179,8 @@ def check_schema(
             mismatch[col["name"]] = (ref_col["type"], col["type"])
 
     # metadata: ignore missing values
-    pri_ref, pri_dst = ref.get("primaryKey", []), dst.get("primaryKey", [])  # type: ignore
+    pri_ref = ref.get("primaryKey", [])  # type: ignore
+    pri_dst = dst.get("primaryKey", [])  # type: ignore
     if isinstance(pri_ref, str):
         pri_ref = [pri_ref]
     if isinstance(pri_dst, str):
@@ -198,7 +199,8 @@ def check_schema(
         pairs = iter(pair(pri_ref, pri_dst), (None, None))
         pri_diff = [(i, j, k) for i, (j, k) in enumerate(pairs) if j != k]
 
-    return (not (missing or mismatch or pri_diff), missing, mismatch, pri_diff)  # type: ignore
+    check_pass = not (missing or mismatch or pri_diff)
+    return (check_pass, missing, mismatch, pri_diff)  # type: ignore
 
 
 def summarise_diff(

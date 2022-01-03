@@ -223,7 +223,7 @@ def dwim_file(fpath, data=None):
 
 
 def get_cachedir() -> Path:
-    """Create the directory ``$TMPDIR/friendly_data_cache`` and return the Path object"""
+    """Create the directory ``$TMPDIR/friendly_data_cache`` and return the Path"""
     cachedir = Path(tempfile.gettempdir()) / "friendly_data_cache"
     cachedir.mkdir(exist_ok=True)
     return cachedir

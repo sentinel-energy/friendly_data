@@ -24,5 +24,5 @@ if __name__ == "__main__":
     opts = parser.parse_args()
     req = Path(opts.file)
     tmp = req.with_suffix(".tmp")
-    tmp.write_text(NL.join([_filter(l) for l in req.read_text().split(NL)]))
+    tmp.write_text(NL.join([_filter(line) for line in req.read_text().split(NL)]))
     tmp.replace(req)

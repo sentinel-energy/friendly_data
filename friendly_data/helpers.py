@@ -145,7 +145,7 @@ def select(spec, **kwargs):
 
     .. _glom.Check: https://glom.readthedocs.io/en/latest/matching.html#validation-with-check
 
-    """
+    """  # noqa: E501
     return Check(spec, default=SKIP, **kwargs)
 
 
@@ -174,7 +174,7 @@ def match(pattern, **kwargs):
 
     .. _glom.Match: https://glom.readthedocs.io/en/latest/matching.html#validation-with-match
 
-    """
+    """  # noqa: E501
     return Match(pattern, default=SKIP, **kwargs)
 
 

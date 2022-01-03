@@ -13,7 +13,7 @@
 # import os
 import sys
 from unittest.mock import MagicMock
-import sphinx_rtd_theme
+import sphinx_rtd_theme  # noqa: F401
 
 
 class MyMock(MagicMock):

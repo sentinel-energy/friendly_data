@@ -6,7 +6,7 @@ from pathlib import Path
 from frictionless import Resource
 from glom import glom, Iter, T
 from glom.matching import MatchError
-import numpy as np
+import numpy as np  # noqa: F401
 import pandas as pd
 import pytest
 
@@ -22,9 +22,8 @@ from friendly_data.dpkg import read_pkg
 from friendly_data.dpkg import res_from_entry
 from friendly_data.dpkg import pkgindex
 from friendly_data.dpkg import write_pkg
-from friendly_data.helpers import match, noop_map, select, is_windows
+from friendly_data.helpers import match, noop_map, is_windows
 from friendly_data.io import dwim_file, relpaths
-from friendly_data.metatools import get_license
 import friendly_data_registry as registry
 
 from .conftest import expected_schema, escape_path, assert_log
