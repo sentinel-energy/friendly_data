@@ -34,7 +34,7 @@ jobs:
       - name: Lint w/ flake8 - all
         continue-on-error: true
         run: |
-          flake8 . --count --max-complexity=10 --max-line-length=127 --statistics
+          flake8 . --count --max-complexity=10 --max-line-length=88 --statistics
 
   test:
     if: "!contains(github.event.head_commit.message, 'skip ci')"
