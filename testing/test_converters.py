@@ -214,6 +214,7 @@ def test_to_mfdst(pkg_w_alias):
     assert len(dst.data_vars) == 2
 
 
-@pytest.mark.skip
 def test_dst_to_pkg(tmp_path, pkg_w_alias):
-    pass
+    dst = to_mfdst(pkg_w_alias.resources)
+    resources = from_dst(dst, basepath=tmp_path)
+    assert all((tmp_path / res["path"]).exists() for res in resources)
