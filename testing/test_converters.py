@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from friendly_data.converters import _source_type
 from friendly_data.converters import from_df
 from friendly_data.converters import from_dst
 from friendly_data.converters import resolve_aliases
@@ -17,6 +18,11 @@ from friendly_data.dpkg import pkg_from_index, res_from_entry
 from friendly_data.io import dwim_file
 
 from .conftest import expected_schema, to_df_noalias
+
+
+def test_source_type_heuristics():
+    with pytest.raises(ValueError):
+        _source_type("/path/to/non-existent-file.ext")
 
 
 @pytest.mark.skip(reason="not sure how to test schema parsing")

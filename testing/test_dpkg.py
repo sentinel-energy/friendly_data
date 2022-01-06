@@ -10,7 +10,7 @@ import numpy as np  # noqa: F401
 import pandas as pd
 import pytest
 
-from friendly_data.converters import _schema, _source_type
+from friendly_data.converters import _schema
 from friendly_data.dpkg import create_pkg, set_idxcols
 from friendly_data.dpkg import entry_from_res
 from friendly_data.dpkg import fullpath
@@ -40,11 +40,6 @@ def test_ensure_posix(pkg_meta):
         pkg, ("resources", Iter().map("path").map(T.count("\\")).all(), sum)
     )
     assert npathsep == 0
-
-
-def test_source_type_heuristics():
-    with pytest.raises(ValueError):
-        _source_type("/path/to/non-existent-file.ext")
 
 
 def test_pkg_creation():
