@@ -11,7 +11,7 @@ import pandas as pd
 import pytest
 
 from friendly_data.converters import _schema
-from friendly_data.dpkg import create_pkg, set_idxcols
+from friendly_data.dpkg import create_pkg, resource_, set_idxcols
 from friendly_data.dpkg import entry_from_res
 from friendly_data.dpkg import fullpath
 from friendly_data.dpkg import index_levels
@@ -40,6 +40,50 @@ def test_ensure_posix(pkg_meta):
         pkg, ("resources", Iter().map("path").map(T.count("\\")).all(), sum)
     )
     assert npathsep == 0
+
+
+@pytest.mark.parametrize(
+    "update",
+    [
+        {},
+        {
+            "timestep": {"name": "timestep", "type": "string"},
+            "capacity_factor": {"name": "capacity_factor", "type": "float"},
+        },
+    ],
+)
+def test_resource_infer(update):
+    pkgdir = Path("testing/files/mini-ex")
+    spec = {"path": "outputs/capacity_factor.csv"}
+    if update:
+        spec["schema"] = {"fields": update}
+
+    col_types = glom(
+        resource_(spec, pkgdir).schema.fields,
+        ([({1: "name", 2: "type"}, T.values(), tuple)], dict),
+    )
+    expected = {
+        "carrier": "string",
+        "region": "string",
+        "technology": "string",
+        "timestep": "datetime",
+        "capacity_factor": "number",
+    }
+    expected.update((v["name"], v["type"]) for v in update.values())
+    assert col_types == expected
+
+
+@pytest.mark.parametrize(
+    "path,opts,ncols",
+    [
+        ("testing/files/skip_test/commented_dst.csv", {"skip": 1}, 4),
+        ("testing/files/xls_sheet_test/sheet_2.xlsx", {"sheet": 2}, 5),
+    ],
+)
+def test_resource_opts(path, opts, ncols):
+    spec = {"path": path, **opts}
+    res = resource_(spec)
+    assert len(res.schema.fields) == ncols
 
 
 def test_pkg_creation():

@@ -9,6 +9,7 @@ from typing import Any, Dict, Iterable, List, Optional, Tuple, TypeVar, Union, o
 from zipfile import ZipFile
 
 from frictionless import Detector, Layout, Package, Resource
+from frictionless.plugins.excel import ExcelDialect
 from glom import Assign, Coalesce, glom, Invoke, Iter, Spec, SKIP
 from glom import Match, MatchError, Optional as optmatch, Or
 import pandas as pd
@@ -62,9 +63,10 @@ def resource_(spec: Dict, basepath: _path_t = "", infer=True) -> Resource:
     spec : Dict
         Dictionary with the structure::
 
-          {"path": "relpath/resource.csv", "skip": <nrows>}
+          {"path": "relpath/resource.csv", "skip": <nrows>, "sheet": <num>}
 
-        "skip" is optional.
+        both "skip" & "sheet" are optional; "sheet" can be used to select a
+        specific sheet as the dataset; sheet numbering starts at 1.
 
     basepath : Union[str, Path]
         Base path for resource object
@@ -89,7 +91,9 @@ def resource_(spec: Dict, basepath: _path_t = "", infer=True) -> Resource:
         # in `to_df`
         layout_opts["skip_rows"] = [i + 1 for i in range(spec["skip"])]
     opts["layout"] = Layout(**layout_opts)
-    if spec.get("schema"):
+    if "sheet" in spec:
+        opts["dialect"] = ExcelDialect(sheet=spec["sheet"])
+    if "schema" in spec:
         opts["detector"] = Detector(schema_patch=spec["schema"])
     res = Resource(path=str(spec["path"]), basepath=str(basepath), **opts)
     if infer:

@@ -1,0 +1,7 @@
+- path: sheet_2.xlsx
+  sheet: 2
+  idxcols:
+  - carrier
+  - region
+  - technology
+  - timestep
