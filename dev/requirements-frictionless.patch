@@ -14,7 +14,7 @@ index 9b15e7a..a8c11c5 100644
 +++ b/requirements.txt
 @@ -1,5 +1,5 @@
  fire
--frictionless>=4.23
+-frictionless[sql]>=4.23
 +frictionless
  friendly-data-registry
  glom>=19.10

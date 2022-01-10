@@ -1,5 +1,5 @@
 fire
-frictionless>=4.23
+frictionless[sql]>=4.23
 friendly-data-registry
 glom>=19.10
 jinja2
