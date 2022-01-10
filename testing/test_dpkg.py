@@ -73,6 +73,11 @@ def test_resource_infer(update):
     assert col_types == expected
 
 
+def test_resource_err():
+    with pytest.raises(ValueError, match="Incomplete resource.+\n.+'path' is missing"):
+        resource_({})
+
+
 @pytest.mark.parametrize(
     "basepath,path,opts,ncols",
     [

@@ -81,7 +81,11 @@ def resource_(spec: Dict, basepath: _path_t = "", infer=True) -> Resource:
     """
     if isinstance(spec, Resource):
         return spec
-    assert "path" in spec, f"Incomplete resource spec: {spec}"
+    errmsg = f"Incomplete resource spec: {spec}"
+    if "path" not in spec:
+        msg = [errmsg, "mandatory key 'path' is missing"]
+        raise ValueError("\n".join(msg))
+    spec["path"] = str(spec["path"])  # ensure path is a string
     opts = {}
     layout_opts: Dict[str, Any] = {"header": True}
     if spec.get("skip"):
@@ -95,7 +99,7 @@ def resource_(spec: Dict, basepath: _path_t = "", infer=True) -> Resource:
         opts["dialect"] = ExcelDialect(sheet=spec["sheet"])
     if "schema" in spec:
         opts["detector"] = Detector(schema_patch=spec["schema"])
-    res = Resource(path=str(spec["path"]), basepath=str(basepath), **opts)
+    res = Resource(path=spec["path"], basepath=str(basepath), **opts)
     if infer:
         res.infer()
     empty = glom(res, ("schema.fields", Iter("type").filter(match("any")).all(), len))
