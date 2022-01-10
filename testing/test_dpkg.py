@@ -74,15 +74,15 @@ def test_resource_infer(update):
 
 
 @pytest.mark.parametrize(
-    "path,opts,ncols",
+    "basepath,path,opts,ncols",
     [
-        ("testing/files/skip_test/commented_dst.csv", {"skip": 1}, 4),
-        ("testing/files/xls_sheet_test/sheet_2.xlsx", {"sheet": 2}, 5),
+        ("testing/files/skip_test", "commented_dst.csv", {"skip": 1}, 4),
+        ("testing/files/xls_sheet_test", "sheet_2.xlsx", {"sheet": 2}, 5),
     ],
 )
-def test_resource_opts(path, opts, ncols):
+def test_resource_opts(basepath, path, opts, ncols):
     spec = {"path": path, **opts}
-    res = resource_(spec)
+    res = resource_(spec, basepath)
     assert len(res.schema.fields) == ncols
 
 
