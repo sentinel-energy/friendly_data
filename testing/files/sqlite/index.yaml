@@ -1,0 +1,6 @@
+- path: sqlite:///testdb.db
+  name: annual_cost_per_nameplate_capacity
+  idxcols:
+  - region
+  - technology
+  - unit

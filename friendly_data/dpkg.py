@@ -6,13 +6,16 @@
 from logging import getLogger
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Tuple, TypeVar, Union, overload
+from urllib.parse import urlparse
 from zipfile import ZipFile
 
 from frictionless import Detector, Layout, Package, Resource
 from frictionless.plugins.excel import ExcelDialect
+from frictionless.plugins.sql import SqlDialect
 from glom import Assign, Coalesce, glom, Invoke, Iter, Spec, SKIP
 from glom import Match, MatchError, Optional as optmatch, Or
 import pandas as pd
+from sqlalchemy.engine import create_engine
 
 from friendly_data.io import dwim_file, path_not_in, posixpathstr, relpaths
 from friendly_data.helpers import match, noop_map, is_windows
@@ -86,6 +89,7 @@ def resource_(spec: Dict, basepath: _path_t = "", infer=True) -> Resource:
         msg = [errmsg, "mandatory key 'path' is missing"]
         raise ValueError("\n".join(msg))
     spec["path"] = str(spec["path"])  # ensure path is a string
+    parsed = urlparse(spec["path"])
     opts = {}
     layout_opts: Dict[str, Any] = {"header": True}
     if spec.get("skip"):
@@ -99,6 +103,15 @@ def resource_(spec: Dict, basepath: _path_t = "", infer=True) -> Resource:
         opts["dialect"] = ExcelDialect(sheet=spec["sheet"])
     if "schema" in spec:
         opts["detector"] = Detector(schema_patch=spec["schema"])
+    if parsed.scheme in ("sqlite",):
+        if "name" not in spec:
+            msg = [errmsg, "table name specified as 'name' is missing"]
+            raise ValueError("\n".join(msg))
+        opts = {
+            "name": spec["name"],
+            "scheme": parsed.scheme,
+            "dialect": SqlDialect(table=spec["name"]),
+        }
     res = Resource(path=spec["path"], basepath=str(basepath), **opts)
     if infer:
         res.infer()
@@ -553,9 +566,15 @@ def res_from_entry(entry: Dict, pkg_dir: _path_t) -> Resource:
         logger.exception(msg)
         raise ValueError(msg)
     try:
-        _, idxcoldict = index_levels(
-            Path(pkg_dir) / entry["path"], entry["idxcols"], entry["alias"]
-        )
+        parsed = urlparse(entry["path"])
+        scheme = parsed.scheme
+        if scheme == "sqlite":
+            # `parsed.path[1:]`: drop leading slash
+            engine = create_engine(f"{scheme}:///{pkg_dir}/{parsed.path[1:]}")
+            path_df = pd.read_sql(entry["name"], engine, index_col=entry.get("idxcols"))
+        else:
+            path_df = Path(pkg_dir) / entry["path"]
+        _, idxcoldict = index_levels(path_df, entry["idxcols"], entry["alias"])
     except Exception as err:
         # FIXME: too broad; most likely this fails because of bad options
         # (e.g. index file entry), validate options and narrow scope of except

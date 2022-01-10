@@ -2,6 +2,7 @@ from copy import deepcopy
 from itertools import chain
 from operator import contains
 from pathlib import Path
+from urllib.parse import urlparse
 
 from frictionless import Resource
 from glom import glom, Iter, T
@@ -83,12 +84,30 @@ def test_resource_err():
     [
         ("testing/files/skip_test", "commented_dst.csv", {"skip": 1}, 4),
         ("testing/files/xls_sheet_test", "sheet_2.xlsx", {"sheet": 2}, 5),
+        (
+            "testing/files/sqlite",
+            "sqlite:///testdb.db",
+            {"name": "annual_cost_per_nameplate_capacity"},
+            4,
+        ),
     ],
 )
 def test_resource_opts(basepath, path, opts, ncols):
-    spec = {"path": path, **opts}
-    res = resource_(spec, basepath)
-    assert len(res.schema.fields) == ncols
+    for _dir in (basepath, ""):
+        parsed = urlparse(path)
+        if not parsed.scheme:
+            _path = Path(_dir) / path
+        elif parsed.scheme == "sqlite":
+            # parsed.path has a leading slash
+            if _dir:
+                _path = f"{parsed.scheme}:///{_dir}{parsed.path}"
+            else:
+                _path = f"{parsed.scheme}://{parsed.path}"
+        else:
+            raise ValueError
+        spec = {"path": _path, **opts}
+        res = resource_(spec, "" if _dir else basepath)
+        assert len(res.schema.fields) == ncols
 
 
 def test_pkg_creation():
@@ -279,6 +298,15 @@ def test_res_from_entry():
         res = res_from_entry(entry, pkgdir)
         assert isinstance(res, Resource)
         assert glom(res, "schema.primaryKey") == entry["idxcols"]
+
+
+def test_res_from_entry_db():
+    pkgdir = Path("testing/files/sqlite")
+    idx = pkgindex.from_file(pkgdir / "index.yaml")
+    entry = list(idx.records(["path", "name", "idxcols", "alias"]))[0]
+    res = res_from_entry(entry, pkgdir)
+    assert isinstance(res, Resource)
+    assert glom(res, "schema.primaryKey") == entry["idxcols"]
 
 
 def test_entry_from_res():
