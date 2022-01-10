@@ -100,7 +100,8 @@ jobs:
       matrix:
         python-version: [3.9]
         os: [ubuntu-latest, windows-latest, macOS-latest]
-        req-version: [frictionless, registry]
+        # add frictionless back to the list to do version unlimited checks
+        req-version: [registry]
 
     runs-on: ${{ matrix.os }}
     continue-on-error: true
