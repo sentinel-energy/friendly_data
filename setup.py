@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 
 requirements = list(
     filter(
-        lambda i: "git://" not in i,
+        lambda i: "https://" not in i,
         Path("requirements.txt").read_text().strip().split("\n"),
     )
 )
