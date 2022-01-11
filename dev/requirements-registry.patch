@@ -3,7 +3,7 @@ index a045b10..fdfee92 100644
 --- a/requirements-docs.txt
 +++ b/requirements-docs.txt
 @@ -1,5 +1,5 @@
- frictionless>=4.0.2,<4.1
+ frictionless>=4.23
 -friendly-data-registry
 +git+git://github.com/sentinel-energy/friendly_data_registry#egg=friendly_data_registry
  jinja2
@@ -15,7 +15,7 @@ index aec8c11..7aa54b2 100644
 +++ b/requirements.txt
 @@ -1,6 +1,6 @@
  fire
- frictionless>=4.0.2,<4.1
+ frictionless>=4.23
 -friendly-data-registry
 +git+git://github.com/sentinel-energy/friendly_data_registry#egg=friendly_data_registry
  glom>=19.10
