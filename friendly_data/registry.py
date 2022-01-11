@@ -119,9 +119,12 @@ def config_ctx(
     Generator[Dict[str, List[Dict]]]
         The custom registry config
 
-    Example
-    -------
-    ::
+    Examples
+    --------
+
+    .. code-block:: python
+
+      from friendly_data.registry import config_ctx, get, getall
 
       with config_ctx(conffile="config.yaml") as _:
           print(get("mycol", "cols"))

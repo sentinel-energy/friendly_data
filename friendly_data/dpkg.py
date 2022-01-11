@@ -638,7 +638,9 @@ def pkg_from_index(meta: Dict, fpath: _path_t) -> Tuple[Path, Package, pkgindex]
     Examples
     --------
 
-    YAML (JSON is also supported)::
+    YAML (JSON is also supported):
+
+    .. code-block:: yaml
 
         - path: file1
           name: dst1
