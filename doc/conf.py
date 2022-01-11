@@ -83,9 +83,16 @@ html_css_files = ["css/custom.css"]
 
 # -- Options for LaTeX output ------------------------------------------------
 latex_engine = "xelatex"
+latex_elements = {
+    "fontpkg": r"""
+\setmainfont{DejaVu Serif}
+\setsansfont{DejaVu Sans}
+\setmonofont{DejaVu Sans Mono}
+"""
+}
 
 latex_documents = [
-    ("index_pdf", "sentinel-data-format.tex", "", "SENTINEL collaboration", "howto"),
+    ("index_pdf", "friendly-data-manual.tex", "", "SENTINEL collaboration", "howto"),
     # (
     #     "api/api",
     #     "sentinel-archive-api-docs.tex",

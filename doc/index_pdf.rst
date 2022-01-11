@@ -1,10 +1,25 @@
-The SENTINEL archive data format
+Frictionless Energy Data (``friendly_data``)
 ============================================
 
 .. include:: intro.rst
 
-.. toctree::
-   :maxdepth: 3
+Contents
+--------
 
-   overview
+.. toctree::
+   :maxdepth: 2
+
+   data-package
+   installation
+   registry
+   cli
+   config-file
    hands-on
+   iamc-conversion
+
+License
+-------
+
+All software and related documentation in this project is licensed
+under the Apache License, Version 2.0 (the "License").  You may obtain
+a copy of the License at: http://www.apache.org/licenses/LICENSE-2.0
