@@ -89,4 +89,26 @@ with the following top-level keys.
     the IAMC names that is used when the values are substituted in the
     IAMC variable format string.
 
+**registry** (mapping or dictionary)
+
+    Custom additions/update to the default registry.  It could look
+    something like this:
+
+    .. code-block:: yaml
+
+       registry:
+         idxcols:
+           - name: enduse
+             type: string
+             constraints:
+               enum:
+                 - cooling
+                 - heating
+                 - hot_water
+         cols:
+           - name: capacity_factor
+             type: number
+             constraints:
+               maximum: 100
+
 .. _`frictionless`: https://specs.frictionlessdata.io/data-package/#metadata

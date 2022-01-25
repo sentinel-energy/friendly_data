@@ -61,7 +61,6 @@ concise but complete description.
 If you want to specify ``constraints``, you can find a complete list
 of all supported properties on the `frictionless documentation`_ page.
 
-
 Where to add the new column?
 ++++++++++++++++++++++++++++
 
@@ -89,3 +88,47 @@ with your contribution!
 
 .. _`frictionless documentation`: https://specs.frictionlessdata.io/table-schema/
 .. _`issue`: https://github.com/sentinel-energy/friendly_data_registry/issues
+
+Defining a custom registry
+--------------------------
+
+You can define a custom registry in your config file by adding a
+``registry`` section.  It can have custom registry definitions under
+the ``cols`` and ``idxcols`` keys.  When using the CLI, you can
+augment the default registry with your custom registry by passing the
+config file as an option.  An example section could look like this:
+
+.. code-block:: yaml
+
+   registry:
+     idxcols:
+       - name: enduse
+         type: string
+         constraints:
+           enum:
+             - cooling
+             - heating
+             - hot_water
+     cols:
+       - name: capacity_factor
+         type: number
+         constraints:
+           maximum: 100
+
+When using the Python API, you can temporarily update the registry by
+using a context manager.  There are many ways to do this:
+
+- reading a config file
+- passing the registry updates as a dictionary,
+- passing a list of columns as index columns, or value columns.
+
+For all these options, the modifications are merged with the default
+registry, so it is like an update rather than replace.
+
+.. code-block:: python
+
+   from friendly_data.registry import config_ctx, get, getall
+
+   with config_ctx(conffile="config.yaml") as _:
+       print(get("enduse", "idxcols"))
+       print(getall())
