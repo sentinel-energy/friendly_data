@@ -27,7 +27,6 @@ specification:
 - *Aliases*: you can specify column aliases to indicate two different
   column names are equivalent.  This reduces friction due to varying
   terminology used by different groups/sub-communities.
-- *Units*: **TODO**
 
 The ``friendly_data`` tool
 --------------------------

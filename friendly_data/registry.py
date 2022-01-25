@@ -1,6 +1,6 @@
 """Configurable Friendly data schema registry
 
-Module to wrap around the default :module:`friendly_data_registry` to add
+Module to wrap around the default ``friendly_data_registry`` to add
 configurability.  A custom registry configuration can be specified by using the
 :func:`config_ctx` context manager.  The :class:`RegistrySchema` validates the
 registry config before customising the default registry.

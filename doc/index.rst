@@ -9,8 +9,8 @@ Contents
 .. toctree::
    :maxdepth: 2
 
-   data-package
    installation
+   data-package
    registry
    cli
    config-file

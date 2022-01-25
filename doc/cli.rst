@@ -15,7 +15,7 @@ name, title, licenses, etc::
       - bar
     licenses: [CC0-1.0, Apache-2.0]
 
-As mentioned in :ref: `index-file`, you can provide a package index
+As mentioned in :ref:`index-file`, you can provide a package index
 file like below to specify the index columns in a dataset::
 
   - path: nameplate_capacity.csv
