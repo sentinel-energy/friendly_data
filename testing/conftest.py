@@ -59,8 +59,10 @@ def custom_registry():
 def chdir(dirpath):
     cwd = Path.cwd()
     os.chdir(dirpath)
-    yield
-    os.chdir(cwd)
+    try:
+        yield
+    finally:
+        os.chdir(cwd)
 
 
 def to_df_noalias(res):
