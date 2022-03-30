@@ -23,21 +23,6 @@ import friendly_data.registry as registry
 logger = getLogger(__name__)
 
 
-def _ensure_posix(pkg):
-    """Ensure resource paths in the package are POSIX compliant
-
-    FIXME: The :class:`datapackage.Package` implementation does not ensure
-    paths are POSIX paths on Windows, correct them after the fact.  This is a
-    temporary solution; see:
-    https://github.com/frictionlessdata/datapackage-py/issues/279
-
-    """
-    if is_windows():
-        to_posix = Spec(Invoke(posixpathstr).specs("path"))
-        glom(pkg, ("resources", Iter().map(Assign("path", to_posix)).all()))
-    return pkg
-
-
 def fullpath(resource: Resource) -> Path:
     """Get full path of a resource
 
