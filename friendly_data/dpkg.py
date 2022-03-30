@@ -152,7 +152,7 @@ def create_pkg(
         _res = resource_(spec, basepath=basepath, infer=infer)
         pkg.add_resource(_res)
 
-    return _ensure_posix(pkg)
+    return pkg
 
 
 def read_pkg(pkg_path: _path_t, extract_dir: Optional[_path_t] = None):
@@ -210,7 +210,7 @@ def read_pkg(pkg_path: _path_t, extract_dir: Optional[_path_t] = None):
         logger.error(msg)
         raise FileNotFoundError(msg)
 
-    return _ensure_posix(pkg)
+    return pkg
 
 
 class pkgindex(List[Dict]):
