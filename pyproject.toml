@@ -2,7 +2,6 @@
 name = "friendly_data"
 version = "0.3.3"
 description = "A frictionless datapackage (https://frictionlessdata.io/specs/data-package/) implementation for energy system data."
-maintainers = "The SENTINEL collaboration"
 repository = "https://github.com/sentinel-energy/friendly_data"
 keywords = ["datapackage", "frictionless", "energy", "data", "SENTINEL", "archive"]
 classifiers = [
