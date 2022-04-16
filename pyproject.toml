@@ -1,9 +1,16 @@
+[build-system]
+requires = ["setuptools>=42", "setuptools_scm[toml]>=3.4" ]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "friendly_data"
 version = "0.3.3"
 description = "A frictionless datapackage (https://frictionlessdata.io/specs/data-package/) implementation for energy system data."
-repository = "https://github.com/sentinel-energy/friendly_data"
+readme = "README.rst"
+urls = {"repository" = "https://github.com/sentinel-energy/friendly_data"}
 keywords = ["datapackage", "frictionless", "energy", "data", "SENTINEL", "archive"]
+license = {"file" = "LICENSE"}
+requires-python = ">=3.7"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Environment :: Console",
@@ -19,14 +26,22 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
 ]
-
-[dependencies]
-
-[dev-dependencies]
-
-[build-system]
-requires = ["setuptools>=42", "setuptools_scm[toml]>=3.4" ]
-build-backend = "setuptools.build_meta"
+dependencies = [
+    "fire",
+    "frictionless>=4.23",
+    "friendly-data-registry",
+    "glom>=19.10,<22",
+    "jinja2",
+    "numexpr",
+    "numpy",
+    "pandas>=1.3",
+    "pyyaml",
+    "requests",
+    "rich",
+    "tabulate",
+    "xarray",
+]
+optional-dependencies = {"extras" = ["pyam-iamc", "pandas-profiling"]}
 
 # [tool.setuptools_scm]
 # write_to = "friendly_data/version.py"
