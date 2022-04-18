@@ -34,7 +34,16 @@ def _ensure_posix(pkg):
     """
     if is_windows():
         to_posix = Spec(Invoke(posixpathstr).specs("path"))
-        glom(pkg, ("resources", Iter().map(Assign("path", to_posix)).all()))
+        glom(
+            pkg,
+            (
+                "resources",
+                Iter()
+                .filter(Match({"path": str, object: object}, default=SKIP))
+                .map(Assign("path", to_posix))
+                .all(),
+            ),
+        )
     return pkg
 
 
