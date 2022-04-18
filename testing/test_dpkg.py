@@ -10,7 +10,8 @@ import numpy as np  # noqa: F401
 import pandas as pd
 import pytest
 
-from friendly_data.converters import _schema
+from friendly_data.converters import _schema, to_df
+from friendly_data.dpkg import _ensure_posix
 from friendly_data.dpkg import create_pkg, resource_, set_idxcols
 from friendly_data.dpkg import entry_from_res
 from friendly_data.dpkg import fullpath
@@ -40,6 +41,22 @@ def test_ensure_posix(pkg_meta):
         pkg, ("resources", Iter().map("path").map(T.count("\\")).all(), sum)
     )
     assert npathsep == 0
+
+
+def test_ensure_posix_inline_data(pkg_meta):
+    pkgdir = Path("testing/files/mini-ex")
+    inputs = list(pkgdir.glob("inputs/*"))
+    files = chain(inputs, pkgdir.glob("outputs/*"))
+    pkg = create_pkg(pkg_meta, relpaths(pkgdir, files), pkgdir)
+    for i, res in enumerate(pkg.resources):
+        if "output" in res["path"]:
+            continue
+        pkg.resources[i]["data"] = to_df(res).to_dict("records")
+        pkg.resources[i]["format"] = "json"
+        pkg.resources[i].pop("path")
+        pkg.resources[i].pop("mediatype", None)
+        pkg.resources[i]["scheme"] = ""
+    assert _ensure_posix(pkg)
 
 
 @pytest.mark.parametrize(
