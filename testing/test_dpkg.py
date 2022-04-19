@@ -42,12 +42,7 @@ def test_ensure_posix(pkg_meta):
     )
     assert npathsep == 0
 
-
-def test_ensure_posix_inline_data(pkg_meta):
-    pkgdir = Path("testing/files/mini-ex")
-    inputs = list(pkgdir.glob("inputs/*"))
-    files = chain(inputs, pkgdir.glob("outputs/*"))
-    pkg = create_pkg(pkg_meta, relpaths(pkgdir, files), pkgdir)
+    # check inline data resources are skipped
     for i, res in enumerate(pkg.resources):
         if "output" in res["path"]:
             continue
