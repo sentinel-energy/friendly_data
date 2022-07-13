@@ -109,11 +109,10 @@ class IAMconv:
             Path(basepath) / path,
             usecols=["name", "iamc"],
             index_col="name",
-            squeeze=True,
             **kwargs,
         )
         # fallback when iamc name is missing; capitalized name is the most common
-        return _lvls.fillna({i: i.capitalize() for i in _lvls.index})
+        return _lvls.squeeze("columns").fillna({i: i.capitalize() for i in _lvls.index})
 
     @property
     def basepath(self):
