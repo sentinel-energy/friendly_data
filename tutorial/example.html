@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Learning by example &mdash; friendly_data 0.2.2.dev documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> friendly_data
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">How to install?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data-package.html">Data package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../registry.html">Data registry</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/registry.html">Value columns - <code class="docutils literal notranslate"><span class="pre">cols</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/registry.html#index-columns-idxcols">Index columns - <code class="docutils literal notranslate"><span class="pre">idxcols</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/index-file.html">The Package Index file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../registry.html#contributing-to-the-registry">Contributing to the registry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../registry.html#where-to-add-the-new-column">Where to add the new column?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../registry.html#defining-a-custom-registry">Defining a custom registry</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cli.html">The <code class="docutils literal notranslate"><span class="pre">friendly_data</span></code> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../config-file.html">The configuration file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hands-on.html">Hands-on tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../hands-on.html#understanding-the-registry-used-by-friendly-data">Understanding the registry used by Friendly data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../hands-on.html#column-schema">Column schema</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../hands-on.html#learning-by-example">Learning by example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../hands-on.html#introducing-the-index-file">Introducing the index file</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../hands-on.html#metadata">Metadata</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../hands-on.html#updating-existing-packages">Updating existing packages</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../iamc-conversion.html">Converting to IAMC format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced.html">Advanced use</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../advanced.html#api-documentation">API documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/api.html">Datapackage tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/api.html#module-friendly_data.metatools">Metadata tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/api.html#module-friendly_data.registry">Registry API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/api.html#module-friendly_data.cli">Command Line Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/api.html#module-friendly_data.validate">Validation functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/api.html#data-analysis-interface">Data analysis interface</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/api.html#module-friendly_data.converters">Converters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/api.html#module-friendly_data.tseries">Time series API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/api.html#module-friendly_data.iamc">Conversion to IAMC</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/api.html#internal-interfaces">Internal interfaces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/api.html#module-friendly_data.io">File I/O</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/api.html#module-friendly_data.helpers">Helper utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced.html#external-packages">External Packages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/external.html">Package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/external.html#id2">Resource</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../devnotes.html">Notes for developers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../devnotes.html#adding-dependencies">Adding dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../devnotes.html#working-with-the-data-package-api">Working with the data package API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../devnotes.html#working-with-the-index-file">Working with the index file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../devnotes.html#working-with-the-registry-api">Working with the registry API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../devnotes.html#converters-interfacing-with-the-python-ecosystem">Converters: interfacing with the Python ecosystem</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">friendly_data</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Learning by example</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorial/example.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="learning-by-example">
+<h1>Learning by example<a class="headerlink" href="#learning-by-example" title="Permalink to this heading"></a></h1>
+<p>Now that we understand the general design of the registry, lets take a
+look at an example dataset, and consider how we can use the registry
+to describe the schema.  Say we have the following dataset:</p>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Capacity Factor</span><a class="headerlink" href="#id1" title="Permalink to this table"></a></caption>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>technology</p></th>
+<th class="head"><p>timestep</p></th>
+<th class="head"><p>capacity_factor</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ccgt</p></td>
+<td><p>2005-01-05 17:00:00</p></td>
+<td><p>1.0</p></td>
+</tr>
+<tr class="row-odd"><td><p>ccgt</p></td>
+<td><p>2005-01-05 18:00:00</p></td>
+<td><p>1.0</p></td>
+</tr>
+<tr class="row-even"><td><p>ccgt</p></td>
+<td><p>2005-01-05 19:00:00</p></td>
+<td><p>0.985</p></td>
+</tr>
+<tr class="row-odd"><td><p>ccgt</p></td>
+<td><p>2005-01-05 20:00:00</p></td>
+<td><p>0.924</p></td>
+</tr>
+<tr class="row-even"><td><p>ccgt</p></td>
+<td><p>2005-01-05 21:00:00</p></td>
+<td><p>0.841</p></td>
+</tr>
+<tr class="row-odd"><td><p>ccgt</p></td>
+<td><p>2005-01-05 22:00:00</p></td>
+<td><p>0.768</p></td>
+</tr>
+<tr class="row-even"><td><p>ccgt</p></td>
+<td><p>2005-01-05 23:00:00</p></td>
+<td><p>0.761</p></td>
+</tr>
+<tr class="row-odd"><td><p>free_transmission</p></td>
+<td><p>2005-01-01 05:00:00</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-even"><td><p>free_transmission</p></td>
+<td><p>2005-01-01 06:00:00</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p>free_transmission</p></td>
+<td><p>2005-01-01 07:00:00</p></td>
+<td><p>0.110</p></td>
+</tr>
+<tr class="row-even"><td><p>free_transmission</p></td>
+<td><p>2005-01-01 08:00:00</p></td>
+<td><p>1.0</p></td>
+</tr>
+<tr class="row-odd"><td><p>free_transmission</p></td>
+<td><p>2005-01-01 09:00:00</p></td>
+<td><p>1.0</p></td>
+</tr>
+</tbody>
+</table>
+<p>Our value column, capacity factor, is a kind of efficiency:</p>
+<div class="math notranslate nohighlight">
+\[capacity\_factor ̱ ∈  [0, 1]\]</div>
+<p>So the corresponding entry in the registry would
+be:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;capacity_factor&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;constraints&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="s2">&quot;minimum&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="s2">&quot;maximum&quot;</span><span class="p">:</span> <span class="mi">1</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The first column, <code class="docutils literal notranslate"><span class="pre">technology</span></code>, should have an entry like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;technology&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;constraints&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="s2">&quot;enum&quot;</span><span class="p">:</span> <span class="p">[</span>
+          <span class="s2">&quot;ccgt&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;free-transmission&quot;</span>
+      <span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The enum property signifies that the column can only have values
+present in this list.  The <code class="docutils literal notranslate"><span class="pre">timestep</span></code> column looks like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;timesteps&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;datetime&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>To describe our dataset, we need to mark the columns <code class="docutils literal notranslate"><span class="pre">technology</span></code>
+and <code class="docutils literal notranslate"><span class="pre">timestep</span></code> as index-columns.  So the final schema would look
+like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;technology&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;constraints&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;enum&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&quot;ac_transmission&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ccgt&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;timestep&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;datetime&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;capacity_factor&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;constraints&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;minimum&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">&quot;maximum&quot;</span><span class="p">:</span> <span class="mi">1</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">],</span>
+  <span class="s2">&quot;missingValues&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">&quot;null&quot;</span>
+  <span class="p">],</span>
+  <span class="s2">&quot;primaryKey&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">&quot;technology&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;timestep&quot;</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>where, the key <code class="docutils literal notranslate"><span class="pre">primaryKey</span></code> indicates the set of index columns.</p>
+<section id="introducing-the-index-file">
+<span id="index-tutorial"></span><h2>Introducing the index file<a class="headerlink" href="#introducing-the-index-file" title="Permalink to this heading"></a></h2>
+<p>Creating the metadata shown above can be tedious.  So <em>Friendly data</em>
+simplifies the process by introducing an “index” file.  In essence,
+much like the index of a book, it is the “index” of a data package.
+An index file lists datasets within the data package, and identifies
+columns in each dataset that are to be treated as the primary key (or
+index).  Sometimes an index file entry may also contain other related
+info.</p>
+<p>Let us examine how that might look using the capacity factor dataset
+as an example.  The corresponding entry would look like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">path</span><span class="p">:</span> <span class="n">capacity_factor</span><span class="o">.</span><span class="n">csv</span>
+  <span class="n">idxcols</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">technology</span>
+  <span class="o">-</span> <span class="n">timestep</span>
+</pre></div>
+</div>
+<p>It can be stored in the <code class="docutils literal notranslate"><span class="pre">index.yaml</span></code> file in the top level directory
+of the package.  An index also supports attaching other information
+about a dataset, e.g. if you need to skip <code class="docutils literal notranslate"><span class="pre">n</span></code> lines from the top
+when reading the corresponding file, you can simply add the key
+<code class="docutils literal notranslate"><span class="pre">skip:</span> <span class="pre">n</span></code>.  All datasets need not be included in the index, just
+that if a dataset is not included, it does not gain from the
+structured metadata already recorded in the <em>Friendly data registry</em>;
+more details about the index file can be found at <a class="reference internal" href="../api/index-file.html#index-file"><span class="std std-ref">The Package Index file</span></a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Suvayu Ali and contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

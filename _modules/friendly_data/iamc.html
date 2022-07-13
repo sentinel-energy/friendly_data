@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>friendly_data.iamc &mdash; friendly_data 0.2.2.dev documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> friendly_data
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">How to install?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../data-package.html">Data package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../registry.html">Data registry</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/registry.html">Value columns - <code class="docutils literal notranslate"><span class="pre">cols</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/registry.html#index-columns-idxcols">Index columns - <code class="docutils literal notranslate"><span class="pre">idxcols</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/index-file.html">The Package Index file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../registry.html#contributing-to-the-registry">Contributing to the registry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../registry.html#where-to-add-the-new-column">Where to add the new column?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../registry.html#defining-a-custom-registry">Defining a custom registry</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../cli.html">The <code class="docutils literal notranslate"><span class="pre">friendly_data</span></code> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../config-file.html">The configuration file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hands-on.html">Hands-on tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../hands-on.html#understanding-the-registry-used-by-friendly-data">Understanding the registry used by Friendly data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../hands-on.html#column-schema">Column schema</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../hands-on.html#learning-by-example">Learning by example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../hands-on.html#introducing-the-index-file">Introducing the index file</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../hands-on.html#metadata">Metadata</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../hands-on.html#updating-existing-packages">Updating existing packages</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../iamc-conversion.html">Converting to IAMC format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced.html">Advanced use</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced.html#api-documentation">API documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html">Datapackage tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#module-friendly_data.metatools">Metadata tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#module-friendly_data.registry">Registry API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#module-friendly_data.cli">Command Line Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#module-friendly_data.validate">Validation functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#data-analysis-interface">Data analysis interface</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/api.html#module-friendly_data.converters">Converters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/api.html#module-friendly_data.tseries">Time series API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/api.html#module-friendly_data.iamc">Conversion to IAMC</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#internal-interfaces">Internal interfaces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/api.html#module-friendly_data.io">File I/O</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/api.html#module-friendly_data.helpers">Helper utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced.html#external-packages">External Packages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/external.html">Package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/external.html#id2">Resource</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../devnotes.html">Notes for developers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../devnotes.html#adding-dependencies">Adding dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../devnotes.html#working-with-the-data-package-api">Working with the data package API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../devnotes.html#working-with-the-index-file">Working with the index file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../devnotes.html#working-with-the-registry-api">Working with the registry API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../devnotes.html#converters-interfacing-with-the-python-ecosystem">Converters: interfacing with the Python ecosystem</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">friendly_data</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>friendly_data.iamc</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for friendly_data.iamc</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Interface to convert a Friendly dataset to IAMC format</span>
+
+<span class="sd">Configuration can be done using two separate files, A global config file (in</span>
+<span class="sd">YAML format) can set options like mapping an index column to the corresponding</span>
+<span class="sd">IAMC names, and setting default values for mandatory columns.  Whereas per</span>
+<span class="sd">dataset configuration like, identifying index columns, mapping a dataset to its</span>
+<span class="sd">IAMC variable name, defining column aliases, and aggregations can be done in an</span>
+<span class="sd">index file (in YAML format).</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">cast</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">from</span> <span class="nn">glom</span> <span class="kn">import</span> <span class="n">glom</span><span class="p">,</span> <span class="n">Iter</span><span class="p">,</span> <span class="n">Match</span><span class="p">,</span> <span class="n">MatchError</span><span class="p">,</span> <span class="n">Or</span><span class="p">,</span> <span class="n">T</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">friendly_data._types</span> <span class="kn">import</span> <span class="n">_path_t</span>
+<span class="kn">from</span> <span class="nn">friendly_data.converters</span> <span class="kn">import</span> <span class="n">_reader</span><span class="p">,</span> <span class="n">resolve_aliases</span><span class="p">,</span> <span class="n">to_df</span>
+<span class="kn">from</span> <span class="nn">friendly_data.dpkg</span> <span class="kn">import</span> <span class="n">pkgindex</span>
+<span class="kn">from</span> <span class="nn">friendly_data.dpkg</span> <span class="kn">import</span> <span class="n">res_from_entry</span>
+<span class="kn">from</span> <span class="nn">friendly_data.helpers</span> <span class="kn">import</span> <span class="n">idx_lvl_values</span><span class="p">,</span> <span class="n">idxslice</span>
+<span class="kn">from</span> <span class="nn">friendly_data.helpers</span> <span class="kn">import</span> <span class="n">import_from</span>
+<span class="kn">from</span> <span class="nn">friendly_data.helpers</span> <span class="kn">import</span> <span class="n">filter_dict</span>
+<span class="kn">from</span> <span class="nn">friendly_data.helpers</span> <span class="kn">import</span> <span class="n">is_fmtstr</span>
+<span class="kn">from</span> <span class="nn">friendly_data.io</span> <span class="kn">import</span> <span class="n">dwim_file</span>
+
+<span class="c1"># weak dependency on pyam; damn plotly!</span>
+<span class="n">pyam</span> <span class="o">=</span> <span class="n">import_from</span><span class="p">(</span><span class="s2">&quot;pyam&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="IAMconv"><a class="viewcode-back" href="../../api/api.html#friendly_data.iamc.IAMconv">[docs]</a><span class="k">class</span> <span class="nc">IAMconv</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Converter class for IAMC data</span>
+
+<span class="sd">    This class resolves index columns against the &quot;semi-hierarchical&quot; variables</span>
+<span class="sd">    used in IAMC data, and separates them into individual datasets that are</span>
+<span class="sd">    part of the datapackage.  It relies on the index file and index column</span>
+<span class="sd">    definitions to do the disaggregation.  It also supports the reverse</span>
+<span class="sd">    operation of aggregating multiple datasets into an IAMC dataset.</span>
+
+<span class="sd">    **TODO:**</span>
+
+<span class="sd">    - describe assumptions (e.g. case insensitive match) and fallbacks</span>
+<span class="sd">      (e.g. missing title)</span>
+<span class="sd">    - limitations (e.g. when no index column exists)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_IAMC_IDX</span> <span class="o">=</span> <span class="n">pyam</span><span class="o">.</span><span class="n">IAMC_IDX</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_validate</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">conf</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+        <span class="c1"># FIXME: check if file exists for user defined idxcols</span>
+        <span class="n">conf_match</span> <span class="o">=</span> <span class="n">Match</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;indices&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nb">str</span><span class="p">:</span> <span class="n">Or</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">)},</span>  <span class="c1"># int for year</span>
+                <span class="nb">str</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span>  <span class="c1"># fall through for other config keys</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">glom</span><span class="p">(</span><span class="n">conf</span><span class="p">,</span> <span class="n">conf_match</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">MatchError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">err</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">: must define a dictionary of files pointing to idxcol&quot;</span>
+                <span class="s2">&quot;definitions for IAMC conversion, or set a default value for one of:&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_IAMC_IDX</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="k">raise</span> <span class="n">err</span> <span class="kn">from</span> <span class="bp">None</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_warn_empty</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">entry</span><span class="p">:</span> <span class="n">Dict</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="c1"># prefer name over path because when name is present, it is more</span>
+            <span class="c1"># likely to be more meaningful</span>
+            <span class="n">path_or_name</span> <span class="o">=</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;name&quot;</span> <span class="ow">in</span> <span class="n">entry</span> <span class="k">else</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">path_or_name</span><span class="si">}</span><span class="s2">: empty dataframe, check index entry&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="IAMconv.from_file"><a class="viewcode-back" href="../../api/api.html#friendly_data.iamc.IAMconv.from_file">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">confpath</span><span class="p">:</span> <span class="n">_path_t</span><span class="p">,</span> <span class="n">idxpath</span><span class="p">:</span> <span class="n">_path_t</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;IAMconv&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Create a mapping of IAMC indicator variables with index columns</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        confpath : Union[str, Path]</span>
+<span class="sd">            Path to config file for IAMC &lt;-&gt; data package config file</span>
+
+<span class="sd">        idxpath : Union[str, Path]</span>
+<span class="sd">            Path to index file</span>
+
+<span class="sd">        **kwargs</span>
+<span class="sd">            Keyword arguments passed on to the pandas reader backend.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        IAMconv</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">basepath</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">idxpath</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span>
+        <span class="n">conf</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_validate</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">Dict</span><span class="p">,</span> <span class="n">dwim_file</span><span class="p">(</span><span class="n">confpath</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">pkgindex</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">idxpath</span><span class="p">),</span> <span class="n">conf</span><span class="p">[</span><span class="s2">&quot;indices&quot;</span><span class="p">],</span> <span class="n">basepath</span><span class="o">=</span><span class="n">basepath</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="IAMconv.read_indices"><a class="viewcode-back" href="../../api/api.html#friendly_data.iamc.IAMconv.read_indices">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">read_indices</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">_path_t</span><span class="p">,</span> <span class="n">basepath</span><span class="p">:</span> <span class="n">_path_t</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Read index column definitions provided in config&quot;&quot;&quot;</span>
+        <span class="n">_lvls</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">=</span> <span class="n">_reader</span><span class="p">(</span>
+            <span class="n">Path</span><span class="p">(</span><span class="n">basepath</span><span class="p">)</span> <span class="o">/</span> <span class="n">path</span><span class="p">,</span>
+            <span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;iamc&quot;</span><span class="p">],</span>
+            <span class="n">index_col</span><span class="o">=</span><span class="s2">&quot;name&quot;</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="c1"># fallback when iamc name is missing; capitalized name is the most common</span>
+        <span class="k">return</span> <span class="n">_lvls</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="s2">&quot;columns&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">({</span><span class="n">i</span><span class="p">:</span> <span class="n">i</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">_lvls</span><span class="o">.</span><span class="n">index</span><span class="p">})</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">basepath</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Data package basepath, directory the index file is located&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basepath</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">indices</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Index definitions</span>
+
+<span class="sd">        - Default value of mandatory index columns in case they are missing</span>
+
+<span class="sd">        - Different levels of user defined index columns; points to a 2-column</span>
+<span class="sd">          CSV file, with the &quot;name&quot; and &quot;iamc&quot; columns</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span>
+
+    <span class="nd">@indices</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">Dict</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">col</span><span class="p">:</span> <span class="n">path_or_default</span>
+            <span class="k">if</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_IAMC_IDX</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_indices</span><span class="p">(</span><span class="n">path_or_default</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basepath</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">path_or_default</span> <span class="ow">in</span> <span class="n">indices</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">res_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pkgindex</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Package index</span>
+
+<span class="sd">        Each entry corresponds to a resource that maybe included in IAMC output.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_res_idx</span>
+
+    <span class="nd">@res_idx</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">res_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">:</span> <span class="n">pkgindex</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_res_idx</span> <span class="o">=</span> <span class="n">pkgindex</span><span class="p">(</span><span class="n">glom</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">Iter</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;iamc&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()))</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">:</span> <span class="n">pkgindex</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">basepath</span><span class="p">:</span> <span class="n">_path_t</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Converter initialised with a set of IAMC variable index column defintions</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        idx : `friendly_data.dpkg.pkgindex`</span>
+<span class="sd">            Index of datasets with IAMC variable definitions</span>
+
+<span class="sd">        indices : Dict[str, Union[int, float, str, Path]]</span>
+<span class="sd">            Index column definitions; a default value for an IAMC index column,</span>
+<span class="sd">            path to a 2-column CSV file defining levels for a user defined</span>
+<span class="sd">            index column (see :meth:`IAMconv.indices`)</span>
+
+<span class="sd">        basepath : Union[str, Path]</span>
+<span class="sd">            Top-level directory of the data package</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_basepath</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">basepath</span><span class="p">)</span>  <span class="c1"># order important, needed by @indices.setter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">indices</span> <span class="o">=</span> <span class="n">indices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">res_idx</span> <span class="o">=</span> <span class="n">idx</span>
+
+<div class="viewcode-block" id="IAMconv.index_levels"><a class="viewcode-back" href="../../api/api.html#friendly_data.iamc.IAMconv.index_levels">[docs]</a>    <span class="k">def</span> <span class="nf">index_levels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idxcols</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Index levels for user defined index columns</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        idxcols : Iterable[str]</span>
+<span class="sd">            Iterable of index column names</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Dict[str, pd.Series]</span>
+<span class="sd">            Different values for a given set of index columns</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">userdefined</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">idxcols</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_IAMC_IDX</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">userdefined</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;idxcols=</span><span class="si">{</span><span class="n">idxcols</span><span class="si">}</span><span class="s2">: only for user defined idxcols&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">filter_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">userdefined</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="IAMconv.resolve_idxcol_defaults"><a class="viewcode-back" href="../../api/api.html#friendly_data.iamc.IAMconv.resolve_idxcol_defaults">[docs]</a>    <span class="k">def</span> <span class="nf">resolve_idxcol_defaults</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Find missing IAMC indices and set them to the default value from config</span>
+
+<span class="sd">        The IAMC format requires the following indices: `self._IAMC_IDX`; if</span>
+<span class="sd">        any of them are missing, the corresponding index level is created, and</span>
+<span class="sd">        the level values are set to a constant specified in the config.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        df : pandas.DataFrame</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pandas.DataFrame</span>
+<span class="sd">            Dataframe with default index columns resolved</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">defaults</span> <span class="o">=</span> <span class="n">filter_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_IAMC_IDX</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">names</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span>
+            <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="o">**</span><span class="n">defaults</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">defaults</span><span class="p">),</span> <span class="n">append</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="IAMconv.iamcify"><a class="viewcode-back" href="../../api/api.html#friendly_data.iamc.IAMconv.iamcify">[docs]</a>    <span class="k">def</span> <span class="nf">iamcify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Transform dataframe to match the IAMC (long) format&quot;&quot;&quot;</span>
+        <span class="n">useridxlvls</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">names</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_IAMC_IDX</span><span class="p">))</span>
+        <span class="c1"># ensure all user defined index columns are removed before concatinating</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="s2">&quot;value&quot;</span><span class="p">})</span>
+            <span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;variable&quot;</span><span class="p">,</span> <span class="n">append</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">useridxlvls</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">reorder_levels</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_IAMC_IDX</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">df</span></div>
+
+<div class="viewcode-block" id="IAMconv.agg_idxcol"><a class="viewcode-back" href="../../api/api.html#friendly_data.iamc.IAMconv.agg_idxcol">[docs]</a>    <span class="k">def</span> <span class="nf">agg_idxcol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">col</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">entry</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Aggregate values and generate IAMC dataframes</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        df : pd.DataFrame</span>
+<span class="sd">            Dataframe to aggregate from</span>
+
+<span class="sd">        col : str</span>
+<span class="sd">            Column to perform aggregation on</span>
+
+<span class="sd">        entry : Dict</span>
+<span class="sd">            Index entry with aggregation rules</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List[pd.DataFrame]</span>
+<span class="sd">            List of IAMC dataframes</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dfs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">lvls</span><span class="p">,</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">glom</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="s2">&quot;agg&quot;</span><span class="p">][</span><span class="n">col</span><span class="p">],</span> <span class="p">[(</span><span class="n">T</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="nb">tuple</span><span class="p">)]):</span>
+            <span class="n">rest</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">names</span><span class="o">.</span><span class="n">difference</span><span class="p">([</span><span class="n">col</span><span class="p">])</span>
+            <span class="n">_df</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span>
+                <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+                <span class="n">df</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2"> in @lvls&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">rest</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="n">var</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="n">dfs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iamcify</span><span class="p">(</span><span class="n">_df</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">dfs</span></div>
+
+<div class="viewcode-block" id="IAMconv.agg_vals_all"><a class="viewcode-back" href="../../api/api.html#friendly_data.iamc.IAMconv.agg_vals_all">[docs]</a>    <span class="k">def</span> <span class="nf">agg_vals_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Find all values in index column that are present in an aggregate rule&quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="s2">&quot;agg&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;only support aggregating one column&quot;</span>
+        <span class="n">col</span><span class="p">,</span> <span class="n">conf</span> <span class="o">=</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;agg&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">popitem</span><span class="p">()</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="n">glom</span><span class="p">(</span><span class="n">conf</span><span class="p">,</span> <span class="p">(</span><span class="n">Iter</span><span class="p">()</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">T</span><span class="p">[</span><span class="s2">&quot;values&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span> <span class="nb">set</span><span class="p">,</span> <span class="nb">list</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">col</span><span class="p">,</span> <span class="n">vals</span></div>
+
+    <span class="k">def</span> <span class="nf">_match_item</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">_path_t</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Match a file or dataframe to an index entry (internal method)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        item : Union[Union[str, Path], Tuple[str, pd.DataFrame]]</span>
+<span class="sd">            The item to find in the index.  A file is matched with the ``path``</span>
+<span class="sd">            key of the index entry, and the `key` of the dataframe is matched</span>
+<span class="sd">            with the ``name`` key in the entry.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Tuple[Dict, pandas.DataFrame]</span>
+<span class="sd">            The dictionary is the index entry; when ``item`` is a file, the</span>
+<span class="sd">            index entry is used to read the file into a dataframe, and in case</span>
+<span class="sd">            of a dataframe, it is passed on transparently.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">match_key</span> <span class="o">=</span> <span class="s2">&quot;name&quot;</span>
+            <span class="n">match_val</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">match_key</span> <span class="o">=</span> <span class="s2">&quot;path&quot;</span>
+            <span class="n">match_val</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="c1"># NOTE: res_from_entry requires: &quot;path&quot;, &quot;idxcols&quot;, &quot;alias&quot;; later</span>
+        <span class="c1"># in the iteration, &quot;iamc&quot; &amp; &quot;agg&quot; is required</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">match_key</span><span class="p">,</span> <span class="s2">&quot;idxcols&quot;</span><span class="p">,</span> <span class="s2">&quot;alias&quot;</span><span class="p">,</span> <span class="s2">&quot;iamc&quot;</span><span class="p">,</span> <span class="s2">&quot;agg&quot;</span><span class="p">]</span>
+        <span class="n">_entries</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">entry</span>
+            <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">res_idx</span><span class="o">.</span><span class="n">records</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
+            <span class="c1"># convert to string for path comparison</span>
+            <span class="k">if</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">match_val</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">==</span> <span class="n">entry</span><span class="p">[</span><span class="n">match_key</span><span class="p">]</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="n">_entries</span><span class="p">:</span>
+            <span class="n">entry</span> <span class="o">=</span> <span class="n">_entries</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_entries</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">entry</span><span class="p">[</span><span class="n">match_key</span><span class="p">]</span><span class="si">}</span><span class="s2">: duplicate entries, picking first&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">to_df</span><span class="p">(</span><span class="n">res_from_entry</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basepath</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">entry</span><span class="p">,</span> <span class="n">df</span>
+
+<div class="viewcode-block" id="IAMconv.to_df"><a class="viewcode-back" href="../../api/api.html#friendly_data.iamc.IAMconv.to_df">[docs]</a>    <span class="k">def</span> <span class="nf">to_df</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">files_or_dfs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">_path_t</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Convert CSV files/dataframes to IAMC format according to the index</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        files_or_dfs : Union[Iterable[Union[str, Path]], Dict[str, pandas.DataFrame]]</span>
+<span class="sd">            List of files or a dictionary of dataframes, to be collated and</span>
+<span class="sd">            converted to IAMC format.  Each item must have an entry in the</span>
+<span class="sd">            package index the converter was initialised with, it is skipped</span>
+<span class="sd">            otherwise.  Files are matched by file ``path``, whereas dataframes</span>
+<span class="sd">            match when the dictionary key matches the index entry ``name``.</span>
+
+<span class="sd">            Note when the files are read, the basepath is set to whatever the</span>
+<span class="sd">            converter was initialised with.  If :meth:`IAMconv.from_file` was</span>
+<span class="sd">            used, it is the parent directory of the index file.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        DataFrame</span>
+<span class="sd">            A ``pandas.DataFrame`` in IAMC format</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dfs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">files_or_dfs</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">iterable</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Iterable</span><span class="p">,</span> <span class="n">files_or_dfs</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">iterable</span> <span class="o">=</span> <span class="n">files_or_dfs</span>
+
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_match_item</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">match</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">(</span><span class="o">*</span><span class="n">match</span><span class="p">)</span>  <span class="c1"># match -&gt; entry, dataframe</span>
+            <span class="n">dfs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">dfs</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;empty data set, check config and index file&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">df</span></div>
+
+<div class="viewcode-block" id="IAMconv.frames"><a class="viewcode-back" href="../../api/api.html#friendly_data.iamc.IAMconv.frames">[docs]</a>    <span class="k">def</span> <span class="nf">frames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Convert the dataframe to IAMC format according to configuration in the entry</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        entry : Dict</span>
+<span class="sd">            Index entry</span>
+
+<span class="sd">        df : pandas.DataFrame</span>
+<span class="sd">            The dataframe that is to be converted to IAMC format</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List[pandas.DataFrame]</span>
+<span class="sd">            List of ``pandas.DataFrame``s in IAMC format</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dfs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">resolve_aliases</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;alias&quot;</span><span class="p">,</span> <span class="p">{}))</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolve_idxcol_defaults</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+        <span class="n">lvls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_levels</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;agg&quot;</span><span class="p">]:</span>  <span class="c1"># None if not defined</span>
+            <span class="n">col</span><span class="p">,</span> <span class="n">_agg_vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agg_vals_all</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+            <span class="n">df_agg</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2"> in @_agg_vals&quot;</span><span class="p">))</span>
+            <span class="n">dfs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">agg_idxcol</span><span class="p">(</span><span class="n">df_agg</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">entry</span><span class="p">))</span>
+
+            <span class="n">_vals</span> <span class="o">=</span> <span class="n">lvls</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>  <span class="c1"># noqa: F841, used by query below</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2"> in @_vals&quot;</span><span class="p">))</span>
+
+            <span class="c1"># NOTE: need to remove aggregated levels, then calculate the</span>
+            <span class="c1"># intersection with the levels that are in the current dataframe</span>
+            <span class="n">_lvls</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">col</span><span class="p">:</span> <span class="n">vals</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+                    <span class="n">vals</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">_agg_vals</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span>
+                        <span class="n">idx_lvl_values</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">col</span><span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="p">]</span>
+                <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">vals</span> <span class="ow">in</span> <span class="n">lvls</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># NOTE: need to calculate the intersection of levels that are</span>
+            <span class="c1"># in the current dataframe and the levels defined in the config</span>
+            <span class="n">_lvls</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">col</span><span class="p">:</span> <span class="n">vals</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">vals</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">idx_lvl_values</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">col</span><span class="p">))]</span>
+                <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">vals</span> <span class="ow">in</span> <span class="n">lvls</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">is_fmtstr</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="s2">&quot;iamc&quot;</span><span class="p">]):</span>
+            <span class="n">sel</span> <span class="o">=</span> <span class="n">idxslice</span><span class="p">(</span>
+                <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">names</span><span class="p">,</span>
+                <span class="p">{</span><span class="n">col</span><span class="p">:</span> <span class="n">val</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">_lvls</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
+            <span class="p">)</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sel</span><span class="p">]</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">remove_unused_levels</span><span class="p">()</span>
+            <span class="n">iamc_variable</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="n">col</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="n">col</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">_lvls</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="p">},</span>
+                <span class="n">index</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;iamc&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">r</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">iamc_variable</span> <span class="o">=</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;iamc&quot;</span><span class="p">]</span>
+        <span class="n">_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iamcify</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="n">iamc_variable</span><span class="p">))</span>
+        <span class="n">dfs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_df</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dfs</span></div>
+
+<div class="viewcode-block" id="IAMconv.to_csv"><a class="viewcode-back" href="../../api/api.html#friendly_data.iamc.IAMconv.to_csv">[docs]</a>    <span class="k">def</span> <span class="nf">to_csv</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">files</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">_path_t</span><span class="p">],</span>
+        <span class="n">output</span><span class="p">:</span> <span class="n">_path_t</span><span class="p">,</span>
+        <span class="n">wide</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write converted IAMC data frame to a CSV file</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        files : Iterable[Union[str, Path]]</span>
+<span class="sd">            List of files to collate and convert to IAMC</span>
+
+<span class="sd">        output : Union[str, Path] (default: empty string)</span>
+<span class="sd">            Path of the output CSV file; if empty, nothing is written to file.</span>
+
+<span class="sd">        basepath : Union[str, Path]</span>
+<span class="sd">            Data package base path</span>
+
+<span class="sd">        wide : bool (default: False)</span>
+<span class="sd">            Write the CSN in wide format (with years as columns)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_df</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">wide</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pyam</span><span class="o">.</span><span class="n">IamDataFrame</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+        <span class="n">Path</span><span class="p">(</span><span class="n">output</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">output</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Suvayu Ali and contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

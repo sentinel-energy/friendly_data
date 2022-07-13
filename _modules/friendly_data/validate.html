@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>friendly_data.validate &mdash; friendly_data 0.2.2.dev documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> friendly_data
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">How to install?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../data-package.html">Data package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../registry.html">Data registry</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/registry.html">Value columns - <code class="docutils literal notranslate"><span class="pre">cols</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/registry.html#index-columns-idxcols">Index columns - <code class="docutils literal notranslate"><span class="pre">idxcols</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/index-file.html">The Package Index file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../registry.html#contributing-to-the-registry">Contributing to the registry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../registry.html#where-to-add-the-new-column">Where to add the new column?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../registry.html#defining-a-custom-registry">Defining a custom registry</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../cli.html">The <code class="docutils literal notranslate"><span class="pre">friendly_data</span></code> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../config-file.html">The configuration file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hands-on.html">Hands-on tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../hands-on.html#understanding-the-registry-used-by-friendly-data">Understanding the registry used by Friendly data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../hands-on.html#column-schema">Column schema</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../hands-on.html#learning-by-example">Learning by example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../hands-on.html#introducing-the-index-file">Introducing the index file</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../hands-on.html#metadata">Metadata</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../hands-on.html#updating-existing-packages">Updating existing packages</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../iamc-conversion.html">Converting to IAMC format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced.html">Advanced use</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced.html#api-documentation">API documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html">Datapackage tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#module-friendly_data.metatools">Metadata tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#module-friendly_data.registry">Registry API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#module-friendly_data.cli">Command Line Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#module-friendly_data.validate">Validation functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#data-analysis-interface">Data analysis interface</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/api.html#module-friendly_data.converters">Converters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/api.html#module-friendly_data.tseries">Time series API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/api.html#module-friendly_data.iamc">Conversion to IAMC</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#internal-interfaces">Internal interfaces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/api.html#module-friendly_data.io">File I/O</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/api.html#module-friendly_data.helpers">Helper utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced.html#external-packages">External Packages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/external.html">Package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/external.html#id2">Resource</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../devnotes.html">Notes for developers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../devnotes.html#adding-dependencies">Adding dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../devnotes.html#working-with-the-data-package-api">Working with the data package API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../devnotes.html#working-with-the-index-file">Working with the index file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../devnotes.html#working-with-the-registry-api">Working with the registry API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../devnotes.html#converters-interfacing-with-the-python-ecosystem">Converters: interfacing with the Python ecosystem</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">friendly_data</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>friendly_data.validate</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for friendly_data.validate</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Functions useful to validate a data package or parts of its schema.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">from</span> <span class="nn">frictionless</span> <span class="kn">import</span> <span class="n">validate_package</span> <span class="k">as</span> <span class="n">validate</span>
+<span class="kn">from</span> <span class="nn">glom</span> <span class="kn">import</span> <span class="n">Coalesce</span><span class="p">,</span> <span class="n">glom</span><span class="p">,</span> <span class="n">Iter</span><span class="p">,</span> <span class="n">T</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">friendly_data.helpers</span> <span class="kn">import</span> <span class="n">select</span>
+
+
+<div class="viewcode-block" id="check_pkg"><a class="viewcode-back" href="../../api/api.html#friendly_data.validate.check_pkg">[docs]</a><span class="k">def</span> <span class="nf">check_pkg</span><span class="p">(</span><span class="n">pkg</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Validate all resources in a datapackage for common errors.</span>
+
+<span class="sd">    Typical errors that are checked:</span>
+<span class="sd">     - ``blank-header``,</span>
+<span class="sd">     - ``extra-label``,</span>
+<span class="sd">     - ``missing-label``,</span>
+<span class="sd">     - ``blank-label``,</span>
+<span class="sd">     - ``duplicate-label``,</span>
+<span class="sd">     - ``incorrect-label``,</span>
+<span class="sd">     - ``blank-row``,</span>
+<span class="sd">     - ``primary-key-error``,</span>
+<span class="sd">     - ``foreign-key-error``,</span>
+<span class="sd">     - ``extra-cell``,</span>
+<span class="sd">     - ``missing-cell``,</span>
+<span class="sd">     - ``type-error``,</span>
+<span class="sd">     - ``constraint-error``,</span>
+<span class="sd">     - ``unique-error``</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pkg : frictionless.Package</span>
+<span class="sd">        The datapackage descriptor dictionary</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Dict</span>
+<span class="sd">        A dictionary with a summary of the validation checks.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># noinfer -&gt; original in newer versions</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">validate</span><span class="p">(</span><span class="n">pkg</span><span class="p">,</span> <span class="n">basepath</span><span class="o">=</span><span class="n">pkg</span><span class="o">.</span><span class="n">basepath</span><span class="p">,</span> <span class="n">noinfer</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="n">glom</span><span class="p">(</span><span class="n">report</span><span class="p">,</span> <span class="s2">&quot;stats.errors&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">count</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">glom</span><span class="p">(</span>
+        <span class="n">report</span><span class="p">,</span>
+        <span class="p">(</span>
+            <span class="s2">&quot;tasks&quot;</span><span class="p">,</span>
+            <span class="n">Iter</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">T</span><span class="p">[</span><span class="s2">&quot;stats&quot;</span><span class="p">][</span><span class="s2">&quot;errors&quot;</span><span class="p">])</span>
+            <span class="o">.</span><span class="n">map</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">T</span><span class="p">[</span><span class="s2">&quot;resource&quot;</span><span class="p">][</span><span class="s2">&quot;path&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;position&quot;</span><span class="p">:</span> <span class="p">(</span>
+                        <span class="n">T</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">],</span>
+                        <span class="p">[</span>
+                            <span class="p">{</span>
+                                <span class="s2">&quot;row&quot;</span><span class="p">:</span> <span class="n">T</span><span class="p">[</span><span class="s2">&quot;rowNumber&quot;</span><span class="p">],</span>
+                                <span class="s2">&quot;col&quot;</span><span class="p">:</span> <span class="n">Coalesce</span><span class="p">(</span><span class="n">T</span><span class="p">[</span><span class="s2">&quot;fieldName&quot;</span><span class="p">],</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">),</span>
+                            <span class="p">}</span>
+                        <span class="p">],</span>
+                    <span class="p">),</span>
+                    <span class="s2">&quot;errors&quot;</span><span class="p">:</span> <span class="p">(</span>
+                        <span class="n">T</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">],</span>
+                        <span class="p">[</span>
+                            <span class="p">{</span>
+                                <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="n">T</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">],</span>
+                                <span class="s2">&quot;remark&quot;</span><span class="p">:</span> <span class="n">T</span><span class="p">[</span><span class="s2">&quot;note&quot;</span><span class="p">],</span>
+                            <span class="p">}</span>
+                        <span class="p">],</span>
+                    <span class="p">),</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">all</span><span class="p">(),</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span></div>
+
+
+<div class="viewcode-block" id="summarise_errors"><a class="viewcode-back" href="../../api/api.html#friendly_data.validate.summarise_errors">[docs]</a><span class="k">def</span> <span class="nf">summarise_errors</span><span class="p">(</span><span class="n">report</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Summarise the dict/json error report as a `pandas.DataFrame`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    report : List[Dict]</span>
+<span class="sd">        List of errors as returned by :func:`check_pkg`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pandas.DataFrame</span>
+<span class="sd">        Summary dataframe; example::</span>
+
+<span class="sd">               filename  row  col       error  remark</span>
+<span class="sd">            0   bad.csv   12       extra-cell     ...</span>
+<span class="sd">            1   bad.csv   22  SRB  type-error     ...</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">report</span><span class="p">)</span>
+    <span class="n">errors</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">explode</span><span class="p">(</span><span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">explode</span><span class="p">(</span><span class="s2">&quot;position&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;errors&quot;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">fnames</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">fnames</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;filename&quot;</span>
+    <span class="n">position</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;position&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">fnames</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">errors</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="check_schema"><a class="viewcode-back" href="../../api/api.html#friendly_data.validate.check_schema">[docs]</a><span class="k">def</span> <span class="nf">check_schema</span><span class="p">(</span>
+    <span class="n">ref</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">dst</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">remap</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;Compare a schema with a reference.</span>
+
+<span class="sd">    The reference schema is a minimal set, meaning, any additional fields in</span>
+<span class="sd">    the compared schema are accepted, but omissions are not.</span>
+
+<span class="sd">    Name comparisons are case-sensitive.</span>
+
+<span class="sd">    TODO: maybe also compare constraints?</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ref : Dict[str, str]</span>
+<span class="sd">        Reference schema dictionary</span>
+<span class="sd">    dst : Dict[str, str]</span>
+<span class="sd">        Schema dictionary from the dataset being validated</span>
+<span class="sd">    remap : Dict[str, str] (optional)</span>
+<span class="sd">       Column/field names that are to be remapped before checking.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    result : Tuple[bool, Set[str], Dict[str, Tuple[str, str]], List[Tuple]]</span>
+<span class="sd">        Result tuple:</span>
+
+<span class="sd">        - Boolean flag indicating if it passed the checks or not</span>
+<span class="sd">        - If checks failed, set of missing columns from minimal set</span>
+<span class="sd">        - If checks failed, set of columns with mismatching types.  It is a</span>
+<span class="sd">          dictionary with the column name as key, and the reference type and</span>
+<span class="sd">          the actual type in a tuple as value. ::</span>
+
+<span class="sd">              {</span>
+<span class="sd">                  &#39;col_x&#39;: (&#39;integer&#39;, &#39;number&#39;),</span>
+<span class="sd">                  &#39;col_y&#39;: (&#39;datetime&#39;, &#39;string&#39;),</span>
+<span class="sd">              }</span>
+
+<span class="sd">        - If primary keys are different, tuple with the diff.  The first</span>
+<span class="sd">          element is the index where the two differ, and the two subsequent</span>
+<span class="sd">          elements are the corresponding elements from the reference and</span>
+<span class="sd">          dataset primary key list: ``(index, ref_col, dst_col)``</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># extract columns</span>
+    <span class="n">ref_</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span>
+    <span class="n">dst_</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span>
+    <span class="n">ref_</span><span class="p">,</span> <span class="n">dst_</span> <span class="o">=</span> <span class="n">glom</span><span class="p">((</span><span class="n">ref</span><span class="p">,</span> <span class="n">dst</span><span class="p">),</span> <span class="n">Iter</span><span class="p">(</span><span class="s2">&quot;fields&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
+
+    <span class="k">if</span> <span class="n">remap</span><span class="p">:</span>
+        <span class="n">dst_</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">{</span><span class="o">**</span><span class="n">i</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">remap</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]]</span> <span class="k">if</span> <span class="n">i</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">remap</span> <span class="k">else</span> <span class="n">i</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]}</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">dst_</span>
+        <span class="p">]</span>
+
+    <span class="c1"># column names</span>
+    <span class="n">ref_set</span> <span class="o">=</span> <span class="n">glom</span><span class="p">(</span><span class="n">ref_</span><span class="p">,</span> <span class="p">([</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="nb">set</span><span class="p">))</span>
+    <span class="n">dst_set</span> <span class="o">=</span> <span class="n">glom</span><span class="p">(</span><span class="n">dst_</span><span class="p">,</span> <span class="p">([</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="nb">set</span><span class="p">))</span>
+    <span class="c1"># missing columns</span>
+    <span class="n">missing</span> <span class="o">=</span> <span class="n">ref_set</span> <span class="o">-</span> <span class="n">dst_set</span>
+
+    <span class="c1"># mismatched types, FIXME: horrible mess</span>
+    <span class="n">common</span> <span class="o">=</span> <span class="n">ref_set</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">dst_set</span><span class="p">)</span>
+    <span class="n">mismatch</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">dst_</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">col</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">common</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">ref_col</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">glom</span><span class="p">(</span><span class="n">ref_</span><span class="p">,</span> <span class="p">[</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">equal_to</span><span class="o">=</span><span class="n">col</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])])</span>
+        <span class="k">if</span> <span class="n">ref_col</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">col</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]:</span>
+            <span class="n">mismatch</span><span class="p">[</span><span class="n">col</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="n">ref_col</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span> <span class="n">col</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">])</span>
+
+    <span class="c1"># metadata: ignore missing values</span>
+    <span class="n">pri_ref</span> <span class="o">=</span> <span class="n">ref</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;primaryKey&quot;</span><span class="p">,</span> <span class="p">[])</span>  <span class="c1"># type: ignore</span>
+    <span class="n">pri_dst</span> <span class="o">=</span> <span class="n">dst</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;primaryKey&quot;</span><span class="p">,</span> <span class="p">[])</span>  <span class="c1"># type: ignore</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pri_ref</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">pri_ref</span> <span class="o">=</span> <span class="p">[</span><span class="n">pri_ref</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pri_dst</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">pri_dst</span> <span class="o">=</span> <span class="p">[</span><span class="n">pri_dst</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">pair</span><span class="p">(</span><span class="n">i</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">j</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">Tuple</span><span class="p">]:</span>
+        <span class="n">iitr</span><span class="p">,</span> <span class="n">jitr</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="nb">iter</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">_pair</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="n">iitr</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="nb">next</span><span class="p">(</span><span class="n">jitr</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_pair</span>
+
+    <span class="n">pri_diff</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">pri_ref</span> <span class="o">!=</span> <span class="n">pri_dst</span><span class="p">:</span>
+        <span class="n">pairs</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">pair</span><span class="p">(</span><span class="n">pri_ref</span><span class="p">,</span> <span class="n">pri_dst</span><span class="p">),</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+        <span class="n">pri_diff</span> <span class="o">=</span> <span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span> <span class="k">if</span> <span class="n">j</span> <span class="o">!=</span> <span class="n">k</span><span class="p">]</span>
+
+    <span class="n">check_pass</span> <span class="o">=</span> <span class="ow">not</span> <span class="p">(</span><span class="n">missing</span> <span class="ow">or</span> <span class="n">mismatch</span> <span class="ow">or</span> <span class="n">pri_diff</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">check_pass</span><span class="p">,</span> <span class="n">missing</span><span class="p">,</span> <span class="n">mismatch</span><span class="p">,</span> <span class="n">pri_diff</span><span class="p">)</span>  <span class="c1"># type: ignore</span></div>
+
+
+<div class="viewcode-block" id="summarise_diff"><a class="viewcode-back" href="../../api/api.html#friendly_data.validate.summarise_diff">[docs]</a><span class="k">def</span> <span class="nf">summarise_diff</span><span class="p">(</span>
+    <span class="n">diff</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">]]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Summarise the schema diff from :func:`check_schema` results as a</span>
+<span class="sd">    ``pandas.DataFrame``.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">status</span><span class="p">,</span> <span class="n">missing</span><span class="p">,</span> <span class="n">mismatch</span><span class="p">,</span> <span class="n">pri</span> <span class="o">=</span> <span class="n">diff</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">status</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">report</span>
+    <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
+        <span class="n">report</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;missing column names: </span><span class="si">{</span><span class="n">missing</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="k">if</span> <span class="n">mismatch</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">[(</span><span class="n">col</span><span class="p">,</span> <span class="o">*</span><span class="n">col_ts</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">col_ts</span> <span class="ow">in</span> <span class="n">mismatch</span><span class="o">.</span><span class="n">items</span><span class="p">()],</span>
+            <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;column&quot;</span><span class="p">,</span> <span class="s2">&quot;reference_type&quot;</span><span class="p">,</span> <span class="s2">&quot;current_type&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="n">report</span> <span class="o">+=</span> <span class="s2">&quot;mismatched column types:</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">report</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">pri</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">pri</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">,</span> <span class="s2">&quot;reference_col&quot;</span><span class="p">,</span> <span class="s2">&quot;current_col&quot;</span><span class="p">])</span>
+        <span class="n">report</span> <span class="o">+=</span> <span class="s2">&quot;mismatched index levels/cols:</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">report</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">report</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Suvayu Ali and contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

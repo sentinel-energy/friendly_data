@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>friendly_data_registry &mdash; friendly_data 0.2.2.dev documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> friendly_data
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">How to install?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data-package.html">Data package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../registry.html">Data registry</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/registry.html">Value columns - <code class="docutils literal notranslate"><span class="pre">cols</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/registry.html#index-columns-idxcols">Index columns - <code class="docutils literal notranslate"><span class="pre">idxcols</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/index-file.html">The Package Index file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../registry.html#contributing-to-the-registry">Contributing to the registry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../registry.html#where-to-add-the-new-column">Where to add the new column?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../registry.html#defining-a-custom-registry">Defining a custom registry</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cli.html">The <code class="docutils literal notranslate"><span class="pre">friendly_data</span></code> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../config-file.html">The configuration file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hands-on.html">Hands-on tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../hands-on.html#understanding-the-registry-used-by-friendly-data">Understanding the registry used by Friendly data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../hands-on.html#column-schema">Column schema</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../hands-on.html#learning-by-example">Learning by example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../hands-on.html#introducing-the-index-file">Introducing the index file</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../hands-on.html#metadata">Metadata</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../hands-on.html#updating-existing-packages">Updating existing packages</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../iamc-conversion.html">Converting to IAMC format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced.html">Advanced use</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../advanced.html#api-documentation">API documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/api.html">Datapackage tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/api.html#module-friendly_data.metatools">Metadata tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/api.html#module-friendly_data.registry">Registry API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/api.html#module-friendly_data.cli">Command Line Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/api.html#module-friendly_data.validate">Validation functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/api.html#data-analysis-interface">Data analysis interface</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/api.html#module-friendly_data.converters">Converters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/api.html#module-friendly_data.tseries">Time series API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/api.html#module-friendly_data.iamc">Conversion to IAMC</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api/api.html#internal-interfaces">Internal interfaces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/api.html#module-friendly_data.io">File I/O</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/api.html#module-friendly_data.helpers">Helper utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced.html#external-packages">External Packages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/external.html">Package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/external.html#id2">Resource</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../devnotes.html">Notes for developers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../devnotes.html#adding-dependencies">Adding dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../devnotes.html#working-with-the-data-package-api">Working with the data package API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../devnotes.html#working-with-the-index-file">Working with the index file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../devnotes.html#working-with-the-registry-api">Working with the registry API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../devnotes.html#converters-interfacing-with-the-python-ecosystem">Converters: interfacing with the Python ecosystem</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">friendly_data</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Module code</a> &raquo;</li>
+      <li>friendly_data_registry</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for friendly_data_registry</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;The Friendly data schema registry</span>
+
+<span class="sd">This module provides getter methods to retrieve individual columns,</span>
+<span class="sd">:func:`get`, or the whole registry, :func:`getall`.  The function utilities and</span>
+<span class="sd">classes are used by the module internally.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">cast</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">from</span> <span class="nn">glom</span> <span class="kn">import</span> <span class="n">glom</span><span class="p">,</span> <span class="n">Match</span><span class="p">,</span> <span class="n">Optional</span> <span class="k">as</span> <span class="n">optmatch</span><span class="p">,</span> <span class="n">Or</span>
+<span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">resource_filename</span>
+
+<span class="kn">import</span> <span class="nn">yaml</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;friendly_data._registry&quot;</span><span class="p">)</span>
+<span class="n">_path_t</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="schschemaema"><a class="viewcode-back" href="../api/api.html#friendly_data_registry.schschemaema">[docs]</a><span class="k">class</span> <span class="nc">schschemaema</span><span class="p">(</span><span class="n">Dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Registry column schema.  Instantiate to validate.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    TypeMatchError</span>
+<span class="sd">        When the column schema has a type mismatch</span>
+<span class="sd">    MatchError</span>
+<span class="sd">        Other mismatches like, an incorrectly named key</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_schema</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">optmatch</span><span class="p">(</span><span class="s2">&quot;format&quot;</span><span class="p">):</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">optmatch</span><span class="p">(</span><span class="s2">&quot;constraints&quot;</span><span class="p">):</span> <span class="p">{</span>
+            <span class="n">optmatch</span><span class="p">(</span><span class="s2">&quot;enum&quot;</span><span class="p">):</span> <span class="nb">list</span><span class="p">,</span>
+            <span class="n">optmatch</span><span class="p">(</span><span class="s2">&quot;maximum&quot;</span><span class="p">):</span> <span class="n">Or</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+            <span class="n">optmatch</span><span class="p">(</span><span class="s2">&quot;minimum&quot;</span><span class="p">):</span> <span class="n">Or</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+            <span class="n">optmatch</span><span class="p">(</span><span class="s2">&quot;pattern&quot;</span><span class="p">):</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="n">optmatch</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">):</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">optmatch</span><span class="p">(</span><span class="s2">&quot;description&quot;</span><span class="p">):</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">optmatch</span><span class="p">(</span><span class="s2">&quot;alias&quot;</span><span class="p">):</span> <span class="p">[{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">}],</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">schema</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">glom</span><span class="p">(</span><span class="n">schema</span><span class="p">,</span> <span class="n">Match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_schema</span><span class="p">)))</span></div>
+
+
+<div class="viewcode-block" id="read_file"><a class="viewcode-back" href="../api/api.html#friendly_data_registry.read_file">[docs]</a><span class="k">def</span> <span class="nf">read_file</span><span class="p">(</span><span class="n">fpath</span><span class="p">:</span> <span class="n">_path_t</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Read JSON or yaml file; file type is guessed from extension&quot;&quot;&quot;</span>
+    <span class="n">fpath</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">fpath</span><span class="o">.</span><span class="n">suffix</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;.yaml&quot;</span><span class="p">,</span> <span class="s2">&quot;.yml&quot;</span><span class="p">):</span>
+        <span class="n">reader</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span>
+    <span class="k">elif</span> <span class="n">fpath</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.json&quot;</span><span class="p">:</span>
+        <span class="n">reader</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fpath</span><span class="si">}</span><span class="s2">: not a JSON or YAML file&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">reader</span><span class="p">(</span><span class="n">fpath</span><span class="o">.</span><span class="n">read_text</span><span class="p">())</span></div>
+
+
+<span class="c1"># FIXME: can&#39;t use Literal until we drop 3.7</span>
+<div class="viewcode-block" id="get"><a class="viewcode-back" href="../api/api.html#friendly_data_registry.get">[docs]</a><span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="n">col</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">col_t</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Retrieve the column schema from column schema registry: `friendly_data_registry`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    col : str</span>
+<span class="sd">        Column name to look for</span>
+
+<span class="sd">    col_t : Literal[&quot;cols&quot;, &quot;idxcols&quot;]</span>
+<span class="sd">        A literal string specifying the kind of column; one of: &quot;cols&quot;, or &quot;idxcols&quot;</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Dict</span>
+<span class="sd">        Column schema; an empty dictionary is returned in case there are no matches</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    RuntimeError</span>
+<span class="sd">        When more than one matches are found</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        When the schema file in the registry is unsupported; not one of: JSON, or YAML</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">col_t</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;cols&quot;</span><span class="p">,</span> <span class="s2">&quot;idxcols&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">col_t</span><span class="si">}</span><span class="s2">: unknown column type&quot;</span><span class="p">)</span>
+
+    <span class="n">curdir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">resource_filename</span><span class="p">(</span><span class="s2">&quot;friendly_data_registry&quot;</span><span class="p">,</span> <span class="n">col_t</span><span class="p">))</span>
+    <span class="n">schema</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+        <span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">curdir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;json&quot;</span><span class="p">,</span> <span class="s2">&quot;yaml&quot;</span><span class="p">))</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">schema</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">col_t</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">: not in registry&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{}</span>  <span class="c1"># no match, unregistered column</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">schema</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># pragma: no cover, bad registry</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s2">: multiple matches, duplicates in registry&quot;</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Dict</span><span class="p">,</span> <span class="n">read_file</span><span class="p">(</span><span class="n">curdir</span> <span class="o">/</span> <span class="n">schema</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;alias&quot;</span><span class="p">,):</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>  <span class="c1"># strip doc only keys</span>
+    <span class="k">return</span> <span class="n">res</span></div>
+
+
+<div class="viewcode-block" id="getall"><a class="viewcode-back" href="../api/api.html#friendly_data_registry.getall">[docs]</a><span class="k">def</span> <span class="nf">getall</span><span class="p">(</span><span class="n">with_file</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;Get all columns from registry, primarily to generate documentation</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Dict[str, Dict]</span>
+<span class="sd">        The returned value is separated by column type::</span>
+
+<span class="sd">          {</span>
+<span class="sd">            &quot;idxcols&quot;: [</span>
+<span class="sd">              {..}  # column schemas</span>
+<span class="sd">            ],</span>
+<span class="sd">            &quot;cols&quot;: [</span>
+<span class="sd">              {..}  # column schemas</span>
+<span class="sd">            ],</span>
+<span class="sd">          }</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    RuntimeError</span>
+<span class="sd">        When more than one matches are found</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">col_t</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;cols&quot;</span><span class="p">,</span> <span class="s2">&quot;idxcols&quot;</span><span class="p">):</span>
+        <span class="n">col_t_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">resource_filename</span><span class="p">(</span><span class="s2">&quot;friendly_data_registry&quot;</span><span class="p">,</span> <span class="n">col_t</span><span class="p">))</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">schema_files</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span>
+            <span class="n">col_t_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;*.</span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;json&quot;</span><span class="p">,</span> <span class="s2">&quot;yaml&quot;</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">stem</span> <span class="ow">in</span> <span class="n">schema_files</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">: duplicate schema in registry&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">schema_files</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">stem</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">with_file</span><span class="p">:</span>
+                <span class="n">cols</span> <span class="o">+=</span> <span class="p">[(</span><span class="n">read_file</span><span class="p">(</span><span class="n">f</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">col_t_dir</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cols</span> <span class="o">+=</span> <span class="p">[</span><span class="n">read_file</span><span class="p">(</span><span class="n">f</span><span class="p">)]</span>
+        <span class="n">res</span><span class="p">[</span><span class="n">col_t</span><span class="p">]</span> <span class="o">=</span> <span class="n">cols</span>
+    <span class="k">return</span> <span class="n">res</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Suvayu Ali and contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

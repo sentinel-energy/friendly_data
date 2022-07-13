@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Index &mdash; friendly_data 0.2.2.dev documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="#" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> friendly_data
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">How to install?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-package.html">Data package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="registry.html">Data registry</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/registry.html">Value columns - <code class="docutils literal notranslate"><span class="pre">cols</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/registry.html#index-columns-idxcols">Index columns - <code class="docutils literal notranslate"><span class="pre">idxcols</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/index-file.html">The Package Index file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="registry.html#contributing-to-the-registry">Contributing to the registry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="registry.html#where-to-add-the-new-column">Where to add the new column?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="registry.html#defining-a-custom-registry">Defining a custom registry</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">The <code class="docutils literal notranslate"><span class="pre">friendly_data</span></code> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config-file.html">The configuration file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hands-on.html">Hands-on tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hands-on.html#understanding-the-registry-used-by-friendly-data">Understanding the registry used by Friendly data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hands-on.html#column-schema">Column schema</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hands-on.html#learning-by-example">Learning by example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hands-on.html#introducing-the-index-file">Introducing the index file</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hands-on.html#metadata">Metadata</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hands-on.html#updating-existing-packages">Updating existing packages</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="iamc-conversion.html">Converting to IAMC format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced use</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#api-documentation">API documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/api.html">Datapackage tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/api.html#module-friendly_data.metatools">Metadata tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/api.html#module-friendly_data.registry">Registry API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/api.html#module-friendly_data.cli">Command Line Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/api.html#module-friendly_data.validate">Validation functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/api.html#data-analysis-interface">Data analysis interface</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/api.html#module-friendly_data.converters">Converters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/api.html#module-friendly_data.tseries">Time series API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/api.html#module-friendly_data.iamc">Conversion to IAMC</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/api.html#internal-interfaces">Internal interfaces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/api.html#module-friendly_data.io">File I/O</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/api.html#module-friendly_data.helpers">Helper utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#external-packages">External Packages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/external.html">Package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/external.html#id2">Resource</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="devnotes.html">Notes for developers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="devnotes.html#adding-dependencies">Adding dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devnotes.html#working-with-the-data-package-api">Working with the data package API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devnotes.html#working-with-the-index-file">Working with the index file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devnotes.html#working-with-the-registry-api">Working with the registry API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devnotes.html#converters-interfacing-with-the-python-ecosystem">Converters: interfacing with the Python ecosystem</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">friendly_data</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Index</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+
+<h1 id="index">Index</h1>
+
+<div class="genindex-jumpbox">
+ <a href="#A"><strong>A</strong></a>
+ | <a href="#B"><strong>B</strong></a>
+ | <a href="#C"><strong>C</strong></a>
+ | <a href="#D"><strong>D</strong></a>
+ | <a href="#E"><strong>E</strong></a>
+ | <a href="#F"><strong>F</strong></a>
+ | <a href="#G"><strong>G</strong></a>
+ | <a href="#H"><strong>H</strong></a>
+ | <a href="#I"><strong>I</strong></a>
+ | <a href="#L"><strong>L</strong></a>
+ | <a href="#M"><strong>M</strong></a>
+ | <a href="#N"><strong>N</strong></a>
+ | <a href="#O"><strong>O</strong></a>
+ | <a href="#P"><strong>P</strong></a>
+ | <a href="#R"><strong>R</strong></a>
+ | <a href="#S"><strong>S</strong></a>
+ | <a href="#T"><strong>T</strong></a>
+ | <a href="#U"><strong>U</strong></a>
+ | <a href="#W"><strong>W</strong></a>
+ | <a href="#X"><strong>X</strong></a>
+ 
+</div>
+<h2 id="A">A</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/api.html#friendly_data.iamc.IAMconv.agg_idxcol">agg_idxcol() (friendly_data.iamc.IAMconv method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/api.html#friendly_data.iamc.IAMconv.agg_vals_all">agg_vals_all() (friendly_data.iamc.IAMconv method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="B">B</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/api.html#friendly_data.iamc.IAMconv.basepath">basepath (friendly_data.iamc.IAMconv property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="C">C</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/api.html#friendly_data.io.HttpCache.cachefile">cachefile() (friendly_data.io.HttpCache method)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.metatools.check_license">check_license() (in module friendly_data.metatools)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.validate.check_pkg">check_pkg() (in module friendly_data.validate)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.validate.check_schema">check_schema() (in module friendly_data.validate)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/api.html#friendly_data.registry.config_ctx">config_ctx() (in module friendly_data.registry)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.io.copy_files">copy_files() (in module friendly_data.io)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.cli.create">create() (in module friendly_data.cli)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.dpkg.create_pkg">create_pkg() (in module friendly_data.dpkg)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="D">D</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/api.html#friendly_data.cli.describe">describe() (in module friendly_data.cli)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/api.html#friendly_data.cli.describe_registry">describe_registry() (in module friendly_data.cli)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.io.dwim_file">dwim_file() (in module friendly_data.io)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="E">E</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/api.html#friendly_data.dpkg.entry_from_res">entry_from_res() (in module friendly_data.dpkg)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="F">F</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/api.html#friendly_data.io.HttpCache.fetch">fetch() (friendly_data.io.HttpCache method)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.helpers.filter_dict">filter_dict() (in module friendly_data.helpers)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.helpers.flatten_list">flatten_list() (in module friendly_data.helpers)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.iamc.IAMconv.frames">frames() (friendly_data.iamc.IAMconv method)</a>
+</li>
+      <li>
+    frictionless.package
+
+      <ul>
+        <li><a href="api/external.html#module-frictionless.package">module</a>
+</li>
+      </ul></li>
+      <li>
+    frictionless.resource
+
+      <ul>
+        <li><a href="api/external.html#module-frictionless.resource">module</a>
+</li>
+      </ul></li>
+      <li>
+    friendly_data.cli
+
+      <ul>
+        <li><a href="api/api.html#module-friendly_data.cli">module</a>
+</li>
+      </ul></li>
+      <li>
+    friendly_data.converters
+
+      <ul>
+        <li><a href="api/api.html#module-friendly_data.converters">module</a>
+</li>
+      </ul></li>
+      <li>
+    friendly_data.dpkg
+
+      <ul>
+        <li><a href="api/api.html#module-friendly_data.dpkg">module</a>
+</li>
+      </ul></li>
+      <li>
+    friendly_data.helpers
+
+      <ul>
+        <li><a href="api/api.html#module-friendly_data.helpers">module</a>
+</li>
+      </ul></li>
+      <li>
+    friendly_data.iamc
+
+      <ul>
+        <li><a href="api/api.html#module-friendly_data.iamc">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    friendly_data.io
+
+      <ul>
+        <li><a href="api/api.html#module-friendly_data.io">module</a>
+</li>
+      </ul></li>
+      <li>
+    friendly_data.metatools
+
+      <ul>
+        <li><a href="api/api.html#module-friendly_data.metatools">module</a>
+</li>
+      </ul></li>
+      <li>
+    friendly_data.registry
+
+      <ul>
+        <li><a href="api/api.html#module-friendly_data.registry">module</a>
+</li>
+      </ul></li>
+      <li>
+    friendly_data.tseries
+
+      <ul>
+        <li><a href="api/api.html#module-friendly_data.tseries">module</a>
+</li>
+      </ul></li>
+      <li>
+    friendly_data.validate
+
+      <ul>
+        <li><a href="api/api.html#module-friendly_data.validate">module</a>
+</li>
+      </ul></li>
+      <li>
+    friendly_data_registry
+
+      <ul>
+        <li><a href="api/api.html#module-friendly_data_registry">module</a>
+</li>
+      </ul></li>
+      <li><a href="api/api.html#friendly_data.converters.from_df">from_df() (in module friendly_data.converters)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.converters.from_dst">from_dst() (in module friendly_data.converters)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.dpkg.pkgindex.from_file">from_file() (friendly_data.dpkg.pkgindex class method)</a>
+
+      <ul>
+        <li><a href="api/api.html#friendly_data.iamc.IAMconv.from_file">(friendly_data.iamc.IAMconv class method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/api.html#friendly_data.tseries.from_multicol">from_multicol() (in module friendly_data.tseries)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.tseries.from_table">from_table() (in module friendly_data.tseries)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.dpkg.fullpath">fullpath() (in module friendly_data.dpkg)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="G">G</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/api.html#friendly_data.cli.generate_index_file">generate_index_file() (in module friendly_data.cli)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.dpkg.pkgindex.get">get() (friendly_data.dpkg.pkgindex method)</a>
+
+      <ul>
+        <li><a href="api/api.html#friendly_data.io.HttpCache.get">(friendly_data.io.HttpCache method)</a>
+</li>
+        <li><a href="api/api.html#friendly_data.registry.get">(in module friendly_data.registry)</a>
+</li>
+        <li><a href="api/api.html#friendly_data_registry.get">(in module friendly_data_registry)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/api.html#friendly_data.dpkg.get_aliased_cols">get_aliased_cols() (in module friendly_data.dpkg)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.io.get_cachedir">get_cachedir() (in module friendly_data.io)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.metatools.get_license">get_license() (in module friendly_data.metatools)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.registry.getall">getall() (in module friendly_data.registry)</a>
+
+      <ul>
+        <li><a href="api/api.html#friendly_data_registry.getall">(in module friendly_data_registry)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="H">H</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/api.html#friendly_data.io.HttpCache">HttpCache (class in friendly_data.io)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="I">I</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/api.html#friendly_data.iamc.IAMconv.iamcify">iamcify() (friendly_data.iamc.IAMconv method)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.iamc.IAMconv">IAMconv (class in friendly_data.iamc)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.helpers.idx_lvl_values">idx_lvl_values() (in module friendly_data.helpers)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.dpkg.idxpath_from_pkgpath">idxpath_from_pkgpath() (in module friendly_data.dpkg)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.helpers.idxslice">idxslice() (in module friendly_data.helpers)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/api.html#friendly_data.helpers.import_from">import_from() (in module friendly_data.helpers)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.iamc.IAMconv.index_levels">index_levels() (friendly_data.iamc.IAMconv method)</a>
+
+      <ul>
+        <li><a href="api/api.html#friendly_data.dpkg.index_levels">(in module friendly_data.dpkg)</a>
+</li>
+      </ul></li>
+      <li><a href="api/api.html#friendly_data.iamc.IAMconv.indices">indices (friendly_data.iamc.IAMconv property)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.helpers.is_windows">is_windows() (in module friendly_data.helpers)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/api.html#friendly_data.metatools.lic_domain">lic_domain() (in module friendly_data.metatools)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.metatools.lic_metadata">lic_metadata() (in module friendly_data.metatools)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.cli.license_info">license_info() (in module friendly_data.cli)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/api.html#friendly_data.cli.license_prompt">license_prompt() (in module friendly_data.cli)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.cli.list_licenses">list_licenses() (in module friendly_data.cli)</a>
+
+      <ul>
+        <li><a href="api/api.html#friendly_data.metatools.list_licenses">(in module friendly_data.metatools)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="M">M</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/api.html#friendly_data.cli.main">main() (in module friendly_data.cli)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.helpers.match">match() (in module friendly_data.helpers)</a>
+</li>
+      <li>
+    module
+
+      <ul>
+        <li><a href="api/external.html#module-frictionless.package">frictionless.package</a>
+</li>
+        <li><a href="api/external.html#module-frictionless.resource">frictionless.resource</a>
+</li>
+        <li><a href="api/api.html#module-friendly_data.cli">friendly_data.cli</a>
+</li>
+        <li><a href="api/api.html#module-friendly_data.converters">friendly_data.converters</a>
+</li>
+        <li><a href="api/api.html#module-friendly_data.dpkg">friendly_data.dpkg</a>
+</li>
+        <li><a href="api/api.html#module-friendly_data.helpers">friendly_data.helpers</a>
+</li>
+        <li><a href="api/api.html#module-friendly_data.iamc">friendly_data.iamc</a>
+</li>
+        <li><a href="api/api.html#module-friendly_data.io">friendly_data.io</a>
+</li>
+        <li><a href="api/api.html#module-friendly_data.metatools">friendly_data.metatools</a>
+</li>
+        <li><a href="api/api.html#module-friendly_data.registry">friendly_data.registry</a>
+</li>
+        <li><a href="api/api.html#module-friendly_data.tseries">friendly_data.tseries</a>
+</li>
+        <li><a href="api/api.html#module-friendly_data.validate">friendly_data.validate</a>
+</li>
+        <li><a href="api/api.html#module-friendly_data_registry">friendly_data_registry</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="N">N</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/api.html#friendly_data.helpers.noop_map">noop_map (class in friendly_data.helpers)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="O">O</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/api.html#friendly_data.io.outoftree_paths">outoftree_paths() (in module friendly_data.io)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="P">P</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/api.html#friendly_data.io.path_in">path_in() (in module friendly_data.io)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.io.path_not_in">path_not_in() (in module friendly_data.io)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.dpkg.pkg_from_files">pkg_from_files() (in module friendly_data.dpkg)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/api.html#friendly_data.dpkg.pkg_from_index">pkg_from_index() (in module friendly_data.dpkg)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.dpkg.pkgindex">pkgindex (class in friendly_data.dpkg)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.io.posixpathstr">posixpathstr() (in module friendly_data.io)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="R">R</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/api.html#friendly_data_registry.read_file">read_file() (in module friendly_data_registry)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.iamc.IAMconv.read_indices">read_indices() (friendly_data.iamc.IAMconv class method)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.dpkg.read_pkg">read_pkg() (in module friendly_data.dpkg)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.tseries.read_timeseries">read_timeseries() (in module friendly_data.tseries)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.dpkg.pkgindex.records">records() (friendly_data.dpkg.pkgindex method)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.registry.RegistrySchema">RegistrySchema (class in friendly_data.registry)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.io.relpaths">relpaths() (in module friendly_data.io)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.io.HttpCache.remove">remove() (friendly_data.io.HttpCache method)</a>
+
+      <ul>
+        <li><a href="api/api.html#friendly_data.cli.remove">(in module friendly_data.cli)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/api.html#friendly_data.cli.reports">reports() (in module friendly_data.cli)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.dpkg.res_from_entry">res_from_entry() (in module friendly_data.dpkg)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.iamc.IAMconv.res_idx">res_idx (friendly_data.iamc.IAMconv property)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.converters.resolve_aliases">resolve_aliases() (in module friendly_data.converters)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.iamc.IAMconv.resolve_idxcol_defaults">resolve_idxcol_defaults() (friendly_data.iamc.IAMconv method)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.metatools.resolve_licenses">resolve_licenses() (in module friendly_data.metatools)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.dpkg.resource_">resource_() (in module friendly_data.dpkg)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="S">S</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/api.html#friendly_data.helpers.sanitise">sanitise() (in module friendly_data.helpers)</a>
+</li>
+      <li><a href="api/api.html#friendly_data_registry.schschemaema">schschemaema (class in friendly_data_registry)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.helpers.select">select() (in module friendly_data.helpers)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/api.html#friendly_data.dpkg.set_idxcols">set_idxcols() (in module friendly_data.dpkg)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.validate.summarise_diff">summarise_diff() (in module friendly_data.validate)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.validate.summarise_errors">summarise_errors() (in module friendly_data.validate)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="T">T</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/api.html#friendly_data.iamc.IAMconv.to_csv">to_csv() (friendly_data.iamc.IAMconv method)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.converters.to_da">to_da() (in module friendly_data.converters)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.iamc.IAMconv.to_df">to_df() (friendly_data.iamc.IAMconv method)</a>
+
+      <ul>
+        <li><a href="api/api.html#friendly_data.converters.to_df">(in module friendly_data.converters)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/api.html#friendly_data.converters.to_dst">to_dst() (in module friendly_data.converters)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.cli.to_iamc">to_iamc() (in module friendly_data.cli)</a>
+</li>
+      <li><a href="api/api.html#friendly_data.converters.to_mfdst">to_mfdst() (in module friendly_data.converters)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/api.html#friendly_data.cli.update">update() (in module friendly_data.cli)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/api.html#friendly_data.dpkg.write_pkg">write_pkg() (in module friendly_data.dpkg)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="X">X</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/api.html#friendly_data.converters.xr_da">xr_da() (in module friendly_data.converters)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/api.html#friendly_data.converters.xr_metadata">xr_metadata() (in module friendly_data.converters)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Suvayu Ali and contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

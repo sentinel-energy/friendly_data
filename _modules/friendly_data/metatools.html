@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>friendly_data.metatools &mdash; friendly_data 0.2.2.dev documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> friendly_data
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">How to install?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../data-package.html">Data package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../registry.html">Data registry</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/registry.html">Value columns - <code class="docutils literal notranslate"><span class="pre">cols</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/registry.html#index-columns-idxcols">Index columns - <code class="docutils literal notranslate"><span class="pre">idxcols</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/index-file.html">The Package Index file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../registry.html#contributing-to-the-registry">Contributing to the registry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../registry.html#where-to-add-the-new-column">Where to add the new column?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../registry.html#defining-a-custom-registry">Defining a custom registry</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../cli.html">The <code class="docutils literal notranslate"><span class="pre">friendly_data</span></code> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../config-file.html">The configuration file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hands-on.html">Hands-on tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../hands-on.html#understanding-the-registry-used-by-friendly-data">Understanding the registry used by Friendly data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../hands-on.html#column-schema">Column schema</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../hands-on.html#learning-by-example">Learning by example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../hands-on.html#introducing-the-index-file">Introducing the index file</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../hands-on.html#metadata">Metadata</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../hands-on.html#updating-existing-packages">Updating existing packages</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../iamc-conversion.html">Converting to IAMC format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced.html">Advanced use</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced.html#api-documentation">API documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html">Datapackage tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#module-friendly_data.metatools">Metadata tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#module-friendly_data.registry">Registry API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#module-friendly_data.cli">Command Line Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#module-friendly_data.validate">Validation functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#data-analysis-interface">Data analysis interface</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/api.html#module-friendly_data.converters">Converters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/api.html#module-friendly_data.tseries">Time series API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/api.html#module-friendly_data.iamc">Conversion to IAMC</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#internal-interfaces">Internal interfaces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/api.html#module-friendly_data.io">File I/O</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/api.html#module-friendly_data.helpers">Helper utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced.html#external-packages">External Packages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/external.html">Package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/external.html#id2">Resource</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../devnotes.html">Notes for developers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../devnotes.html#adding-dependencies">Adding dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../devnotes.html#working-with-the-data-package-api">Working with the data package API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../devnotes.html#working-with-the-index-file">Working with the index file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../devnotes.html#working-with-the-registry-api">Working with the registry API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../devnotes.html#converters-interfacing-with-the-python-ecosystem">Converters: interfacing with the Python ecosystem</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">friendly_data</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>friendly_data.metatools</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for friendly_data.metatools</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Functions useful to access and manipulate package metadata.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">contains</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">from</span> <span class="nn">glom</span> <span class="kn">import</span> <span class="n">Assign</span><span class="p">,</span> <span class="n">Coalesce</span><span class="p">,</span> <span class="n">glom</span><span class="p">,</span> <span class="n">Iter</span><span class="p">,</span> <span class="n">Spec</span>
+<span class="kn">from</span> <span class="nn">glom</span> <span class="kn">import</span> <span class="n">Match</span><span class="p">,</span> <span class="n">MatchError</span>
+
+<span class="kn">from</span> <span class="nn">friendly_data.helpers</span> <span class="kn">import</span> <span class="n">filter_dict</span>
+<span class="kn">from</span> <span class="nn">friendly_data.io</span> <span class="kn">import</span> <span class="n">HttpCache</span>
+<span class="kn">from</span> <span class="nn">friendly_data._types</span> <span class="kn">import</span> <span class="n">_license_t</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># Open Definition License Service, url template</span>
+<span class="n">ODLS</span> <span class="o">=</span> <span class="s2">&quot;https://licenses.opendefinition.org/licenses/groups/</span><span class="si">{}</span><span class="s2">.json&quot;</span>
+<span class="c1"># ODLS groups: all, OSI compliant, Open Definition compliant, specially</span>
+<span class="c1"># selected for CKAN (https://ckan.org)</span>
+<span class="n">ODLS_GROUPS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;osi&quot;</span><span class="p">,</span> <span class="s2">&quot;od&quot;</span><span class="p">,</span> <span class="s2">&quot;ckan&quot;</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">_fetch_license</span><span class="p">(</span><span class="n">group</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">group</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ODLS_GROUPS</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;unknown license group: </span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s2">, should be one of: </span><span class="si">{</span><span class="n">ODLS_GROUPS</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+    <span class="n">cache</span> <span class="o">=</span> <span class="n">HttpCache</span><span class="p">(</span><span class="n">ODLS</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">group</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="list_licenses"><a class="viewcode-back" href="../../api/api.html#friendly_data.metatools.list_licenses">[docs]</a><span class="k">def</span> <span class="nf">list_licenses</span><span class="p">(</span><span class="n">group</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Return list of valid licenses&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">_fetch_license</span><span class="p">(</span><span class="n">group</span><span class="p">)</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="lic_domain"><a class="viewcode-back" href="../../api/api.html#friendly_data.metatools.lic_domain">[docs]</a><span class="k">def</span> <span class="nf">lic_domain</span><span class="p">(</span><span class="n">lic</span><span class="p">:</span> <span class="n">_license_t</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Find the domain of a license&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">domain</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;content&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;software&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">lic</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;domain_</span><span class="si">{</span><span class="n">domain</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">domain</span>
+    <span class="k">return</span> <span class="s2">&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="lic_metadata"><a class="viewcode-back" href="../../api/api.html#friendly_data.metatools.lic_metadata">[docs]</a><span class="k">def</span> <span class="nf">lic_metadata</span><span class="p">(</span>
+    <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">pred</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Dict</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="kc">True</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;Return a list of license metadata with the requested set of keys</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    keys : Iterable[str]</span>
+<span class="sd">        List of keys to include in the metadata</span>
+
+<span class="sd">    pred : Callable[[Dict], bool]</span>
+<span class="sd">        A predicate to select a subset of licenses.  It should accept a</span>
+<span class="sd">        dictionary with license metadata, and return a boolean indicating</span>
+<span class="sd">        whether to accept or not.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    List[Dict]</span>
+<span class="sd">        List of license metadata</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">glom</span><span class="p">(</span>
+        <span class="n">_fetch_license</span><span class="p">(</span><span class="s2">&quot;all&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span>
+        <span class="n">Iter</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">i</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;active&quot;</span>
+            <span class="ow">and</span> <span class="n">i</span><span class="p">[</span><span class="s2">&quot;maintainer&quot;</span><span class="p">]</span>
+            <span class="ow">and</span> <span class="s2">&quot;GFDL&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">i</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>  <span class="c1"># weird one, probably won&#39;t need</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">Assign</span><span class="p">(</span><span class="s2">&quot;domain&quot;</span><span class="p">,</span> <span class="n">Spec</span><span class="p">(</span><span class="n">lic_domain</span><span class="p">)))</span>
+        <span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">filter_dict</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">keys</span><span class="p">))</span>
+        <span class="o">.</span><span class="n">all</span><span class="p">(),</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span></div>
+
+
+<div class="viewcode-block" id="resolve_licenses"><a class="viewcode-back" href="../../api/api.html#friendly_data.metatools.resolve_licenses">[docs]</a><span class="k">def</span> <span class="nf">resolve_licenses</span><span class="p">(</span><span class="n">meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Check and fix if licenses are specified correctly in the metadata&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s2">&quot;license&quot;</span> <span class="ow">in</span> <span class="n">meta</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;&#39;license&#39;: should be plural! renaming&quot;</span><span class="p">)</span>
+        <span class="n">meta</span><span class="p">[</span><span class="s2">&quot;licenses&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;license&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;licenses&quot;</span> <span class="ow">in</span> <span class="n">meta</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">glom</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="n">Match</span><span class="p">({</span><span class="s2">&quot;licenses&quot;</span><span class="p">:</span> <span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="nb">str</span><span class="p">:</span> <span class="nb">object</span><span class="p">}))</span>
+        <span class="k">except</span> <span class="n">MatchError</span><span class="p">:</span>
+            <span class="n">lic</span> <span class="o">=</span> <span class="n">glom</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;licenses&quot;</span><span class="p">,</span> <span class="n">Coalesce</span><span class="p">([</span><span class="n">get_license</span><span class="p">],</span> <span class="n">get_license</span><span class="p">)))</span>
+            <span class="n">meta</span><span class="p">[</span><span class="s2">&quot;licenses&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lic</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lic</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">lic</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">meta</span></div>
+
+
+<div class="viewcode-block" id="get_license"><a class="viewcode-back" href="../../api/api.html#friendly_data.metatools.get_license">[docs]</a><span class="k">def</span> <span class="nf">get_license</span><span class="p">(</span><span class="n">lic</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_license_t</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Return the license metadata</span>
+
+<span class="sd">    Retrieve the license metadata of the requested group from the Open</span>
+<span class="sd">    Definition License Service and cache it in a temporary file.  From the</span>
+<span class="sd">    retrieved list, find the requested license and return it.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    lic : str or None</span>
+<span class="sd">        Requested license; if None, interactively ask for the license name</span>
+<span class="sd">    group : {&#39;all&#39;, &#39;osi&#39;, &#39;od&#39;, &#39;ckan&#39;}</span>
+<span class="sd">        License group where to find the license</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Dict[str, str], alias _license_t</span>
+<span class="sd">        A dictionary with the license metadata</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the license group is incorrect</span>
+<span class="sd">    KeyError</span>
+<span class="sd">        If the license cannot be found in the provided group</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">licenses</span> <span class="o">=</span> <span class="n">_fetch_license</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">check_license</span><span class="p">(</span><span class="n">licenses</span><span class="p">[</span><span class="n">lic</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="check_license"><a class="viewcode-back" href="../../api/api.html#friendly_data.metatools.check_license">[docs]</a><span class="k">def</span> <span class="nf">check_license</span><span class="p">(</span><span class="n">lic</span><span class="p">:</span> <span class="n">_license_t</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_license_t</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Return the license spec from the metadata</span>
+
+<span class="sd">    Issue a warning if the license is old.  TODO: add other recommendations</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    lic : Dict[str, str], alias _license_t</span>
+<span class="sd">        License metadata dictionary (as returned by the Open Definition</span>
+<span class="sd">        License Service)</span>
+<span class="sd">        Example: CC-BY-SA::</span>
+
+<span class="sd">          {</span>
+<span class="sd">            &quot;domain_content&quot;: true,</span>
+<span class="sd">            &quot;domain_data&quot;: true,</span>
+<span class="sd">            &quot;domain_software&quot;: false,</span>
+<span class="sd">            &quot;family&quot;: &quot;&quot;,</span>
+<span class="sd">            &quot;id&quot;: &quot;CC-BY-SA-4.0&quot;,</span>
+<span class="sd">            &quot;maintainer&quot;: &quot;Creative Commons&quot;,</span>
+<span class="sd">            &quot;od_conformance&quot;: &quot;approved&quot;,</span>
+<span class="sd">            &quot;osd_conformance&quot;: &quot;not reviewed&quot;,</span>
+<span class="sd">            &quot;status&quot;: &quot;active&quot;,</span>
+<span class="sd">            &quot;title&quot;: &quot;Creative Commons Attribution Share-Alike 4.0&quot;,</span>
+<span class="sd">            &quot;url&quot;: &quot;https://creativecommons.org/licenses/by-sa/4.0/&quot;</span>
+<span class="sd">          }</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO: to add more checks, add to the following lists</span>
+    <span class="k">for</span> <span class="n">check</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="n">ref</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">_license_status</span><span class="p">,</span> <span class="n">_license_domain</span><span class="p">],</span>  <span class="c1"># check</span>
+        <span class="p">[</span><span class="n">contains</span><span class="p">,</span> <span class="n">contains</span><span class="p">],</span>  <span class="c1"># test</span>
+        <span class="p">[</span><span class="s2">&quot;active&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">],</span>  <span class="c1"># reference</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">op</span><span class="p">(</span><span class="n">check</span><span class="p">(</span><span class="n">lic</span><span class="p">),</span> <span class="n">ref</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;inappropriate license: not </span><span class="si">{</span><span class="n">ref</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">lic</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">lic</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">lic</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">],</span>
+    <span class="p">}</span></div>
+
+
+<span class="k">def</span> <span class="nf">_license_status</span><span class="p">(</span><span class="n">lic</span><span class="p">:</span> <span class="n">_license_t</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">lic</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">_license_domain</span><span class="p">(</span><span class="n">lic</span><span class="p">:</span> <span class="n">_license_t</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
+        <span class="n">lic_t</span> <span class="k">for</span> <span class="n">lic_t</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;content&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;software&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">lic</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;domain_</span><span class="si">{</span><span class="n">lic_t</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Suvayu Ali and contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

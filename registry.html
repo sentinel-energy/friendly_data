@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data registry &mdash; friendly_data 0.2.2.dev documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Value columns - cols" href="api/registry.html" />
+    <link rel="prev" title="Data package" href="data-package.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> friendly_data
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">How to install?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-package.html">Data package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Data registry</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/registry.html">Value columns - <code class="docutils literal notranslate"><span class="pre">cols</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/registry.html#index-columns-idxcols">Index columns - <code class="docutils literal notranslate"><span class="pre">idxcols</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/index-file.html">The Package Index file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#contributing-to-the-registry">Contributing to the registry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#where-to-add-the-new-column">Where to add the new column?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#defining-a-custom-registry">Defining a custom registry</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">The <code class="docutils literal notranslate"><span class="pre">friendly_data</span></code> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config-file.html">The configuration file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hands-on.html">Hands-on tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hands-on.html#understanding-the-registry-used-by-friendly-data">Understanding the registry used by Friendly data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hands-on.html#column-schema">Column schema</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hands-on.html#learning-by-example">Learning by example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hands-on.html#introducing-the-index-file">Introducing the index file</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hands-on.html#metadata">Metadata</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hands-on.html#updating-existing-packages">Updating existing packages</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="iamc-conversion.html">Converting to IAMC format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced use</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#api-documentation">API documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/api.html">Datapackage tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/api.html#module-friendly_data.metatools">Metadata tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/api.html#module-friendly_data.registry">Registry API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/api.html#module-friendly_data.cli">Command Line Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/api.html#module-friendly_data.validate">Validation functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/api.html#data-analysis-interface">Data analysis interface</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/api.html#module-friendly_data.converters">Converters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/api.html#module-friendly_data.tseries">Time series API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/api.html#module-friendly_data.iamc">Conversion to IAMC</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/api.html#internal-interfaces">Internal interfaces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/api.html#module-friendly_data.io">File I/O</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/api.html#module-friendly_data.helpers">Helper utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#external-packages">External Packages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/external.html">Package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/external.html#id2">Resource</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="devnotes.html">Notes for developers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="devnotes.html#adding-dependencies">Adding dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devnotes.html#working-with-the-data-package-api">Working with the data package API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devnotes.html#working-with-the-index-file">Working with the index file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devnotes.html#working-with-the-registry-api">Working with the registry API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devnotes.html#converters-interfacing-with-the-python-ecosystem">Converters: interfacing with the Python ecosystem</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">friendly_data</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Data registry</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/registry.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="data-registry">
+<span id="registry"></span><h1>Data registry<a class="headerlink" href="#data-registry" title="Permalink to this heading"></a></h1>
+<p>Friendly data adds functionality specific to the energy modelling
+community via the registry.  It is a collection of metadata (column
+schemas) for commonly used data columns.  Each column must have a
+generic name, and a data type (a complete list of all supported data
+types can found in the <a class="reference external" href="https://specs.frictionlessdata.io/table-schema/">frictionless documentation</a>).  Additionally
+the registry also records metadata like <code class="docutils literal notranslate"><span class="pre">constraints</span></code>.  Some
+constraints, like <code class="docutils literal notranslate"><span class="pre">enum</span></code>, where you limit the allowed values in a
+column to a valid set, depends on the dataset.  These are mentioned in
+the registry, but the value is left blank, and is determined from the
+dataset at runtime.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/registry.html">Value columns - <code class="docutils literal notranslate"><span class="pre">cols</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/registry.html#index-columns-idxcols">Index columns - <code class="docutils literal notranslate"><span class="pre">idxcols</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/index-file.html">The Package Index file</a></li>
+</ul>
+</div>
+<section id="contributing-to-the-registry">
+<h2>Contributing to the registry<a class="headerlink" href="#contributing-to-the-registry" title="Permalink to this heading"></a></h2>
+<p>The column registry is designed to evolve as per the needs of the
+community.  If you feel it needs to include new columns to express
+your dataset/model outputs better, please suggest additions by opening
+an <a class="reference external" href="https://github.com/sentinel-energy/friendly_data_registry/issues">issue</a> on GitHub.  Here we will go over some concepts to make
+contributing to the registry easier.</p>
+<p>Since columns in tabular datasets can be classified as index columns
+and value columns, the registry also respects these two distinctions.
+Index columns have values that can identify a row uniquely in a
+dataset (like a unique ID), whereas value columns simply contain the
+data in question.  A dataset may contain multiple index and value
+columns.</p>
+<p>Any new column suggestion should be in the YAML format, and should
+match the following structure:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;column_name&gt;</span><span class="w"></span>
+<span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;type&gt;</span><span class="w"></span>
+<span class="nt">constraints</span><span class="p">:</span><span class="w">  </span><span class="c1"># optional</span><span class="w"></span>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">...</span><span class="w"></span>
+
+<span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span><span class="w"></span>
+<span class="w">  </span><span class="no">Free text description of the column.  This can include</span><span class="w"></span>
+<span class="w">  </span><span class="no">restructured text syntax for simple formatting.  This text</span><span class="w"></span>
+<span class="w">  </span><span class="no">will be included in the online documentation.</span><span class="w"></span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">name</span></code> and <code class="docutils literal notranslate"><span class="pre">type</span></code> properties are mandatory, the others are
+optional.  However, it is highly recommended that you also include a
+concise but complete description.</p>
+<p>If you want to specify <code class="docutils literal notranslate"><span class="pre">constraints</span></code>, you can find a complete list
+of all supported properties on the <a class="reference external" href="https://specs.frictionlessdata.io/table-schema/">frictionless documentation</a> page.</p>
+<section id="where-to-add-the-new-column">
+<h3>Where to add the new column?<a class="headerlink" href="#where-to-add-the-new-column" title="Permalink to this heading"></a></h3>
+<p>As discussed above, there are two kinds of columns, and in the
+repository they are separated into two folders.  Index column
+definitions should be included in the <a class="reference external" href="https://github.com/sentinel-energy/friendly_data_registry/tree/master/friendly_data_registry/idxcols">idxcols</a> folder, and value
+column definitions should be in the <a class="reference external" href="https://github.com/sentinel-energy/friendly_data_registry/tree/master/friendly_data_registry/cols">cols</a> folder.</p>
+<p>Go to GitHub and open an <a class="reference external" href="https://github.com/sentinel-energy/friendly_data_registry/issues">issue</a>.  Notice that there is an issue
+template with a summary of the above information.  Once an issue has
+been filed, a pull-request where the YAML file is added to the
+appropriate folder in the repository has to be opened.  This can be
+done easily by navigating to the desired directory and creating a new
+file and typing in the contents.  Please note the issue number in the
+pull-request comment field, and link it from the sidebar.  The
+community can review the proposal, and suggest edits once an
+issue/pull-request has been openned.</p>
+<p>Following an agreement, the change can be accepted (or merged), and
+the maintainers of the friendly data registry can release an update
+with your contribution!</p>
+</section>
+</section>
+<section id="defining-a-custom-registry">
+<h2>Defining a custom registry<a class="headerlink" href="#defining-a-custom-registry" title="Permalink to this heading"></a></h2>
+<p>You can define a custom registry in your config file by adding a
+<code class="docutils literal notranslate"><span class="pre">registry</span></code> section.  It can have custom registry definitions under
+the <code class="docutils literal notranslate"><span class="pre">cols</span></code> and <code class="docutils literal notranslate"><span class="pre">idxcols</span></code> keys.  When using the CLI, you can
+augment the default registry with your custom registry by passing the
+config file as an option.  An example section could look like this:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">registry</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">idxcols</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">enduse</span><span class="w"></span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">string</span><span class="w"></span>
+<span class="w">      </span><span class="nt">constraints</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">enum</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cooling</span><span class="w"></span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">heating</span><span class="w"></span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hot_water</span><span class="w"></span>
+<span class="w">  </span><span class="nt">cols</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">capacity_factor</span><span class="w"></span>
+<span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">number</span><span class="w"></span>
+<span class="w">      </span><span class="nt">constraints</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">maximum</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span><span class="w"></span>
+</pre></div>
+</div>
+<p>When using the Python API, you can temporarily update the registry by
+using a context manager.  There are many ways to do this:</p>
+<ul class="simple">
+<li><p>reading a config file</p></li>
+<li><p>passing the registry updates as a dictionary,</p></li>
+<li><p>passing a list of columns as index columns, or value columns.</p></li>
+</ul>
+<p>For all these options, the modifications are merged with the default
+registry, so it is like an update rather than replace.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">friendly_data.registry</span> <span class="kn">import</span> <span class="n">config_ctx</span><span class="p">,</span> <span class="n">get</span><span class="p">,</span> <span class="n">getall</span>
+
+<span class="k">with</span> <span class="n">config_ctx</span><span class="p">(</span><span class="n">conffile</span><span class="o">=</span><span class="s2">&quot;config.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">_</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;enduse&quot;</span><span class="p">,</span> <span class="s2">&quot;idxcols&quot;</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">getall</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="data-package.html" class="btn btn-neutral float-left" title="Data package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api/registry.html" class="btn btn-neutral float-right" title="Value columns - cols" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Suvayu Ali and contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

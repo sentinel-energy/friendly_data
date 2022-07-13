@@ -1,0 +1,28 @@
+.section {
+    /* border-bottom: 3px solid #d0d0d0; */
+    padding-bottom: 25px;
+    padding-top: 25px;
+}
+
+.function {
+    /* border-bottom: 3px solid #d0d0d0; */
+    padding-bottom: 15px;
+    padding-top: 15px;
+}
+
+.toctree-wrapper {
+    background-color: #E8E8E8E;
+}
+
+.toc-backref:hover::after {
+    vertical-align: top;
+    font-size: 0.5em;
+    content: "^";
+}
+
+/*
+.docutils caption .caption-text {
+    text-align: left;
+    font-weight: bold;
+}
+*/

@@ -1,0 +1,223 @@
+.. contents::
+
+Value columns - ``cols``
+------------------------
+**value** (number) `[edit] 🖉`__: 
+    This column is primarily to support long-form IAMC time-series.
+
+
+    .. __: https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/cols/value.json
+
+**capacity_factor** (number) `[edit] 🖉`__: 
+    constraints:
+
+    .. list-table::
+       :widths: auto
+       :align: left
+
+       * - minimum
+         - 0
+       * - maximum
+         - 1
+
+    .. __: https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/cols/capacity_factor.json
+
+**description** (string) `[edit] 🖉`__: 
+    A human readable description, typically corresponding to an index column
+
+
+    .. __: https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/cols/description.json
+
+**name** (string) `[edit] 🖉`__: 
+
+    .. __: https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/cols/name.json
+
+**flow_in** (number) `[edit] 🖉`__: 
+    constraints:
+
+    .. list-table::
+       :widths: auto
+       :align: left
+
+       * - minimum
+         - 0
+
+    .. __: https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/cols/flow_in.yaml
+
+**storage_capacity** (number) `[edit] 🖉`__: 
+    The energy or power storage capacity of a technology, e.g. of a battery or a hydro dam.
+
+    constraints:
+
+    .. list-table::
+       :widths: auto
+       :align: left
+
+       * - minimum
+         - 0
+
+    .. __: https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/cols/storage_capacity.yaml
+
+**nameplate_capacity** (number) `[edit] 🖉`__: 
+    The nameplate capacity of a technology, for example, the power generation capacity of a power plant in MW.
+
+    constraints:
+
+    .. list-table::
+       :widths: auto
+       :align: left
+
+       * - minimum
+         - 0
+
+    Common aliases:
+
+    .. list-table::
+       :widths: auto
+       :align: left
+
+       * - energy_cap
+         - Calliope
+    .. __: https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/cols/nameplate_capacity.yaml
+
+**flow_out** (number) `[edit] 🖉`__: 
+    constraints:
+
+    .. list-table::
+       :widths: auto
+       :align: left
+
+       * - minimum
+         - 0
+
+    .. __: https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/cols/flow_out.yaml
+
+Index columns - ``idxcols``
+---------------------------
+**scenario** (string) `[edit] 🖉`__: 
+    The scenario under which this data was generated.  This index column is primarily to IAMC time-series.
+
+    constraints:
+
+    .. list-table::
+       :widths: auto
+       :align: left
+
+       * - enum
+         - ...
+
+    .. __: https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/idxcols/scenario.json
+
+**model** (string) `[edit] 🖉`__: 
+    The model that generated this data.  This index column is primarily to support IAMC time-series.
+
+    constraints:
+
+    .. list-table::
+       :widths: auto
+       :align: left
+
+       * - enum
+         - ...
+
+    .. __: https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/idxcols/model.json
+
+**year** (year) `[edit] 🖉`__: Data year
+    This index column is primarily to support long-form IAMC time-series.
+
+
+    .. __: https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/idxcols/year.json
+
+**carrier** (string) `[edit] 🖉`__: 
+    An energy carrier or commodity that can be produced, consumed, stored, and transported. This could be "electricity", "heat", or something more tangible such as "woody_biomass", or more abstract such as "person_kilometers" when modelling transportation.
+
+    constraints:
+
+    .. list-table::
+       :widths: auto
+       :align: left
+
+       * - enum
+         - ...
+
+    .. __: https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/idxcols/carrier.json
+
+**timestep** (datetime) `[edit] 🖉`__: 
+
+    .. __: https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/idxcols/timestep.json
+
+**unit** (string) `[edit] 🖉`__: 
+    This column is used to fill in the "unit" column when converting a data package to the IAMC format.
+
+    constraints:
+
+    .. list-table::
+       :widths: auto
+       :align: left
+
+       * - enum
+         - ...
+
+    .. __: https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/idxcols/unit.yaml
+
+**technology** (string) `[edit] 🖉`__: 
+    Descriptor or name of the technology.
+
+    constraints:
+
+    .. list-table::
+       :widths: auto
+       :align: left
+
+       * - enum
+         - ...
+
+    Common aliases:
+
+    .. list-table::
+       :widths: auto
+       :align: left
+
+       * - tech
+         - Calliope
+    .. __: https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/idxcols/technology.yaml
+
+**variable** (string) `[edit] 🖉`__: An IAMC variable
+    Denote the semi-hierarchical variable that the data represents.  It is in the format ``Category|Subcategory|Specification``; for more, see: https://pyam-iamc.readthedocs.io/en/stable/data.html
+
+    constraints:
+
+    .. list-table::
+       :widths: auto
+       :align: left
+
+       * - pattern
+         - ``^[0-9a-zA-Z_ |-]+$``
+
+    .. __: https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/idxcols/variable.yaml
+
+**region** (string) `[edit] 🖉`__: 
+    The region the data corresponds to.  This index column is needed when converting a data package to the IAMC format.
+
+    constraints:
+
+    .. list-table::
+       :widths: auto
+       :align: left
+
+       * - enum
+         - ...
+
+    Common aliases:
+
+    .. list-table::
+       :widths: auto
+       :align: left
+
+       * - node
+         - Calliope 0.7 and above
+       * - loc
+         - Calliope 0.6 and lower
+    .. __: https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/idxcols/region.yaml
+
+

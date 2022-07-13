@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>friendly_data.converters &mdash; friendly_data 0.2.2.dev documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> friendly_data
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">How to install?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../data-package.html">Data package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../registry.html">Data registry</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/registry.html">Value columns - <code class="docutils literal notranslate"><span class="pre">cols</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/registry.html#index-columns-idxcols">Index columns - <code class="docutils literal notranslate"><span class="pre">idxcols</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/index-file.html">The Package Index file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../registry.html#contributing-to-the-registry">Contributing to the registry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../registry.html#where-to-add-the-new-column">Where to add the new column?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../registry.html#defining-a-custom-registry">Defining a custom registry</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../cli.html">The <code class="docutils literal notranslate"><span class="pre">friendly_data</span></code> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../config-file.html">The configuration file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hands-on.html">Hands-on tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../hands-on.html#understanding-the-registry-used-by-friendly-data">Understanding the registry used by Friendly data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../hands-on.html#column-schema">Column schema</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../hands-on.html#learning-by-example">Learning by example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../hands-on.html#introducing-the-index-file">Introducing the index file</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../hands-on.html#metadata">Metadata</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../hands-on.html#updating-existing-packages">Updating existing packages</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../iamc-conversion.html">Converting to IAMC format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced.html">Advanced use</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced.html#api-documentation">API documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html">Datapackage tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#module-friendly_data.metatools">Metadata tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#module-friendly_data.registry">Registry API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#module-friendly_data.cli">Command Line Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#module-friendly_data.validate">Validation functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#data-analysis-interface">Data analysis interface</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/api.html#module-friendly_data.converters">Converters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/api.html#module-friendly_data.tseries">Time series API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/api.html#module-friendly_data.iamc">Conversion to IAMC</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#internal-interfaces">Internal interfaces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/api.html#module-friendly_data.io">File I/O</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/api.html#module-friendly_data.helpers">Helper utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced.html#external-packages">External Packages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/external.html">Package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/external.html#id2">Resource</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../devnotes.html">Notes for developers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../devnotes.html#adding-dependencies">Adding dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../devnotes.html#working-with-the-data-package-api">Working with the data package API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../devnotes.html#working-with-the-index-file">Working with the index file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../devnotes.html#working-with-the-registry-api">Working with the registry API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../devnotes.html#converters-interfacing-with-the-python-ecosystem">Converters: interfacing with the Python ecosystem</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">friendly_data</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>friendly_data.converters</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for friendly_data.converters</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Functions useful to read a data package resource into common analysis</span>
+<span class="sd">frameworks like ``pandas``, ``xarray``, etc.  Currently supported:</span>
+
+<span class="sd">=============================  ======================================</span>
+<span class="sd">   Library                        Data Structure</span>
+<span class="sd">=============================  ======================================</span>
+<span class="sd"> ``pandas``                     :class:``pandas.DataFrame``</span>
+<span class="sd"> ``xarray`` (via ``pandas``)    :class:``xarray.DataArray``,</span>
+<span class="sd">                                :class:``xarray.Dataset``,</span>
+<span class="sd">                                multi-file :class:``xarray.Dataset``</span>
+<span class="sd">=============================  ======================================</span>
+
+<span class="sd">Type mapping between the frictionless specification and pandas types:</span>
+
+<span class="sd">=============  =================</span>
+<span class="sd"> schema type    ``pandas`` type</span>
+<span class="sd">=============  =================</span>
+<span class="sd">``boolean``     ``bool``</span>
+<span class="sd">``datetime``    ``datetime64``</span>
+<span class="sd">``integer``     ``Int64``</span>
+<span class="sd">``number``      ``float``</span>
+<span class="sd">``string``      ``string``</span>
+<span class="sd">=============  =================</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span><span class="p">,</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">cast</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">from</span> <span class="nn">frictionless</span> <span class="kn">import</span> <span class="n">Resource</span>
+<span class="kn">from</span> <span class="nn">glom</span> <span class="kn">import</span> <span class="n">glom</span><span class="p">,</span> <span class="n">Iter</span><span class="p">,</span> <span class="n">T</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+
+<span class="kn">from</span> <span class="nn">friendly_data._types</span> <span class="kn">import</span> <span class="n">_path_t</span><span class="p">,</span> <span class="n">_dfseries_t</span>
+<span class="kn">from</span> <span class="nn">friendly_data.dpkg</span> <span class="kn">import</span> <span class="n">resource_</span>
+<span class="kn">from</span> <span class="nn">friendly_data.dpkg</span> <span class="kn">import</span> <span class="n">fullpath</span>
+<span class="kn">from</span> <span class="nn">friendly_data.dpkg</span> <span class="kn">import</span> <span class="n">get_aliased_cols</span>
+<span class="kn">from</span> <span class="nn">friendly_data.dpkg</span> <span class="kn">import</span> <span class="n">index_levels</span>
+<span class="kn">from</span> <span class="nn">friendly_data.helpers</span> <span class="kn">import</span> <span class="n">consume</span>
+<span class="kn">from</span> <span class="nn">friendly_data.helpers</span> <span class="kn">import</span> <span class="n">import_from</span>
+<span class="kn">from</span> <span class="nn">friendly_data.helpers</span> <span class="kn">import</span> <span class="n">noop_map</span>
+<span class="kn">from</span> <span class="nn">friendly_data.helpers</span> <span class="kn">import</span> <span class="n">sanitise</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># TODO: compressed files</span>
+<span class="n">_pd_types</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;boolean&quot;</span><span class="p">:</span> <span class="s2">&quot;bool&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="s2">&quot;datetime64&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;datetime64&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;datetime&quot;</span><span class="p">:</span> <span class="s2">&quot;datetime64&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;yearmonth&quot;</span><span class="p">:</span> <span class="s2">&quot;datetime64&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;integer&quot;</span><span class="p">:</span> <span class="s2">&quot;Int64&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;number&quot;</span><span class="p">:</span> <span class="s2">&quot;float&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;string&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">_pd_readers</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;csv&quot;</span><span class="p">:</span> <span class="s2">&quot;read_csv&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;xls&quot;</span><span class="p">:</span> <span class="s2">&quot;read_excel&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;xlsx&quot;</span><span class="p">:</span> <span class="s2">&quot;read_excel&quot;</span><span class="p">,</span>
+    <span class="c1"># &quot;sqlite&quot;: &quot;read_sql&quot;,</span>
+<span class="p">}</span>
+
+
+<span class="k">def</span> <span class="nf">_source_type</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="n">_path_t</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;From a file path, deduce the file type from the extension</span>
+
+<span class="sd">    Note: the extension is checked against the list of supported file types</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># FIXME: use file magic</span>
+    <span class="n">source_t</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">source</span><span class="p">)</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">source_t</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_pd_readers</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;unsupported source: </span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">source_t</span>
+
+
+<span class="k">def</span> <span class="nf">_reader</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_dfseries_t</span><span class="p">:</span>
+    <span class="n">reader</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Callable</span><span class="p">,</span> <span class="n">import_from</span><span class="p">(</span><span class="s2">&quot;pandas&quot;</span><span class="p">,</span> <span class="n">_pd_readers</span><span class="p">[</span><span class="n">_source_type</span><span class="p">(</span><span class="n">fpath</span><span class="p">)]))</span>
+    <span class="k">return</span> <span class="n">reader</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_schema</span><span class="p">(</span><span class="n">resource</span><span class="p">:</span> <span class="n">Resource</span><span class="p">,</span> <span class="n">type_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Parse a Resource schema and return types mapped to each column.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    resource : frictionless.Resource</span>
+<span class="sd">        A resource descriptor</span>
+<span class="sd">    type_map : Dict[str, str]</span>
+<span class="sd">        A dictionary that maps datapackage type names to pandas types.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Dict[str, str]</span>
+<span class="sd">        Dictionary with column names as key, and types as values</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">remap_types</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="n">type_map</span><span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]])</span>  <span class="c1"># noqa: E731</span>
+    <span class="k">return</span> <span class="n">glom</span><span class="p">(</span><span class="n">resource</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;schema.fields&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">remap_types</span><span class="p">],</span> <span class="nb">dict</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="to_df"><a class="viewcode-back" href="../../api/api.html#friendly_data.converters.to_df">[docs]</a><span class="k">def</span> <span class="nf">to_df</span><span class="p">(</span><span class="n">resource</span><span class="p">:</span> <span class="n">Resource</span><span class="p">,</span> <span class="n">noexcept</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Reads a data package resource as a `pandas.DataFrame`</span>
+
+<span class="sd">    FIXME: &#39;format&#39; in the schema is ignored.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    resource : frictionless.Resource</span>
+<span class="sd">        A data package resource object</span>
+<span class="sd">    noexcept : bool (default: False)</span>
+<span class="sd">        Whether to suppress an exception</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Additional keyword arguments that are passed on to the reader:</span>
+<span class="sd">        :func:`pandas.read_csv`, :func:`pandas.read_excel`, etc</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pandas.DataFrame</span>
+<span class="sd">        NOTE: when ``noexcept`` is ``True``, and there&#39;s an exception, an empty</span>
+<span class="sd">        dataframe is returned</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the resource is not local</span>
+<span class="sd">        If the source type the resource is pointing to isn&#39;t supported</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">pandas._libs.parsers</span> <span class="kn">import</span> <span class="n">STR_NA_VALUES</span>
+
+    <span class="c1"># parse dates</span>
+    <span class="n">schema</span> <span class="o">=</span> <span class="n">_schema</span><span class="p">(</span><span class="n">resource</span><span class="p">,</span> <span class="n">_pd_types</span><span class="p">)</span>
+    <span class="n">date_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">col_t</span> <span class="ow">in</span> <span class="n">schema</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="s2">&quot;datetime64&quot;</span> <span class="ow">in</span> <span class="n">col_t</span><span class="p">]</span>
+    <span class="n">consume</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">schema</span><span class="o">.</span><span class="n">pop</span><span class="p">,</span> <span class="n">date_cols</span><span class="p">))</span>
+
+    <span class="c1"># missing values, NOTE: pandas accepts a list of &quot;additional&quot; tokens to be</span>
+    <span class="c1"># treated as missing values.</span>
+    <span class="n">na_values</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">glom</span><span class="p">(</span><span class="n">resource</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;schema.missingValues&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="nb">set</span><span class="p">())</span> <span class="o">-</span> <span class="n">STR_NA_VALUES</span>
+    <span class="p">)</span>
+    <span class="c1"># FIXME: check if empty set is the same as None</span>
+
+    <span class="c1"># FIXME: how to handle constraints? e.g. &#39;required&#39;, &#39;unique&#39;, &#39;enum&#39;, etc</span>
+    <span class="c1"># see: https://specs.frictionlessdata.io/table-schema/#constraints</span>
+
+    <span class="c1"># set &#39;primaryKey&#39; as index_col, a list is interpreted as a MultiIndex</span>
+    <span class="n">index_col</span> <span class="o">=</span> <span class="n">glom</span><span class="p">(</span><span class="n">resource</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;schema.primaryKey&quot;</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index_col</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="c1"># guard against schema, that includes an index column</span>
+        <span class="p">[</span><span class="n">schema</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">col</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">index_col</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">schema</span><span class="p">]</span>
+
+    <span class="c1"># FIXME: skip_rows is 1-indexed, whereas skiprows is either an offset or</span>
+    <span class="c1"># 0-indexed (see FIXME in `resource_`)</span>
+    <span class="n">skiprows</span> <span class="o">=</span> <span class="n">glom</span><span class="p">(</span><span class="n">resource</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;layout.skipRows&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="c1"># don&#39;t let the user override the options we use</span>
+    <span class="p">[</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;dtype&quot;</span><span class="p">,</span> <span class="s2">&quot;na_values&quot;</span><span class="p">,</span> <span class="s2">&quot;index_col&quot;</span><span class="p">,</span> <span class="s2">&quot;parse_dates&quot;</span><span class="p">,</span> <span class="s2">&quot;skiprows&quot;</span><span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="n">alias</span> <span class="o">=</span> <span class="n">glom</span><span class="p">(</span>
+        <span class="n">resource</span><span class="p">,</span>
+        <span class="p">(</span>
+            <span class="s2">&quot;schema.fields&quot;</span><span class="p">,</span>
+            <span class="n">Iter</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="s2">&quot;alias&quot;</span> <span class="ow">in</span> <span class="n">i</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">map</span><span class="p">(({</span><span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;alias&quot;</span><span class="p">},</span> <span class="n">T</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+            <span class="o">.</span><span class="n">all</span><span class="p">(),</span>
+            <span class="n">noop_map</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># FIXME: validate options</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">_reader</span><span class="p">(</span>
+            <span class="n">fullpath</span><span class="p">(</span><span class="n">resource</span><span class="p">),</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">schema</span><span class="p">,</span>
+            <span class="n">na_values</span><span class="o">=</span><span class="n">na_values</span><span class="p">,</span>
+            <span class="n">index_col</span><span class="o">=</span><span class="n">index_col</span><span class="p">,</span>
+            <span class="n">parse_dates</span><span class="o">=</span><span class="n">date_cols</span><span class="p">,</span>
+            <span class="n">skiprows</span><span class="o">=</span><span class="n">skiprows</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">alias</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">noexcept</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">):</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">alias</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">names</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">alias</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">df</span></div>
+
+
+<div class="viewcode-block" id="xr_metadata"><a class="viewcode-back" href="../../api/api.html#friendly_data.converters.xr_metadata">[docs]</a><span class="k">def</span> <span class="nf">xr_metadata</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Extract metadata to create xarray data array/datasets</span>
+
+<span class="sd">    All indices except unit is extracted as coordinates, and &quot;unit&quot; is</span>
+<span class="sd">    extracted as metadata attribute.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df : pandas.DataFrame</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Tuple[pandas.DataFrame, Dict, Dict]</span>
+<span class="sd">        The dataframe with units removed, dictionary of coordinates, dictionary</span>
+<span class="sd">        with constant attributes like units</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">const</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;unit&quot;</span><span class="p">]</span>  <span class="c1"># remove if you need multiple unit support for one table</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">):</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">names</span>
+        <span class="n">levels</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">levels</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+        <span class="n">levels</span> <span class="o">=</span> <span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">lvls</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">lvls</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">levels</span><span class="p">)</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">const</span><span class="p">}</span>
+    <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">lvls</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">lvls</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">levels</span><span class="p">)</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">const</span><span class="p">}</span>
+    <span class="n">idx_aligned</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_product</span><span class="p">(</span><span class="n">coords</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">const</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>  <span class="c1"># FIXME: resolve items in const set in index</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">idx_aligned</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">attrs</span></div>
+
+
+<div class="viewcode-block" id="xr_da"><a class="viewcode-back" href="../../api/api.html#friendly_data.converters.xr_da">[docs]</a><span class="k">def</span> <span class="nf">xr_da</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+    <span class="n">col</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">coords</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
+    <span class="n">attrs</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{},</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Create an xarray data array from a data frame</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df : pandas.DataFrame</span>
+<span class="sd">    col : Union[int, Hashable]</span>
+<span class="sd">        Column to use to create the data array, either use the column number,</span>
+<span class="sd">        or column name</span>
+<span class="sd">    coords : Dict</span>
+<span class="sd">        Dictionary of coordinate arrays</span>
+<span class="sd">    attrs : Dict</span>
+<span class="sd">        Dictionary of metadata attributes like unit</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    xarray.DataArray</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">indexer</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s2">&quot;iloc&quot;</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;loc&quot;</span><span class="p">)</span>
+    <span class="n">arr</span> <span class="o">=</span> <span class="n">indexer</span><span class="p">[:,</span> <span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">extensions</span><span class="o">.</span><span class="n">ExtensionArray</span><span class="p">):</span>
+        <span class="n">arr</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">coords</span><span class="o">.</span><span class="n">values</span><span class="p">())))</span>
+    <span class="k">return</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="n">coords</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="n">coords</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="to_da"><a class="viewcode-back" href="../../api/api.html#friendly_data.converters.to_da">[docs]</a><span class="k">def</span> <span class="nf">to_da</span><span class="p">(</span><span class="n">resource</span><span class="p">:</span> <span class="n">Resource</span><span class="p">,</span> <span class="n">noexcept</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Reads a data package resource as an :class:`xarray.DataArray`</span>
+
+<span class="sd">    This function is restricted to tables with only one value column</span>
+<span class="sd">    (equivalent to a `pandas.Series`).  All indices are treated as</span>
+<span class="sd">    :class:`xarray.core.coordinates.DataArrayCoordinates` and dimensions.  The</span>
+<span class="sd">    array is reshaped to match the dimensions.  Any unit index is extracted and</span>
+<span class="sd">    attached as an attribute to the data array.  It is assumed that the whole</span>
+<span class="sd">    table uses the same unit.</span>
+
+<span class="sd">    Additional keyword arguments are passed on to :class:`xarray.DataArray`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    resource : frictionless.Resource</span>
+<span class="sd">        List of data package resource objects</span>
+<span class="sd">    noexcept : bool (default: False)</span>
+<span class="sd">        Whether to suppress an exception</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Additional keyword arguments that are passed on to</span>
+<span class="sd">        :class:`xarray.DataArray`</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    :func:`to_df` : see for details on ``noexcept``</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">to_df</span><span class="p">(</span><span class="n">resource</span><span class="p">,</span> <span class="n">noexcept</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span> <span class="ow">and</span> <span class="n">noexcept</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">attrs</span> <span class="o">=</span> <span class="n">xr_metadata</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="si">}</span><span class="s2">: only 1 column supported&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">xr_da</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="n">coords</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="to_dst"><a class="viewcode-back" href="../../api/api.html#friendly_data.converters.to_dst">[docs]</a><span class="k">def</span> <span class="nf">to_dst</span><span class="p">(</span><span class="n">resource</span><span class="p">:</span> <span class="n">Resource</span><span class="p">,</span> <span class="n">noexcept</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Reads a data package resource as an :class:`xarray.Dataset`</span>
+
+<span class="sd">    Unlike :func:`to_da`, this function works for all tables.  All indices are</span>
+<span class="sd">    treated as :class:`xarray.core.coordinates.DataArrayCoordinates` and</span>
+<span class="sd">    dimensions.  The arrays is reshaped to match the dimensions.  Any unit</span>
+<span class="sd">    index is extracted and attached as an attribute to each data arrays.  It is</span>
+<span class="sd">    assumed that all columns in the whole table uses the same unit.</span>
+
+<span class="sd">    Additional keyword arguments are passed on to :class:`xarray.Dataset`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    resource : frictionless.Resource</span>
+<span class="sd">        List of data package resource objects</span>
+<span class="sd">    noexcept : bool (default: False)</span>
+<span class="sd">        Whether to suppress an exception</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Additional keyword arguments that are passed on to</span>
+<span class="sd">        :class:`xarray.Dataset`</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    :func:`to_df` : see for details on ``noexcept``</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">to_df</span><span class="p">(</span><span class="n">resource</span><span class="p">,</span> <span class="n">noexcept</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span> <span class="ow">and</span> <span class="n">noexcept</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">()</span>
+    <span class="n">df</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">attrs</span> <span class="o">=</span> <span class="n">xr_metadata</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+    <span class="n">data_vars</span> <span class="o">=</span> <span class="p">{</span><span class="n">col</span><span class="p">:</span> <span class="n">xr_da</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="n">coords</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">data_vars</span><span class="o">=</span><span class="n">data_vars</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="to_mfdst"><a class="viewcode-back" href="../../api/api.html#friendly_data.converters.to_mfdst">[docs]</a><span class="k">def</span> <span class="nf">to_mfdst</span><span class="p">(</span>
+    <span class="n">resources</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Resource</span><span class="p">],</span> <span class="n">noexcept</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Reads a list of data package resources as an :class:`xarray.Dataset`</span>
+
+<span class="sd">    This function reads multiple resources/files and converts each column into</span>
+<span class="sd">    a data array (identical to :func:`to_dst`), which are then combined into</span>
+<span class="sd">    one :class:`xarray.Dataset`.  Note that any value column that is present</span>
+<span class="sd">    more than once in the data package is overwritten by the last one.  If you</span>
+<span class="sd">    want support for duplicates, you should use :func:`to_dst` and handle the</span>
+<span class="sd">    duplicates yourself.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    resources : List[frictionless.Resource]</span>
+<span class="sd">        List of data package resource objects</span>
+<span class="sd">    noexcept : bool (default: False)</span>
+<span class="sd">        Whether to suppress an exception</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Additional keyword arguments that are passed on to</span>
+<span class="sd">        :class:`xarray.Dataset`</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    :func:`to_df` : see for details on ``noexcept``</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data_vars</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">resources</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">to_df</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">noexcept</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span> <span class="ow">and</span> <span class="n">noexcept</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">df</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">attrs</span> <span class="o">=</span> <span class="n">xr_metadata</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+        <span class="n">data_vars</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">xr_da</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="n">coords</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">))</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">data_vars</span><span class="o">=</span><span class="n">data_vars</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="resolve_aliases"><a class="viewcode-back" href="../../api/api.html#friendly_data.converters.resolve_aliases">[docs]</a><span class="k">def</span> <span class="nf">resolve_aliases</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">_dfseries_t</span><span class="p">,</span> <span class="n">alias</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">_dfseries_t</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Return a copy of the dataframe with aliases resolved</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df : pd.DataFrame | pd.Series</span>
+
+<span class="sd">    alias : Dict[str, str]</span>
+<span class="sd">        A dictionary of column aliases if the dataframe has custom column names</span>
+<span class="sd">        that need to be mapped to columns in the registry.  The key is the</span>
+<span class="sd">        column name in the dataframe, and the value is a column in the</span>
+<span class="sd">        registry.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pd.DataFrame | pd.Series</span>
+<span class="sd">        Since the column and index levels are renamed, a copy is returned so</span>
+<span class="sd">        that the original dataframe/series remains unaltered.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># work w/ a copy, not very memory efficient</span>
+    <span class="n">_df</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">_dfseries_t</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">alias</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>  <span class="c1"># noop for pd.series</span>
+    <span class="n">_df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">alias</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_df</span></div>
+
+
+<div class="viewcode-block" id="from_df"><a class="viewcode-back" href="../../api/api.html#friendly_data.converters.from_df">[docs]</a><span class="k">def</span> <span class="nf">from_df</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">:</span> <span class="n">_dfseries_t</span><span class="p">,</span>
+    <span class="n">basepath</span><span class="p">:</span> <span class="n">_path_t</span><span class="p">,</span>
+    <span class="n">datapath</span><span class="p">:</span> <span class="n">_path_t</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">alias</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{},</span>
+    <span class="n">rename</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Resource</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Write dataframe to a CSV file, and return a data package resource.</span>
+
+<span class="sd">    NOTE: Do not call ``frictionless.Resource.infer()`` on the resource</span>
+<span class="sd">    instance returned by this function, as that might overwrite our</span>
+<span class="sd">    metadata/schema customisations with default heuristics in the</span>
+<span class="sd">    ``frictionless`` implementation.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df : pd.DataFrame | pd.Series</span>
+<span class="sd">        Dataframe to write</span>
+
+<span class="sd">    basepath : Union[str, Path]</span>
+<span class="sd">        Path to the package directory</span>
+
+<span class="sd">    datapath : Union[str, Path] (default: empty string)</span>
+<span class="sd">        Path to the CSV file where the dataframe is written.  If `datapath` is</span>
+<span class="sd">        empty, a file name is generated by concatinating all the columns in the</span>
+<span class="sd">        dataframe.</span>
+
+<span class="sd">    alias : Dict[str, str] (default: {})</span>
+<span class="sd">        A dictionary of column aliases if the dataframe has custom column names</span>
+<span class="sd">        that need to be mapped to columns in the registry.  The key is the</span>
+<span class="sd">        column name in the dataframe, and the value is a column in the</span>
+<span class="sd">        registry.</span>
+
+<span class="sd">    rename : bool (default: True)</span>
+<span class="sd">        Rename aliased columns to match the registry when writing to the CSV.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    frictionless.Resource</span>
+<span class="sd">        Data package resource that points to the CSV file.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">datapath</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+            <span class="n">datapath</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">df</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.csv&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">datapath</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sanitise</span><span class="p">(</span><span class="n">col</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="si">}</span><span class="s2">.csv&quot;</span>
+    <span class="n">fullpath</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">basepath</span><span class="p">)</span> <span class="o">/</span> <span class="n">datapath</span>
+    <span class="c1"># ensure parent directory exists</span>
+    <span class="n">fullpath</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">_df</span> <span class="o">=</span> <span class="n">resolve_aliases</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">alias</span><span class="p">)</span> <span class="k">if</span> <span class="n">rename</span> <span class="k">else</span> <span class="n">df</span>
+    <span class="c1"># don&#39;t write index if default/unnamed index</span>
+    <span class="n">defaultidx</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="kc">False</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">)</span> <span class="k">else</span> <span class="n">_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span>
+    <span class="p">)</span>
+    <span class="n">_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">fullpath</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="ow">not</span> <span class="n">defaultidx</span><span class="p">)</span>
+
+    <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">_df</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_df</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="k">else</span> <span class="n">_df</span><span class="o">.</span><span class="n">columns</span>
+    <span class="n">coldict</span> <span class="o">=</span> <span class="n">get_aliased_cols</span><span class="p">(</span><span class="n">cols</span><span class="p">,</span> <span class="s2">&quot;cols&quot;</span><span class="p">,</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">rename</span> <span class="k">else</span> <span class="n">alias</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">defaultidx</span><span class="p">:</span>
+        <span class="n">idxcols</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">names</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">)</span>
+            <span class="k">else</span> <span class="p">[</span><span class="n">_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="kc">None</span> <span class="ow">in</span> <span class="n">idxcols</span><span class="p">:</span>
+            <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;index doesn&#39;t have valid names: </span><span class="si">{</span><span class="n">idxcols</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">idxcoldict</span> <span class="o">=</span> <span class="n">index_levels</span><span class="p">(</span><span class="n">_df</span><span class="p">,</span> <span class="n">idxcols</span><span class="p">,</span> <span class="n">alias</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">idxcols</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">idxcoldict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">spec</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">datapath</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="p">{</span><span class="o">**</span><span class="n">idxcoldict</span><span class="p">,</span> <span class="o">**</span><span class="n">coldict</span><span class="p">}},</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">defaultidx</span><span class="p">:</span>
+        <span class="n">spec</span><span class="p">[</span><span class="s2">&quot;schema&quot;</span><span class="p">][</span><span class="s2">&quot;primaryKey&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">idxcols</span><span class="p">)</span>  <span class="c1"># type: ignore[index]</span>
+    <span class="k">return</span> <span class="n">resource_</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">basepath</span><span class="o">=</span><span class="n">basepath</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="from_dst"><a class="viewcode-back" href="../../api/api.html#friendly_data.converters.from_dst">[docs]</a><span class="k">def</span> <span class="nf">from_dst</span><span class="p">(</span>
+    <span class="n">dst</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">,</span>
+    <span class="n">basepath</span><span class="p">:</span> <span class="n">_path_t</span><span class="p">,</span>
+    <span class="n">alias</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{},</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Resource</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Write an ``xarray.Dataset`` into CSV files, and return the list resources</span>
+
+<span class="sd">    Each data variable is written to a separate CSV file in the directory</span>
+<span class="sd">    specified by `basepath`.  The file name is derived from the data variable</span>
+<span class="sd">    name by sanitising it and appending the CSV extension.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dst : xr.Dataset</span>
+<span class="sd">        Dataset to write</span>
+
+<span class="sd">    basepath : Union[str, Path]</span>
+<span class="sd">        Path to the package directory</span>
+
+<span class="sd">    alias : Dict[str, str]</span>
+<span class="sd">        A dictionary of column aliases if the dataset has custom data</span>
+<span class="sd">        variable/coordinate names that need to be mapped to columns in the</span>
+<span class="sd">        registry.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    List[Resource]</span>
+<span class="sd">        List of data package resources that point to the CSV files.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">resources</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">from_df</span><span class="p">(</span>
+            <span class="n">da</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">()</span><span class="o">.</span><span class="n">dropna</span><span class="p">(),</span>
+            <span class="n">basepath</span><span class="p">,</span>
+            <span class="n">datapath</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sanitise</span><span class="p">(</span><span class="n">var</span><span class="p">)</span><span class="si">}</span><span class="s2">.csv&quot;</span><span class="p">,</span>  <span class="c1"># type: ignore[arg-type]</span>
+            <span class="n">alias</span><span class="o">=</span><span class="n">alias</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">var</span><span class="p">,</span> <span class="n">da</span> <span class="ow">in</span> <span class="n">dst</span><span class="o">.</span><span class="n">data_vars</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="p">]</span>
+    <span class="k">return</span> <span class="n">resources</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Suvayu Ali and contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

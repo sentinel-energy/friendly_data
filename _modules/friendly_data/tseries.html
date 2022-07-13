@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>friendly_data.tseries &mdash; friendly_data 0.2.2.dev documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> friendly_data
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">How to install?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../data-package.html">Data package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../registry.html">Data registry</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/registry.html">Value columns - <code class="docutils literal notranslate"><span class="pre">cols</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/registry.html#index-columns-idxcols">Index columns - <code class="docutils literal notranslate"><span class="pre">idxcols</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/index-file.html">The Package Index file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../registry.html#contributing-to-the-registry">Contributing to the registry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../registry.html#where-to-add-the-new-column">Where to add the new column?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../registry.html#defining-a-custom-registry">Defining a custom registry</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../cli.html">The <code class="docutils literal notranslate"><span class="pre">friendly_data</span></code> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../config-file.html">The configuration file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hands-on.html">Hands-on tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../hands-on.html#understanding-the-registry-used-by-friendly-data">Understanding the registry used by Friendly data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../hands-on.html#column-schema">Column schema</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../hands-on.html#learning-by-example">Learning by example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../hands-on.html#introducing-the-index-file">Introducing the index file</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../hands-on.html#metadata">Metadata</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../hands-on.html#updating-existing-packages">Updating existing packages</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../iamc-conversion.html">Converting to IAMC format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced.html">Advanced use</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced.html#api-documentation">API documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html">Datapackage tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#module-friendly_data.metatools">Metadata tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#module-friendly_data.registry">Registry API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#module-friendly_data.cli">Command Line Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#module-friendly_data.validate">Validation functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#data-analysis-interface">Data analysis interface</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/api.html#module-friendly_data.converters">Converters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/api.html#module-friendly_data.tseries">Time series API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/api.html#module-friendly_data.iamc">Conversion to IAMC</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#internal-interfaces">Internal interfaces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/api.html#module-friendly_data.io">File I/O</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/api.html#module-friendly_data.helpers">Helper utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced.html#external-packages">External Packages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/external.html">Package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/external.html#id2">Resource</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../devnotes.html">Notes for developers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../devnotes.html#adding-dependencies">Adding dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../devnotes.html#working-with-the-data-package-api">Working with the data package API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../devnotes.html#working-with-the-index-file">Working with the index file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../devnotes.html#working-with-the-registry-api">Working with the registry API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../devnotes.html#converters-interfacing-with-the-python-ecosystem">Converters: interfacing with the Python ecosystem</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">friendly_data</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>friendly_data.tseries</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for friendly_data.tseries</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Convenience functions useful to ingest different kinds of differently shaped</span>
+<span class="sd">time series data into the standard 1-D shape supported by the data package</span>
+<span class="sd">specification.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">_file_t</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;_file_t&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">)</span>
+<span class="n">_col_t</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;_col_t&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="read_timeseries"><a class="viewcode-back" href="../../api/api.html#friendly_data.tseries.read_timeseries">[docs]</a><span class="k">def</span> <span class="nf">read_timeseries</span><span class="p">(</span>
+    <span class="n">fpath</span><span class="p">:</span> <span class="n">_file_t</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">date_cols</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">_col_t</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">col_units</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">zero_idx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">row_fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">source_t</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Read a time series from a file.</span>
+
+<span class="sd">    While the natural way to structure a time series dataset is with the index</span>
+<span class="sd">    column as datetime values, with subsequent columns holding other values,</span>
+<span class="sd">    there are a few other frequently used structures.</span>
+
+<span class="sd">    The first is to structure it as a table:</span>
+
+<span class="sd">    ===========  ===  ===  =====  ====  ====</span>
+<span class="sd">     date         1    2    ...    23    24</span>
+<span class="sd">    ===========  ===  ===  =====  ====  ====</span>
+<span class="sd">     1/1/2016      0   10   ...    2.3   5.1</span>
+<span class="sd">     4/1/2016      3   11   ...    4.3   9.1</span>
+<span class="sd">    ===========  ===  ===  =====  ====  ====</span>
+
+<span class="sd">    When `source_t` is set to &quot;table&quot;, this function reads a tabular dataset</span>
+<span class="sd">    like the one above, and flattens it into a series, and sets the appropriate</span>
+<span class="sd">    datetime values as their index.</span>
+
+<span class="sd">    The other common structure is to split the datetime values into multiple</span>
+<span class="sd">    columns in the table:</span>
+
+<span class="sd">    ===========  ======  ======  ======</span>
+<span class="sd">      date        time    col1    col2</span>
+<span class="sd">    ===========  ======  ======  ======</span>
+<span class="sd">     1/1/2016     10:00    42.0    foo</span>
+<span class="sd">     4/1/2016     11:00    3.14    bar</span>
+<span class="sd">    ===========  ======  ======  ======</span>
+
+<span class="sd">    When `source_t` is set to &quot;multicol&quot;, as the table is read, the indicated</span>
+<span class="sd">    columns are combined to construct the datetime values, which are then set</span>
+<span class="sd">    as the index.</span>
+
+<span class="sd">    If `source_t` is not specified (or set to an empty string), options</span>
+<span class="sd">    specific to this function are ignored, and all other keyword options are</span>
+<span class="sd">    passed on to the backend transparently; in case of reading a CSV with</span>
+<span class="sd">    Pandas, that means all valid keywords for `pandas.read_csv` are accepted.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fpath : Union[str, Path, TextIO]</span>
+<span class="sd">        Path to the dataset file</span>
+
+<span class="sd">    date_cols : List[int, str] (for &quot;multicol&quot; mode)</span>
+<span class="sd">        List of columns to be combined to construct the datetime values</span>
+
+<span class="sd">    col_units : str (for &quot;table&quot; mode)</span>
+<span class="sd">        Time units for the columns.  Accepted values: &quot;month&quot;, &quot;hour&quot;.</span>
+
+<span class="sd">    zero_idx : bool (for &quot;table&quot; mode, default: False)</span>
+<span class="sd">        Whether the columns are zero indexed.  When the columns represent</span>
+<span class="sd">        hours, or minutes, it is common to number them as nth hour.  Which</span>
+<span class="sd">        means they are counted starting at 1 instead of 0.  Set this to False</span>
+<span class="sd">        if that is the case.</span>
+
+<span class="sd">    row_fmt : str (for &quot;table&quot; mode, default: empty string)</span>
+<span class="sd">        What is the format of the datetime column (use strftime format strings,</span>
+<span class="sd">        see: `man 3 strftime`).  If this is left empty, the reader tries to</span>
+<span class="sd">        guess a format using the `dateutil` module (Pandas default)</span>
+
+<span class="sd">    source_t : str (default: empty string)</span>
+<span class="sd">        Mode of reading the data. Accepted values: &quot;table&quot;, &quot;multicol&quot;, or</span>
+<span class="sd">        empty string</span>
+
+<span class="sd">    **kwards : Dict</span>
+<span class="sd">        Other keyword arguments passed on to the reader backend.  Any options</span>
+<span class="sd">        passed here takes precedence, and overwrites other values inferred from</span>
+<span class="sd">        the earlier keyword arguments.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ts : Series/DataFrame</span>
+<span class="sd">        The time series is returned as a series or a dataframe depending on the</span>
+<span class="sd">        number of other columns that are present.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    To skip specific rows, maybe because they have bad data, or are empty, you</span>
+<span class="sd">    may use the `skiprows` option.  It can be set to a list-like where the</span>
+<span class="sd">    entries are row indices (numbers).</span>
+
+<span class="sd">    &gt;&gt;&gt; read_timeseries(&quot;mydata.csv&quot;, source_t=&quot;table&quot;, col_units=&quot;hour&quot;,</span>
+<span class="sd">    ...     skiprows=range(1522, 5480))  # doctest: +SKIP</span>
+
+<span class="sd">    The above example skips rows 1522-5480.</span>
+
+<span class="sd">    Similarly, data type of the column values can be controlled by using the</span>
+<span class="sd">    `dtype` option.  When set to a `numpy.dtype`, all values will be read as</span>
+<span class="sd">    that type, which is probably relevant for the &quot;table&quot; mode.  In the</span>
+<span class="sd">    &quot;multicol&quot; mode, the types of the values can be controlled at the column</span>
+<span class="sd">    level by setting it to a dictionary, where the key matches a column name,</span>
+<span class="sd">    and the value is a valid `numpy.dtype`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># FIXME: parse_dates &amp; index_col assumes input is oriented as portrait</span>
+    <span class="k">if</span> <span class="n">source_t</span> <span class="o">==</span> <span class="s2">&quot;table&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">col_units</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;col_units: missing time unit for columns&quot;</span><span class="p">)</span>
+        <span class="n">ts</span> <span class="o">=</span> <span class="n">from_table</span><span class="p">(</span>
+            <span class="n">fpath</span><span class="p">,</span>
+            <span class="n">col_units</span><span class="o">=</span><span class="n">col_units</span><span class="p">,</span>
+            <span class="n">zero_idx</span><span class="o">=</span><span class="n">zero_idx</span><span class="p">,</span>
+            <span class="n">row_fmt</span><span class="o">=</span><span class="n">row_fmt</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">source_t</span> <span class="o">==</span> <span class="s2">&quot;multicol&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">date_cols</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;date_cols: missing list of datetime columns&quot;</span><span class="p">)</span>
+        <span class="n">ts</span> <span class="o">=</span> <span class="n">from_multicol</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">date_cols</span><span class="o">=</span><span class="n">date_cols</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">source_t</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">source_t</span><span class="si">}</span><span class="s2">: unsupported source, falling back to default&quot;</span><span class="p">)</span>
+        <span class="n">ts</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ts</span></div>
+
+
+<div class="viewcode-block" id="from_table"><a class="viewcode-back" href="../../api/api.html#friendly_data.tseries.from_table">[docs]</a><span class="k">def</span> <span class="nf">from_table</span><span class="p">(</span>
+    <span class="n">fpath</span><span class="p">:</span> <span class="n">_file_t</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">col_units</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">zero_idx</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">row_fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Read a time series from a tabular file.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    read_timeseries : see for full documentation, main entrypoint for users</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># NOTE: allow for plural forms, as it is quite common, but the allowance is</span>
+    <span class="c1"># undocumented, hence not guaranteed to work.</span>
+    <span class="k">if</span> <span class="s2">&quot;month&quot;</span> <span class="ow">in</span> <span class="n">col_units</span><span class="p">:</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">tseries</span><span class="o">.</span><span class="n">offsets</span><span class="o">.</span><span class="n">MonthBegin</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="s2">&quot;hour&quot;</span> <span class="ow">in</span> <span class="n">col_units</span><span class="p">:</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;hour&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">col_units</span><span class="si">}</span><span class="s2">: unsupported column units&quot;</span><span class="p">)</span>
+
+    <span class="c1"># NOTE: assumption: input is oriented as portrait</span>
+    <span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;parse_dates&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;index_col&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+    <span class="c1"># NOTE: for date-hour, it&#39;s okay to use the default dateutil parser for</span>
+    <span class="c1"># date, unless otherwise specified, however for year-month it gets confused</span>
+    <span class="c1"># and the format string needs to be explicitly set to YYYY</span>
+    <span class="k">if</span> <span class="n">col_units</span> <span class="o">==</span> <span class="s2">&quot;month&quot;</span> <span class="ow">and</span> <span class="n">row_fmt</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+        <span class="n">row_fmt</span> <span class="o">=</span> <span class="s2">&quot;%Y&quot;</span>
+    <span class="k">if</span> <span class="n">row_fmt</span><span class="p">:</span>
+        <span class="n">opts</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">date_parser</span><span class="o">=</span><span class="k">lambda</span> <span class="n">dt</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">row_fmt</span><span class="p">))</span>
+    <span class="c1"># NOTE: &quot;parse_dates&quot;, and &quot;index_col&quot; maybe overidden by the keyword</span>
+    <span class="c1"># arguments so that the user has the option to ignore the inferred values;</span>
+    <span class="c1"># it&#39;s a wild world, can&#39;t think of everything ;)</span>
+    <span class="n">opts</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">ts</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">)</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span>
+
+    <span class="c1"># merge indices</span>
+    <span class="n">idx_lvls</span> <span class="o">=</span> <span class="p">[</span><span class="n">ts</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+    <span class="n">ts_delta</span> <span class="o">=</span> <span class="p">(</span><span class="n">idx_lvls</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="ow">not</span> <span class="n">zero_idx</span><span class="p">))</span> <span class="o">*</span> <span class="n">offset</span>
+    <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">PerformanceWarning</span><span class="p">)</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">idx_lvls</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">ts_delta</span>
+    <span class="k">return</span> <span class="n">ts</span></div>
+
+
+<div class="viewcode-block" id="from_multicol"><a class="viewcode-back" href="../../api/api.html#friendly_data.tseries.from_multicol">[docs]</a><span class="k">def</span> <span class="nf">from_multicol</span><span class="p">(</span><span class="n">fpath</span><span class="p">:</span> <span class="n">_file_t</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">date_cols</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">_col_t</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Read a time series where datetime values are in multiple columns.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    read_timeseries : see for full documentation, main entrypoint for users</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># NOTE: index_col=0 b/c columns parsed as dates always end up in the front</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="n">date_cols</span><span class="p">],</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Suvayu Ali and contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

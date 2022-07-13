@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>friendly_data.cli &mdash; friendly_data 0.2.2.dev documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> friendly_data
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">How to install?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../data-package.html">Data package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../registry.html">Data registry</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/registry.html">Value columns - <code class="docutils literal notranslate"><span class="pre">cols</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/registry.html#index-columns-idxcols">Index columns - <code class="docutils literal notranslate"><span class="pre">idxcols</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/index-file.html">The Package Index file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../registry.html#contributing-to-the-registry">Contributing to the registry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../registry.html#where-to-add-the-new-column">Where to add the new column?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../registry.html#defining-a-custom-registry">Defining a custom registry</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../cli.html">The <code class="docutils literal notranslate"><span class="pre">friendly_data</span></code> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../config-file.html">The configuration file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hands-on.html">Hands-on tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../hands-on.html#understanding-the-registry-used-by-friendly-data">Understanding the registry used by Friendly data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../hands-on.html#column-schema">Column schema</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../hands-on.html#learning-by-example">Learning by example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../hands-on.html#introducing-the-index-file">Introducing the index file</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../hands-on.html#metadata">Metadata</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../hands-on.html#updating-existing-packages">Updating existing packages</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../iamc-conversion.html">Converting to IAMC format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced.html">Advanced use</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced.html#api-documentation">API documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html">Datapackage tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#module-friendly_data.metatools">Metadata tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#module-friendly_data.registry">Registry API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#module-friendly_data.cli">Command Line Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#module-friendly_data.validate">Validation functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#data-analysis-interface">Data analysis interface</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/api.html#module-friendly_data.converters">Converters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/api.html#module-friendly_data.tseries">Time series API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/api.html#module-friendly_data.iamc">Conversion to IAMC</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/api.html#internal-interfaces">Internal interfaces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/api.html#module-friendly_data.io">File I/O</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/api.html#module-friendly_data.helpers">Helper utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced.html#external-packages">External Packages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/external.html">Package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/external.html#id2">Resource</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../devnotes.html">Notes for developers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../devnotes.html#adding-dependencies">Adding dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../devnotes.html#working-with-the-data-package-api">Working with the data package API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../devnotes.html#working-with-the-index-file">Working with the index file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../devnotes.html#working-with-the-registry-api">Working with the registry API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../devnotes.html#converters-interfacing-with-the-python-ecosystem">Converters: interfacing with the Python ecosystem</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">friendly_data</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>friendly_data.cli</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for friendly_data.cli</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Functions that are run from the CLI to create, or edit a data package.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">frictionless</span> <span class="kn">import</span> <span class="n">Package</span>
+<span class="kn">from</span> <span class="nn">glom</span> <span class="kn">import</span> <span class="n">glom</span><span class="p">,</span> <span class="n">Iter</span>
+
+<span class="kn">from</span> <span class="nn">friendly_data</span> <span class="kn">import</span> <span class="n">logger_config</span>
+<span class="kn">from</span> <span class="nn">friendly_data._types</span> <span class="kn">import</span> <span class="n">_license_t</span><span class="p">,</span> <span class="n">_path_t</span>
+<span class="kn">from</span> <span class="nn">friendly_data.converters</span> <span class="kn">import</span> <span class="n">to_df</span>
+<span class="kn">from</span> <span class="nn">friendly_data.dpkg</span> <span class="kn">import</span> <span class="n">entry_from_res</span>
+<span class="kn">from</span> <span class="nn">friendly_data.dpkg</span> <span class="kn">import</span> <span class="n">idxpath_from_pkgpath</span>
+<span class="kn">from</span> <span class="nn">friendly_data.dpkg</span> <span class="kn">import</span> <span class="n">pkg_from_files</span>
+<span class="kn">from</span> <span class="nn">friendly_data.dpkg</span> <span class="kn">import</span> <span class="n">pkgindex</span>
+<span class="kn">from</span> <span class="nn">friendly_data.dpkg</span> <span class="kn">import</span> <span class="n">read_pkg</span>
+<span class="kn">from</span> <span class="nn">friendly_data.dpkg</span> <span class="kn">import</span> <span class="n">set_idxcols</span>
+<span class="kn">from</span> <span class="nn">friendly_data.dpkg</span> <span class="kn">import</span> <span class="n">write_pkg</span>
+<span class="kn">from</span> <span class="nn">friendly_data.helpers</span> <span class="kn">import</span> <span class="n">consume</span><span class="p">,</span> <span class="n">filter_dict</span>
+<span class="kn">from</span> <span class="nn">friendly_data.helpers</span> <span class="kn">import</span> <span class="n">is_windows</span>
+<span class="kn">from</span> <span class="nn">friendly_data.helpers</span> <span class="kn">import</span> <span class="n">sanitise</span>
+<span class="kn">from</span> <span class="nn">friendly_data.io</span> <span class="kn">import</span> <span class="n">copy_files</span>
+<span class="kn">from</span> <span class="nn">friendly_data.io</span> <span class="kn">import</span> <span class="n">dwim_file</span>
+<span class="kn">from</span> <span class="nn">friendly_data.io</span> <span class="kn">import</span> <span class="n">path_not_in</span>
+<span class="kn">from</span> <span class="nn">friendly_data.io</span> <span class="kn">import</span> <span class="n">outoftree_paths</span>
+<span class="kn">from</span> <span class="nn">friendly_data.metatools</span> <span class="kn">import</span> <span class="n">_fetch_license</span>
+<span class="kn">from</span> <span class="nn">friendly_data.metatools</span> <span class="kn">import</span> <span class="n">check_license</span>
+<span class="kn">from</span> <span class="nn">friendly_data.metatools</span> <span class="kn">import</span> <span class="n">get_license</span>
+<span class="kn">from</span> <span class="nn">friendly_data.metatools</span> <span class="kn">import</span> <span class="n">lic_metadata</span>
+<span class="kn">from</span> <span class="nn">friendly_data.metatools</span> <span class="kn">import</span> <span class="n">resolve_licenses</span>
+<span class="kn">from</span> <span class="nn">friendly_data.registry</span> <span class="kn">import</span> <span class="n">config_ctx</span>
+<span class="kn">from</span> <span class="nn">friendly_data.doc</span> <span class="kn">import</span> <span class="n">get_template</span><span class="p">,</span> <span class="n">page</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logger_config</span><span class="p">(</span><span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{name}</span><span class="s2">: </span><span class="si">{levelname}</span><span class="s2">: </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="list_licenses"><a class="viewcode-back" href="../../api/api.html#friendly_data.cli.list_licenses">[docs]</a><span class="k">def</span> <span class="nf">list_licenses</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;List commonly used licenses</span>
+
+<span class="sd">    NOTE: for Python API users, not to be confused with</span>
+<span class="sd">    :func:`metatools.list_licenses`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        ASCII table with commonly used licenses</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">tabulate</span> <span class="kn">import</span> <span class="n">tabulate</span>
+
+    <span class="n">keys</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;domain&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;maintainer&quot;</span><span class="p">,</span> <span class="s2">&quot;title&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">tabulate</span><span class="p">(</span><span class="n">lic_metadata</span><span class="p">(</span><span class="n">keys</span><span class="p">),</span> <span class="n">headers</span><span class="o">=</span><span class="s2">&quot;keys&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="license_info"><a class="viewcode-back" href="../../api/api.html#friendly_data.cli.license_info">[docs]</a><span class="k">def</span> <span class="nf">license_info</span><span class="p">(</span><span class="n">lic</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Give detailed metadata about a license</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    lic : str</span>
+<span class="sd">        License ID as listed in the output of ``friendly_data list-licenses``</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Dict</span>
+<span class="sd">        License metadata</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;domain&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;maintainer&quot;</span><span class="p">,</span> <span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="s2">&quot;url&quot;</span><span class="p">)</span>
+    <span class="n">lic_info</span> <span class="o">=</span> <span class="n">lic_metadata</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">i</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">lic</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">lic_info</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;no matching license with id: </span><span class="si">{</span><span class="n">lic</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">lic_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="license_prompt"><a class="viewcode-back" href="../../api/api.html#friendly_data.cli.license_prompt">[docs]</a><span class="k">def</span> <span class="nf">license_prompt</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">_license_t</span><span class="p">:</span>  <span class="c1"># pragma: no cover, interactive function</span>
+    <span class="sd">&quot;&quot;&quot;Prompt for a license on the terminal (with completion).&quot;&quot;&quot;</span>
+    <span class="n">licenses</span> <span class="o">=</span> <span class="n">_fetch_license</span><span class="p">(</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">complete</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">lic</span> <span class="ow">in</span> <span class="n">licenses</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">lic</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">state</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">lic</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">state</span> <span class="o">-=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_windows</span><span class="p">():</span>
+        <span class="kn">import</span> <span class="nn">readline</span>
+
+        <span class="n">readline</span><span class="o">.</span><span class="n">parse_and_bind</span><span class="p">(</span><span class="s2">&quot;tab: complete&quot;</span><span class="p">)</span>
+        <span class="n">readline</span><span class="o">.</span><span class="n">set_completer</span><span class="p">(</span><span class="n">complete</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">check_license</span><span class="p">(</span><span class="n">licenses</span><span class="p">[</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;license: &quot;</span><span class="p">)])</span></div>
+
+
+<span class="k">def</span> <span class="nf">_metadata</span><span class="p">(</span>
+    <span class="n">mandatory</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">licenses</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">keywords</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">config</span><span class="p">:</span> <span class="n">_path_t</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Metadata from the config file is overriden by keyword arguments&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">config</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">meta</span> <span class="o">=</span> <span class="n">dwim_file</span><span class="p">(</span><span class="n">config</span><span class="p">)[</span><span class="s2">&quot;metadata&quot;</span><span class="p">]</span>  <span class="c1"># type: ignore[call-overload]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s2">: section missing from </span><span class="si">{</span><span class="n">config</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">meta</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">meta</span> <span class="o">=</span> <span class="n">resolve_licenses</span><span class="p">(</span><span class="n">meta</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">meta</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">_meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="k">else</span> <span class="n">sanitise</span><span class="p">(</span><span class="n">title</span><span class="p">),</span>
+        <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span>
+        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">description</span><span class="p">,</span>
+        <span class="s2">&quot;keywords&quot;</span><span class="p">:</span> <span class="n">keywords</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="n">licenses</span><span class="p">:</span>
+        <span class="n">_meta</span><span class="p">[</span><span class="s2">&quot;licenses&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">get_license</span><span class="p">(</span><span class="n">licenses</span><span class="p">)]</span>
+    <span class="k">elif</span> <span class="s2">&quot;licenses&quot;</span> <span class="ow">in</span> <span class="n">mandatory</span> <span class="ow">and</span> <span class="s2">&quot;licenses&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">meta</span><span class="p">:</span>
+        <span class="n">_meta</span><span class="p">[</span><span class="s2">&quot;licenses&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">license_prompt</span><span class="p">()]</span>  <span class="c1"># pragma: no cover</span>
+
+    <span class="c1"># override config file with values from flags</span>
+    <span class="n">meta</span><span class="o">.</span><span class="n">update</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">_meta</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="p">)</span>
+
+    <span class="n">check</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">mandatory</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">meta</span><span class="p">]</span>  <span class="c1"># mandatory fields</span>
+    <span class="k">if</span> <span class="n">check</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">check</span><span class="si">}</span><span class="s2">: mandatory metadata missing&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;license&quot;</span> <span class="ow">in</span> <span class="n">meta</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;&#39;license&#39;: should be plural!&quot;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">meta</span>
+
+
+<span class="c1"># TODO: ability to add datasets from arbitrary paths</span>
+<span class="c1"># - flag to provide destination directory for out of tree datasets</span>
+<span class="c1"># - normalise relative path w.r.t. index entries</span>
+<span class="c1"># - for files not in the index, normalise relative path w.r.t. pkgdir</span>
+<span class="c1"># add similar ability for update(..)</span>
+<span class="k">def</span> <span class="nf">_create</span><span class="p">(</span>
+    <span class="n">meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
+    <span class="n">pkgpath</span><span class="p">:</span> <span class="n">_path_t</span><span class="p">,</span>
+    <span class="n">fpaths</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">_path_t</span><span class="p">],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">export</span><span class="p">:</span> <span class="n">_path_t</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">export</span><span class="p">:</span>
+        <span class="n">pkgpath</span><span class="p">,</span> <span class="n">export</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">pkgpath</span><span class="p">),</span> <span class="n">Path</span><span class="p">(</span><span class="n">export</span><span class="p">)</span>
+        <span class="n">idxp</span> <span class="o">=</span> <span class="n">idxpath_from_pkgpath</span><span class="p">(</span><span class="n">pkgpath</span><span class="p">)</span> <span class="k">if</span> <span class="n">pkgpath</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="k">else</span> <span class="n">pkgpath</span>
+        <span class="n">spec</span> <span class="o">=</span> <span class="n">Iter</span><span class="p">(</span><span class="s2">&quot;path&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">idxp</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="n">p</span><span class="p">)</span>  <span class="c1"># type: ignore[union-attr]</span>
+        <span class="k">if</span> <span class="n">idxp</span><span class="p">:</span>  <span class="c1"># create a uniquified list of files</span>
+            <span class="n">files</span> <span class="o">=</span> <span class="n">chain</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">idxp</span><span class="p">],</span>
+                <span class="nb">set</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="n">glom</span><span class="p">(</span><span class="n">pkgindex</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">idxp</span><span class="p">),</span> <span class="n">spec</span><span class="p">),</span> <span class="nb">map</span><span class="p">(</span><span class="n">Path</span><span class="p">,</span> <span class="n">fpaths</span><span class="p">))),</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">files</span> <span class="o">=</span> <span class="n">fpaths</span>  <span class="c1"># type: ignore[assignment]</span>
+        <span class="c1"># NOTE: if idxpath was found, first of the returned files is the index</span>
+        <span class="c1"># file that was copied in the export directory, extract it to pkgpath</span>
+        <span class="n">fpaths</span> <span class="o">=</span> <span class="n">copy_files</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">export</span><span class="p">,</span> <span class="n">pkgpath</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">idxp</span><span class="p">:</span>
+            <span class="n">pkgpath</span><span class="p">,</span> <span class="o">*</span><span class="n">fpaths</span> <span class="o">=</span> <span class="n">fpaths</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># if no index was found, set export directory to new pkgpath</span>
+            <span class="n">pkgpath</span> <span class="o">=</span> <span class="n">export</span>
+
+    <span class="n">pkgdir</span><span class="p">,</span> <span class="n">pkg</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">pkg_from_files</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="n">pkgpath</span><span class="p">,</span> <span class="n">fpaths</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">write_pkg</span><span class="p">(</span><span class="n">pkg</span><span class="p">,</span> <span class="n">pkgdir</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="create"><a class="viewcode-back" href="../../api/api.html#friendly_data.cli.create">[docs]</a><span class="k">def</span> <span class="nf">create</span><span class="p">(</span>
+    <span class="n">idxpath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="o">*</span><span class="n">fpaths</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">licenses</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">keywords</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">export</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">config</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create a package from an index file and other files</span>
+
+<span class="sd">    Package metadata provided with command line flags override metadata from</span>
+<span class="sd">    the config file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    idxpath : str</span>
+<span class="sd">        Path to the index file or package directory with the index file.  Note</span>
+<span class="sd">        the index file has to be at the top level directory of the datapackage.</span>
+
+<span class="sd">    fpaths : Tuple[str]</span>
+<span class="sd">        List of datasets/resources not in the index.  If any of them point to a</span>
+<span class="sd">        dataset already present in the index, it is ignored.</span>
+
+<span class="sd">    name : str</span>
+<span class="sd">        Package name (no spaces or special characters)</span>
+
+<span class="sd">    title : str</span>
+<span class="sd">        Package title</span>
+
+<span class="sd">    licenses : str</span>
+<span class="sd">        License</span>
+
+<span class="sd">    description : str</span>
+<span class="sd">        Package description</span>
+
+<span class="sd">    keywords : str</span>
+<span class="sd">        A space separated list of keywords: &#39;renewable energy model&#39; -&gt;</span>
+<span class="sd">        [&#39;renewable&#39;, &#39;energy&#39;, &#39;model&#39;]</span>
+
+<span class="sd">    inplace : bool</span>
+<span class="sd">        Whether to create the data package by only adding metadata to the</span>
+<span class="sd">        current directory.  NOTE: one of inplace/export must be chosen</span>
+
+<span class="sd">    export : str</span>
+<span class="sd">        Create the data package in the provided directory instead of the</span>
+<span class="sd">        current directory</span>
+
+<span class="sd">    config : str</span>
+<span class="sd">        Config file in YAML format with metadata and custom registry.  The</span>
+<span class="sd">        metadata should be under a &quot;metadata&quot; section, and the custom registry</span>
+<span class="sd">        under a &quot;registry&quot; section.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">export</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">inplace</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;you must explicitly choose between `inplace` or `export`&quot;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">export</span> <span class="ow">and</span> <span class="n">inplace</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="s2">&quot;both `inplace` and `export` present, `inplace` will be ignored`&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+        <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span>
+        <span class="s2">&quot;licenses&quot;</span><span class="p">:</span> <span class="n">licenses</span><span class="p">,</span>
+        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">description</span><span class="p">,</span>
+        <span class="s2">&quot;keywords&quot;</span><span class="p">:</span> <span class="n">keywords</span><span class="p">,</span>
+        <span class="s2">&quot;config&quot;</span><span class="p">:</span> <span class="n">config</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">meta</span> <span class="o">=</span> <span class="n">_metadata</span><span class="p">([</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;licenses&quot;</span><span class="p">],</span> <span class="o">**</span><span class="n">meta</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
+    <span class="k">with</span> <span class="n">config_ctx</span><span class="p">(</span><span class="n">conffile</span><span class="o">=</span><span class="n">config</span><span class="p">):</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="n">_create</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="n">idxpath</span><span class="p">,</span> <span class="n">fpaths</span><span class="p">,</span> <span class="n">export</span><span class="o">=</span><span class="n">export</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Package metadata: </span><span class="si">{</span><span class="n">files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span></div>
+
+
+<span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="n">pkg</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">pkgpath</span><span class="p">:</span> <span class="n">_path_t</span><span class="p">,</span> <span class="n">fpaths</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">_path_t</span><span class="p">]):</span>
+    <span class="n">_fpaths1</span><span class="p">,</span> <span class="n">outoftree</span> <span class="o">=</span> <span class="n">outoftree_paths</span><span class="p">(</span><span class="n">pkgpath</span><span class="p">,</span> <span class="n">fpaths</span><span class="p">)</span>
+    <span class="n">_fpaths2</span> <span class="o">=</span> <span class="n">copy_files</span><span class="p">(</span><span class="n">outoftree</span><span class="p">,</span> <span class="n">pkgpath</span><span class="p">)</span>
+    <span class="n">fpaths</span> <span class="o">=</span> <span class="n">_fpaths1</span> <span class="o">+</span> <span class="n">_fpaths2</span>
+    <span class="n">pkg</span> <span class="o">=</span> <span class="n">_rm_from_pkg</span><span class="p">(</span><span class="n">pkg</span><span class="p">,</span> <span class="n">pkgpath</span><span class="p">,</span> <span class="n">fpaths</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_create</span><span class="p">(</span><span class="n">pkg</span><span class="p">,</span> <span class="n">pkgpath</span><span class="p">,</span> <span class="n">fpaths</span><span class="p">,</span> <span class="n">export</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># TODO: option to update files in index</span>
+<div class="viewcode-block" id="update"><a class="viewcode-back" href="../../api/api.html#friendly_data.cli.update">[docs]</a><span class="k">def</span> <span class="nf">update</span><span class="p">(</span>
+    <span class="n">pkgpath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="o">*</span><span class="n">fpaths</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">licenses</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">keywords</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">config</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Update metadata and datasets in a package.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pkgpath : str</span>
+<span class="sd">        Path to the package.</span>
+
+<span class="sd">    fpaths : Tuple[str]</span>
+<span class="sd">        List of datasets/resources; they could be new datasets or datasets with</span>
+<span class="sd">        updated index entries.</span>
+
+<span class="sd">    name : str</span>
+<span class="sd">        Package name (no spaces or special characters)</span>
+
+<span class="sd">    title : str</span>
+<span class="sd">        Package title</span>
+
+<span class="sd">    description : str</span>
+<span class="sd">        Package description</span>
+
+<span class="sd">    keywords : str</span>
+<span class="sd">        A space separated list of keywords: &#39;renewable energy model&#39; -&gt;</span>
+<span class="sd">        [&#39;renewable&#39;, &#39;energy&#39;, &#39;model&#39;]</span>
+
+<span class="sd">    licenses : str</span>
+<span class="sd">        License</span>
+
+<span class="sd">    config : str</span>
+<span class="sd">        Config file in YAML format with metadata and custom registry.  The</span>
+<span class="sd">        metadata should be under a &quot;metadata&quot; section, and the custom registry</span>
+<span class="sd">        under a &quot;registry&quot; section.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+        <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span>
+        <span class="s2">&quot;licenses&quot;</span><span class="p">:</span> <span class="n">licenses</span><span class="p">,</span>
+        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">description</span><span class="p">,</span>
+        <span class="s2">&quot;keywords&quot;</span><span class="p">:</span> <span class="n">keywords</span><span class="p">,</span>
+        <span class="s2">&quot;config&quot;</span><span class="p">:</span> <span class="n">config</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">meta</span> <span class="o">=</span> <span class="n">_metadata</span><span class="p">([],</span> <span class="o">**</span><span class="n">meta</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
+    <span class="n">pkg</span> <span class="o">=</span> <span class="n">read_pkg</span><span class="p">(</span><span class="n">pkgpath</span><span class="p">)</span>
+    <span class="n">pkg</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">meta</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fpaths</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="n">write_pkg</span><span class="p">(</span><span class="n">pkg</span><span class="p">,</span> <span class="n">pkgpath</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">config_ctx</span><span class="p">(</span><span class="n">conffile</span><span class="o">=</span><span class="n">config</span><span class="p">):</span>
+            <span class="n">files</span> <span class="o">=</span> <span class="n">_update</span><span class="p">(</span><span class="n">pkg</span><span class="p">,</span> <span class="n">pkgpath</span><span class="p">,</span> <span class="n">fpaths</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Package metadata: </span><span class="si">{</span><span class="n">files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span></div>
+
+
+<span class="k">def</span> <span class="nf">_rm_paths_spec</span><span class="p">(</span><span class="n">pkgpath</span><span class="p">:</span> <span class="n">_path_t</span><span class="p">,</span> <span class="n">fpaths</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">_path_t</span><span class="p">]):</span>
+    <span class="n">pkgpath</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">pkgpath</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Iter</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="n">path_not_in</span><span class="p">(</span><span class="n">fpaths</span><span class="p">,</span> <span class="n">pkgpath</span> <span class="o">/</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">_rm_from_pkg</span><span class="p">(</span><span class="n">pkg</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">pkgpath</span><span class="p">:</span> <span class="n">_path_t</span><span class="p">,</span> <span class="n">fpaths</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">_path_t</span><span class="p">]):</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pkg</span><span class="p">[</span><span class="s2">&quot;resources&quot;</span><span class="p">])</span>
+    <span class="n">pkg</span><span class="p">[</span><span class="s2">&quot;resources&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">glom</span><span class="p">(</span><span class="n">pkg</span><span class="p">[</span><span class="s2">&quot;resources&quot;</span><span class="p">],</span> <span class="n">_rm_paths_spec</span><span class="p">(</span><span class="n">pkgpath</span><span class="p">,</span> <span class="n">fpaths</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">pkg</span><span class="p">[</span><span class="s2">&quot;resources&quot;</span><span class="p">]):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;no resources to update/remove in package&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pkg</span>
+
+
+<span class="k">def</span> <span class="nf">_rm_from_idx</span><span class="p">(</span><span class="n">pkgpath</span><span class="p">:</span> <span class="n">_path_t</span><span class="p">,</span> <span class="n">fpaths</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">_path_t</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pkgindex</span><span class="p">:</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">pkgindex</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">idxpath_from_pkgpath</span><span class="p">(</span><span class="n">pkgpath</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">glom</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">_rm_paths_spec</span><span class="p">(</span><span class="n">pkgpath</span><span class="p">,</span> <span class="n">fpaths</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">_rm_from_disk</span><span class="p">(</span><span class="n">fpaths</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">_path_t</span><span class="p">]):</span>
+    <span class="n">consume</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">fp</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span><span class="o">.</span><span class="n">unlink</span><span class="p">(),</span> <span class="n">fpaths</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="remove"><a class="viewcode-back" href="../../api/api.html#friendly_data.cli.remove">[docs]</a><span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="n">pkgpath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">fpaths</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">rm_from_disk</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Remove datasets from the package</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pkgpath : str</span>
+<span class="sd">        Path to the package directory</span>
+
+<span class="sd">    fpaths : Tuple[str]</span>
+<span class="sd">        List of datasets/resources to be removed from the package. The index is</span>
+<span class="sd">        updated accordingly.</span>
+
+<span class="sd">    rm_from_disk : bool (default: False)</span>
+<span class="sd">        Permanently delete the files from disk</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pkg</span> <span class="o">=</span> <span class="n">_rm_from_pkg</span><span class="p">(</span><span class="n">read_pkg</span><span class="p">(</span><span class="n">pkgpath</span><span class="p">),</span> <span class="n">pkgpath</span><span class="p">,</span> <span class="n">fpaths</span><span class="p">)</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">_rm_from_idx</span><span class="p">(</span><span class="n">pkgpath</span><span class="p">,</span> <span class="n">fpaths</span><span class="p">)</span>
+    <span class="n">fmeta</span><span class="p">,</span> <span class="n">fidx</span> <span class="o">=</span> <span class="n">write_pkg</span><span class="p">(</span><span class="n">pkg</span><span class="p">,</span> <span class="n">pkgpath</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="n">idx</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">rm_from_disk</span><span class="p">:</span>
+        <span class="n">_rm_from_disk</span><span class="p">(</span><span class="n">fpaths</span><span class="p">)</span>
+    <span class="n">msgs</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Package metadata: </span><span class="si">{</span><span class="n">fmeta</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Package index: </span><span class="si">{</span><span class="n">fidx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">msgs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="generate_index_file"><a class="viewcode-back" href="../../api/api.html#friendly_data.cli.generate_index_file">[docs]</a><span class="k">def</span> <span class="nf">generate_index_file</span><span class="p">(</span><span class="n">idxpath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">fpaths</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate an index file from a set of dataset files</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    idxpath : str</span>
+<span class="sd">        Path where the index file (YAML format) should be written</span>
+
+<span class="sd">    fpaths : Tuple[str]</span>
+<span class="sd">        List of datasets/resources to include in the index</span>
+
+<span class="sd">    config : str</span>
+<span class="sd">        Config file in YAML format with custom registry.  It should be defined</span>
+<span class="sd">        under a &quot;registry&quot; section.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">config_ctx</span><span class="p">(</span><span class="n">conffile</span><span class="o">=</span><span class="n">config</span><span class="p">):</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">entry_from_res</span><span class="p">(</span><span class="n">set_idxcols</span><span class="p">(</span><span class="n">f</span><span class="p">))</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fpaths</span><span class="p">]</span>
+    <span class="n">dwim_file</span><span class="p">(</span><span class="n">idxpath</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="to_iamc"><a class="viewcode-back" href="../../api/api.html#friendly_data.cli.to_iamc">[docs]</a><span class="k">def</span> <span class="nf">to_iamc</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">idxpath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">iamcpath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">wide</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Aggregate datasets into an IAMC dataset</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    config : str</span>
+<span class="sd">        Config file</span>
+
+<span class="sd">    idxpath : str</span>
+<span class="sd">        Index file</span>
+
+<span class="sd">    iamcpath : str</span>
+<span class="sd">        IAMC dataset</span>
+
+<span class="sd">    wide : bool (default: False)</span>
+<span class="sd">        Enable wide IAMC format</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">friendly_data.iamc</span> <span class="kn">import</span> <span class="n">IAMconv</span>
+
+    <span class="n">conv</span> <span class="o">=</span> <span class="n">IAMconv</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">idxpath</span><span class="p">)</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="n">conv</span><span class="o">.</span><span class="n">res_idx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;path&quot;</span><span class="p">)</span>
+    <span class="n">conv</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">iamcpath</span><span class="p">,</span> <span class="n">wide</span><span class="o">=</span><span class="n">wide</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">files</span><span class="p">)</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">iamcpath</span><span class="si">}</span><span class="s2">&quot;</span></div>
+
+
+<div class="viewcode-block" id="reports"><a class="viewcode-back" href="../../api/api.html#friendly_data.cli.reports">[docs]</a><span class="k">def</span> <span class="nf">reports</span><span class="p">(</span><span class="n">pkg</span><span class="p">:</span> <span class="n">Package</span><span class="p">,</span> <span class="n">report_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Write HTML reports summarising all resources in the package</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pkg : Package</span>
+
+<span class="sd">    report_dir : str</span>
+<span class="sd">        Directory where reports are written</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    int</span>
+<span class="sd">        Bytes written (index.html)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">pandas_profiling</span> <span class="k">as</span> <span class="nn">_</span>  <span class="c1"># noqa: F401</span>
+
+    <span class="n">_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">report_dir</span><span class="p">)</span>
+    <span class="n">_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">title</span> <span class="o">=</span> <span class="n">pkg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="n">pkg</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span> <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span> <span class="s2">&quot;resources&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+    <span class="k">for</span> <span class="n">_res</span> <span class="ow">in</span> <span class="n">pkg</span><span class="o">.</span><span class="n">resources</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">to_df</span><span class="p">(</span><span class="n">_res</span><span class="p">,</span> <span class="n">noexcept</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">html</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">_res</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.html&quot;</span><span class="p">)</span>
+        <span class="n">report</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">profile_report</span><span class="p">(</span>
+            <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+            <span class="n">dataset</span><span class="o">=</span><span class="n">filter_dict</span><span class="p">(</span><span class="n">_res</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]),</span>  <span class="c1"># FIXME: add pkg url</span>
+            <span class="n">variables</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;descriptions&quot;</span><span class="p">:</span> <span class="n">glom</span><span class="p">(</span>
+                    <span class="n">_res</span><span class="p">,</span>
+                    <span class="p">(</span>
+                        <span class="s2">&quot;schema.fields&quot;</span><span class="p">,</span>
+                        <span class="n">Iter</span><span class="p">()</span>
+                        <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="s2">&quot;description&quot;</span> <span class="ow">in</span> <span class="n">i</span><span class="p">)</span>
+                        <span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="n">i</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]))</span>
+                        <span class="o">.</span><span class="n">all</span><span class="p">(),</span>
+                        <span class="nb">dict</span><span class="p">,</span>
+                    <span class="p">),</span>
+                <span class="p">)</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+        <span class="n">report</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">minify_html</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">report</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">_dir</span> <span class="o">/</span> <span class="n">html</span><span class="p">)</span>
+        <span class="n">res</span><span class="p">[</span><span class="s2">&quot;resources&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">html</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">_res</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]})</span>
+
+    <span class="n">tmpl</span> <span class="o">=</span> <span class="n">get_template</span><span class="p">(</span><span class="s2">&quot;index.html.template&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">_dir</span> <span class="o">/</span> <span class="s2">&quot;index.html&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">tmpl</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">res</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="describe"><a class="viewcode-back" href="../../api/api.html#friendly_data.cli.describe">[docs]</a><span class="k">def</span> <span class="nf">describe</span><span class="p">(</span><span class="n">pkgpath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">report_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Give a summary of the data package</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pkgpath : str</span>
+<span class="sd">        Path to the data package</span>
+
+<span class="sd">    report_dir : str (default: empty string)</span>
+<span class="sd">        If not empty, generate an HTML report and write to the directory</span>
+<span class="sd">        ``report``.  The directory will have an ``index.html`` file, and one</span>
+<span class="sd">        HTML file for each dataset.</span>
+
+<span class="sd">    config : str</span>
+<span class="sd">        Config file in YAML format with custom registry.  It should be defined</span>
+<span class="sd">        under a &quot;registry&quot; section.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">pkg</span> <span class="o">=</span> <span class="n">read_pkg</span><span class="p">(</span><span class="n">pkgpath</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">FileNotFoundError</span><span class="p">):</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">meta_f</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;keywords&quot;</span><span class="p">,</span> <span class="s2">&quot;licenses&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pkg</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">meta_f</span> <span class="ow">and</span> <span class="n">v</span><span class="p">:</span>
+            <span class="n">res</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">glom</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span> <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s2">&quot;licenses&quot;</span> <span class="k">else</span> <span class="n">v</span>
+
+    <span class="k">if</span> <span class="n">report_dir</span><span class="p">:</span>
+        <span class="n">res</span><span class="p">[</span><span class="s2">&quot;report_dir&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">report_dir</span>
+        <span class="k">with</span> <span class="n">config_ctx</span><span class="p">(</span><span class="n">conffile</span><span class="o">=</span><span class="n">config</span><span class="p">):</span>
+            <span class="n">reports</span><span class="p">(</span><span class="n">pkg</span><span class="p">,</span> <span class="n">report_dir</span><span class="p">)</span>
+
+    <span class="n">tmpl</span> <span class="o">=</span> <span class="n">get_template</span><span class="p">(</span><span class="s2">&quot;dpkg_describe.template&quot;</span><span class="p">)</span>
+    <span class="n">res</span><span class="p">[</span><span class="s2">&quot;resources&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">glom</span><span class="p">(</span>
+        <span class="n">pkg</span><span class="p">[</span><span class="s2">&quot;resources&quot;</span><span class="p">],</span> <span class="p">[{</span><span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;schema.fields&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]),</span> <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;path&quot;</span><span class="p">}]</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">tmpl</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">res</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="describe_registry"><a class="viewcode-back" href="../../api/api.html#friendly_data.cli.describe_registry">[docs]</a><span class="k">def</span> <span class="nf">describe_registry</span><span class="p">(</span><span class="n">column_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Describe columns defined in the registry</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    column_type : str (default: empty string → all)</span>
+<span class="sd">        Column type to list; one of: &quot;cols&quot;, or &quot;idxcols&quot;.  If nothing is</span>
+<span class="sd">        provided (default), columns of both types are listed.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">rich.console</span> <span class="kn">import</span> <span class="n">Console</span>
+    <span class="kn">from</span> <span class="nn">rich.markdown</span> <span class="kn">import</span> <span class="n">Markdown</span>
+
+    <span class="n">console</span> <span class="o">=</span> <span class="n">Console</span><span class="p">()</span>
+    <span class="n">md</span> <span class="o">=</span> <span class="n">Markdown</span><span class="p">(</span><span class="n">page</span><span class="p">(</span><span class="n">markup</span><span class="o">=</span><span class="s2">&quot;md&quot;</span><span class="p">,</span> <span class="n">col_t</span><span class="o">=</span><span class="n">column_type</span><span class="p">))</span>
+    <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">md</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../api/api.html#friendly_data.cli.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>  <span class="c1"># pragma: no cover, CLI entry point</span>
+    <span class="sd">&quot;&quot;&quot;Entry point for console scripts&quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">os</span>
+    <span class="kn">import</span> <span class="nn">fire</span>
+
+    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;PAGER&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;cat&quot;</span>
+    <span class="n">fire</span><span class="o">.</span><span class="n">Fire</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;create&quot;</span><span class="p">:</span> <span class="n">create</span><span class="p">,</span>
+            <span class="s2">&quot;update&quot;</span><span class="p">:</span> <span class="n">update</span><span class="p">,</span>
+            <span class="s2">&quot;remove&quot;</span><span class="p">:</span> <span class="n">remove</span><span class="p">,</span>
+            <span class="s2">&quot;describe-registry&quot;</span><span class="p">:</span> <span class="n">describe_registry</span><span class="p">,</span>
+            <span class="s2">&quot;list-licenses&quot;</span><span class="p">:</span> <span class="n">list_licenses</span><span class="p">,</span>
+            <span class="s2">&quot;license-info&quot;</span><span class="p">:</span> <span class="n">license_info</span><span class="p">,</span>
+            <span class="s2">&quot;generate-index-file&quot;</span><span class="p">:</span> <span class="n">generate_index_file</span><span class="p">,</span>
+            <span class="s2">&quot;to-iamc&quot;</span><span class="p">:</span> <span class="n">to_iamc</span><span class="p">,</span>
+            <span class="s2">&quot;describe&quot;</span><span class="p">:</span> <span class="n">describe</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Suvayu Ali and contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

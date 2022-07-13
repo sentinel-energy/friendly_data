@@ -1,0 +1,9 @@
+scenario,techs,locs,carriers,unit,year,flow_out_sum
+diag-npi,wind_offshore,DEU,electricity,twh,2030,0.0026985550026472
+diag-npi,wind_offshore,DNK,electricity,twh,2030,0.0014073819977408
+...,...,...,...,...,...
+diag-npi,wind_onshore,CHE,electricity,twh,2030,0.0007493784045182
+diag-npi,wind_onshore,DEU,electricity,twh,2030,0.0258391578821039
+...,...,...,...,...,...
+diag-npi,nuclear,CHE,electricity,twh,2030,62.78803794129926
+diag-npi,nuclear,DEU,electricity,twh,2030,224.96177256922013

@@ -1,0 +1,6 @@
+model,scenario,region,variable,unit,year,value
+calliope,diag-npi,CHE,Fixed Cost|Electricity|Wind,billion_2015eur_per_tw_per_year,2030,47.7515
+calliope,diag-npi,DEU,Fixed Cost|Electricity|Wind,billion_2015eur_per_tw_per_year,2030,47.75149999999999
+...,...,...,...,...,...
+calliope,diag-npi,CHE,Fixed Cost|Electricity|Nuclear,billion_2015eur_per_tw_per_year,2030,76.116
+calliope,diag-npi,DEU,Fixed Cost|Electricity|Nuclear,billion_2015eur_per_tw_per_year,2030,76.116

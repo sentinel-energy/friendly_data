@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The friendly_data tool &mdash; friendly_data 0.2.2.dev documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="The configuration file" href="config-file.html" />
+    <link rel="prev" title="The Package Index file" href="api/index-file.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> friendly_data
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">How to install?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-package.html">Data package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="registry.html">Data registry</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/registry.html">Value columns - <code class="docutils literal notranslate"><span class="pre">cols</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/registry.html#index-columns-idxcols">Index columns - <code class="docutils literal notranslate"><span class="pre">idxcols</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/index-file.html">The Package Index file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="registry.html#contributing-to-the-registry">Contributing to the registry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="registry.html#where-to-add-the-new-column">Where to add the new column?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="registry.html#defining-a-custom-registry">Defining a custom registry</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">The <code class="docutils literal notranslate"><span class="pre">friendly_data</span></code> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config-file.html">The configuration file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hands-on.html">Hands-on tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hands-on.html#understanding-the-registry-used-by-friendly-data">Understanding the registry used by Friendly data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hands-on.html#column-schema">Column schema</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hands-on.html#learning-by-example">Learning by example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hands-on.html#introducing-the-index-file">Introducing the index file</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hands-on.html#metadata">Metadata</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hands-on.html#updating-existing-packages">Updating existing packages</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="iamc-conversion.html">Converting to IAMC format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced use</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#api-documentation">API documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/api.html">Datapackage tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/api.html#module-friendly_data.metatools">Metadata tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/api.html#module-friendly_data.registry">Registry API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/api.html#module-friendly_data.cli">Command Line Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/api.html#module-friendly_data.validate">Validation functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/api.html#data-analysis-interface">Data analysis interface</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/api.html#module-friendly_data.converters">Converters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/api.html#module-friendly_data.tseries">Time series API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/api.html#module-friendly_data.iamc">Conversion to IAMC</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/api.html#internal-interfaces">Internal interfaces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/api.html#module-friendly_data.io">File I/O</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/api.html#module-friendly_data.helpers">Helper utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#external-packages">External Packages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/external.html">Package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/external.html#id2">Resource</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="devnotes.html">Notes for developers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="devnotes.html#adding-dependencies">Adding dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devnotes.html#working-with-the-data-package-api">Working with the data package API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devnotes.html#working-with-the-index-file">Working with the index file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devnotes.html#working-with-the-registry-api">Working with the registry API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devnotes.html#converters-interfacing-with-the-python-ecosystem">Converters: interfacing with the Python ecosystem</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">friendly_data</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>The <code class="docutils literal notranslate"><span class="pre">friendly_data</span></code> tool</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/cli.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="the-friendly-data-tool">
+<h1>The <code class="docutils literal notranslate"><span class="pre">friendly_data</span></code> tool<a class="headerlink" href="#the-friendly-data-tool" title="Permalink to this heading"></a></h1>
+<p>The Friendly data command line (CLI) tool can be used to create and
+manage data packages.  It relies on two files to generate the metadata
+correctly.  The first is an YAML configuration file with metadata like
+name, title, licenses, etc:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">metadata</span><span class="p">:</span>
+  <span class="n">name</span><span class="p">:</span> <span class="n">foo</span><span class="o">-</span><span class="n">bar</span><span class="o">-</span><span class="n">baz</span>
+  <span class="n">title</span><span class="p">:</span> <span class="n">Foo</span> <span class="n">Bar</span> <span class="n">Baz</span>
+  <span class="n">description</span><span class="p">:</span> <span class="n">This</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">test</span> <span class="n">data</span> <span class="n">package</span>
+  <span class="n">keywords</span><span class="p">:</span>
+    <span class="o">-</span> <span class="n">foo</span>
+    <span class="o">-</span> <span class="n">bar</span>
+  <span class="n">licenses</span><span class="p">:</span> <span class="p">[</span><span class="n">CC0</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">Apache</span><span class="o">-</span><span class="mf">2.0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>As mentioned in <a class="reference internal" href="api/index-file.html#index-file"><span class="std std-ref">The Package Index file</span></a>, you can provide a package index
+file like below to specify the index columns in a dataset:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">path</span><span class="p">:</span> <span class="n">nameplate_capacity</span><span class="o">.</span><span class="n">csv</span>
+  <span class="n">idxcols</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">scenario</span>
+  <span class="o">-</span> <span class="n">region</span>
+  <span class="o">-</span> <span class="n">technology</span>
+<span class="o">-</span> <span class="n">path</span><span class="p">:</span> <span class="n">resource</span><span class="o">.</span><span class="n">csv</span>
+  <span class="n">idxcols</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">scenario</span>
+  <span class="o">-</span> <span class="n">region</span>
+  <span class="o">-</span> <span class="n">technology</span>
+</pre></div>
+</div>
+<p>In the above example, the columns <em>scenario</em>, <em>region</em>, and
+<em>technology</em> are index columns; all other columns in the dataset will
+be treated as value columns.</p>
+<p>So to create a data package with the following datasets:</p>
+<p>We use the CLI like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ friendly_data create index.yaml --metadata config.yaml --export output/
+friendly_data.metatools: WARNING: inappropriate license: not data
+Package metadata: output/datapackage.json
+$ friendly_data describe output/
+name: foo-bar-baz
+title: Foo Bar Baz
+
+description:
+This is a test data package
+
+keywords: foo, bar
+licenses: CC0-1.0, Apache-2.0
+
+resources:
+---
+path: nameplate_capacity.csv
+fields: scenario, region, technology, nameplate_capacity
+---
+path: resource.csv
+fields: scenario, region, technology, resource
+---
+</pre></div>
+</div>
+<p>To see all available options, just pass the <code class="docutils literal notranslate"><span class="pre">--help</span></code> flag to the
+command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ friendly_data --help
+$ friendly_data &lt;command&gt; --help
+</pre></div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="api/index-file.html" class="btn btn-neutral float-left" title="The Package Index file" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="config-file.html" class="btn btn-neutral float-right" title="The configuration file" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Suvayu Ali and contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

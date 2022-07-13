@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Value columns - cols &mdash; friendly_data 0.2.2.dev documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="The Package Index file" href="index-file.html" />
+    <link rel="prev" title="Data registry" href="../registry.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> friendly_data
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">How to install?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data-package.html">Data package</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../registry.html">Data registry</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Value columns - <code class="docutils literal notranslate"><span class="pre">cols</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#index-columns-idxcols">Index columns - <code class="docutils literal notranslate"><span class="pre">idxcols</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="index-file.html">The Package Index file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../registry.html#contributing-to-the-registry">Contributing to the registry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../registry.html#where-to-add-the-new-column">Where to add the new column?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../registry.html#defining-a-custom-registry">Defining a custom registry</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cli.html">The <code class="docutils literal notranslate"><span class="pre">friendly_data</span></code> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../config-file.html">The configuration file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hands-on.html">Hands-on tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../hands-on.html#understanding-the-registry-used-by-friendly-data">Understanding the registry used by Friendly data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../hands-on.html#column-schema">Column schema</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../hands-on.html#learning-by-example">Learning by example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../hands-on.html#introducing-the-index-file">Introducing the index file</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../hands-on.html#metadata">Metadata</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../hands-on.html#updating-existing-packages">Updating existing packages</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../iamc-conversion.html">Converting to IAMC format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced.html">Advanced use</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../advanced.html#api-documentation">API documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api.html">Datapackage tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#module-friendly_data.metatools">Metadata tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#module-friendly_data.registry">Registry API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#module-friendly_data.cli">Command Line Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#module-friendly_data.validate">Validation functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#data-analysis-interface">Data analysis interface</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api.html#module-friendly_data.converters">Converters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#module-friendly_data.tseries">Time series API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#module-friendly_data.iamc">Conversion to IAMC</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#internal-interfaces">Internal interfaces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api.html#module-friendly_data.io">File I/O</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.html#module-friendly_data.helpers">Helper utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced.html#external-packages">External Packages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="external.html">Package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="external.html#id2">Resource</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../devnotes.html">Notes for developers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../devnotes.html#adding-dependencies">Adding dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../devnotes.html#working-with-the-data-package-api">Working with the data package API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../devnotes.html#working-with-the-index-file">Working with the index file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../devnotes.html#working-with-the-registry-api">Working with the registry API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../devnotes.html#converters-interfacing-with-the-python-ecosystem">Converters: interfacing with the Python ecosystem</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">friendly_data</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../registry.html">Data registry</a> &raquo;</li>
+      <li>Value columns - <code class="docutils literal notranslate"><span class="pre">cols</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/registry.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#value-columns-cols" id="id18">Value columns - <code class="docutils literal notranslate"><span class="pre">cols</span></code></a></p></li>
+<li><p><a class="reference internal" href="#index-columns-idxcols" id="id19">Index columns - <code class="docutils literal notranslate"><span class="pre">idxcols</span></code></a></p></li>
+</ul>
+</div>
+<section id="value-columns-cols">
+<h1><a class="toc-backref" href="#id18">Value columns - <code class="docutils literal notranslate"><span class="pre">cols</span></code></a><a class="headerlink" href="#value-columns-cols" title="Permalink to this heading"></a></h1>
+<dl>
+<dt><strong>value</strong> (number) <a class="reference external" href="https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/cols/value.json">[edit] 🖉</a>:</dt><dd><p>This column is primarily to support long-form IAMC time-series.</p>
+</dd>
+<dt><strong>capacity_factor</strong> (number) <a class="reference external" href="https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/cols/capacity_factor.json">[edit] 🖉</a>:</dt><dd><p>constraints:</p>
+<table class="colwidths-auto docutils align-left">
+<tbody>
+<tr class="row-odd"><td><p>minimum</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>maximum</p></td>
+<td><p>1</p></td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt><strong>description</strong> (string) <a class="reference external" href="https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/cols/description.json">[edit] 🖉</a>:</dt><dd><p>A human readable description, typically corresponding to an index column</p>
+</dd>
+</dl>
+<p><strong>name</strong> (string) <a class="reference external" href="https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/cols/name.json">[edit] 🖉</a>:</p>
+<blockquote>
+<div></div></blockquote>
+<dl>
+<dt><strong>flow_in</strong> (number) <a class="reference external" href="https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/cols/flow_in.yaml">[edit] 🖉</a>:</dt><dd><p>constraints:</p>
+<table class="colwidths-auto docutils align-left">
+<tbody>
+<tr class="row-odd"><td><p>minimum</p></td>
+<td><p>0</p></td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt><strong>storage_capacity</strong> (number) <a class="reference external" href="https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/cols/storage_capacity.yaml">[edit] 🖉</a>:</dt><dd><p>The energy or power storage capacity of a technology, e.g. of a battery or a hydro dam.</p>
+<p>constraints:</p>
+<table class="colwidths-auto docutils align-left">
+<tbody>
+<tr class="row-odd"><td><p>minimum</p></td>
+<td><p>0</p></td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt><strong>nameplate_capacity</strong> (number) <a class="reference external" href="https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/cols/nameplate_capacity.yaml">[edit] 🖉</a>:</dt><dd><p>The nameplate capacity of a technology, for example, the power generation capacity of a power plant in MW.</p>
+<p>constraints:</p>
+<table class="colwidths-auto docutils align-left">
+<tbody>
+<tr class="row-odd"><td><p>minimum</p></td>
+<td><p>0</p></td>
+</tr>
+</tbody>
+</table>
+<p>Common aliases:</p>
+<table class="colwidths-auto docutils align-left">
+<tbody>
+<tr class="row-odd"><td><p>energy_cap</p></td>
+<td><p>Calliope</p></td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt><strong>flow_out</strong> (number) <a class="reference external" href="https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/cols/flow_out.yaml">[edit] 🖉</a>:</dt><dd><p>constraints:</p>
+<table class="colwidths-auto docutils align-left">
+<tbody>
+<tr class="row-odd"><td><p>minimum</p></td>
+<td><p>0</p></td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</section>
+<section id="index-columns-idxcols">
+<h1><a class="toc-backref" href="#id19">Index columns - <code class="docutils literal notranslate"><span class="pre">idxcols</span></code></a><a class="headerlink" href="#index-columns-idxcols" title="Permalink to this heading"></a></h1>
+<dl>
+<dt><strong>scenario</strong> (string) <a class="reference external" href="https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/idxcols/scenario.json">[edit] 🖉</a>:</dt><dd><p>The scenario under which this data was generated.  This index column is primarily to IAMC time-series.</p>
+<p>constraints:</p>
+<table class="colwidths-auto docutils align-left">
+<tbody>
+<tr class="row-odd"><td><p>enum</p></td>
+<td><p>…</p></td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt><strong>model</strong> (string) <a class="reference external" href="https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/idxcols/model.json">[edit] 🖉</a>:</dt><dd><p>The model that generated this data.  This index column is primarily to support IAMC time-series.</p>
+<p>constraints:</p>
+<table class="colwidths-auto docutils align-left">
+<tbody>
+<tr class="row-odd"><td><p>enum</p></td>
+<td><p>…</p></td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt><strong>year</strong> (year) <a class="reference external" href="https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/idxcols/year.json">[edit] 🖉</a>: Data year</dt><dd><p>This index column is primarily to support long-form IAMC time-series.</p>
+</dd>
+<dt><strong>carrier</strong> (string) <a class="reference external" href="https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/idxcols/carrier.json">[edit] 🖉</a>:</dt><dd><p>An energy carrier or commodity that can be produced, consumed, stored, and transported. This could be “electricity”, “heat”, or something more tangible such as “woody_biomass”, or more abstract such as “person_kilometers” when modelling transportation.</p>
+<p>constraints:</p>
+<table class="colwidths-auto docutils align-left">
+<tbody>
+<tr class="row-odd"><td><p>enum</p></td>
+<td><p>…</p></td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<p><strong>timestep</strong> (datetime) <a class="reference external" href="https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/idxcols/timestep.json">[edit] 🖉</a>:</p>
+<blockquote>
+<div></div></blockquote>
+<dl>
+<dt><strong>unit</strong> (string) <a class="reference external" href="https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/idxcols/unit.yaml">[edit] 🖉</a>:</dt><dd><p>This column is used to fill in the “unit” column when converting a data package to the IAMC format.</p>
+<p>constraints:</p>
+<table class="colwidths-auto docutils align-left">
+<tbody>
+<tr class="row-odd"><td><p>enum</p></td>
+<td><p>…</p></td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt><strong>technology</strong> (string) <a class="reference external" href="https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/idxcols/technology.yaml">[edit] 🖉</a>:</dt><dd><p>Descriptor or name of the technology.</p>
+<p>constraints:</p>
+<table class="colwidths-auto docutils align-left">
+<tbody>
+<tr class="row-odd"><td><p>enum</p></td>
+<td><p>…</p></td>
+</tr>
+</tbody>
+</table>
+<p>Common aliases:</p>
+<table class="colwidths-auto docutils align-left">
+<tbody>
+<tr class="row-odd"><td><p>tech</p></td>
+<td><p>Calliope</p></td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt><strong>variable</strong> (string) <a class="reference external" href="https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/idxcols/variable.yaml">[edit] 🖉</a>: An IAMC variable</dt><dd><p>Denote the semi-hierarchical variable that the data represents.  It is in the format <code class="docutils literal notranslate"><span class="pre">Category|Subcategory|Specification</span></code>; for more, see: <a class="reference external" href="https://pyam-iamc.readthedocs.io/en/stable/data.html">https://pyam-iamc.readthedocs.io/en/stable/data.html</a></p>
+<p>constraints:</p>
+<table class="colwidths-auto docutils align-left">
+<tbody>
+<tr class="row-odd"><td><p>pattern</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">^[0-9a-zA-Z_</span> <span class="pre">|-]+$</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt><strong>region</strong> (string) <a class="reference external" href="https://github.com/sentinel-energy/friendly_data_registry/edit/master/friendly_data_registry/idxcols/region.yaml">[edit] 🖉</a>:</dt><dd><p>The region the data corresponds to.  This index column is needed when converting a data package to the IAMC format.</p>
+<p>constraints:</p>
+<table class="colwidths-auto docutils align-left">
+<tbody>
+<tr class="row-odd"><td><p>enum</p></td>
+<td><p>…</p></td>
+</tr>
+</tbody>
+</table>
+<p>Common aliases:</p>
+<table class="colwidths-auto docutils align-left">
+<tbody>
+<tr class="row-odd"><td><p>node</p></td>
+<td><p>Calliope 0.7 and above</p></td>
+</tr>
+<tr class="row-even"><td><p>loc</p></td>
+<td><p>Calliope 0.6 and lower</p></td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../registry.html" class="btn btn-neutral float-left" title="Data registry" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="index-file.html" class="btn btn-neutral float-right" title="The Package Index file" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Suvayu Ali and contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

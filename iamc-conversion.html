@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Converting to IAMC format &mdash; friendly_data 0.2.2.dev documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Advanced use" href="advanced.html" />
+    <link rel="prev" title="Hands-on tutorial" href="hands-on.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> friendly_data
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">How to install?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-package.html">Data package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="registry.html">Data registry</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/registry.html">Value columns - <code class="docutils literal notranslate"><span class="pre">cols</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/registry.html#index-columns-idxcols">Index columns - <code class="docutils literal notranslate"><span class="pre">idxcols</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/index-file.html">The Package Index file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="registry.html#contributing-to-the-registry">Contributing to the registry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="registry.html#where-to-add-the-new-column">Where to add the new column?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="registry.html#defining-a-custom-registry">Defining a custom registry</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">The <code class="docutils literal notranslate"><span class="pre">friendly_data</span></code> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config-file.html">The configuration file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hands-on.html">Hands-on tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hands-on.html#understanding-the-registry-used-by-friendly-data">Understanding the registry used by Friendly data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hands-on.html#column-schema">Column schema</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hands-on.html#learning-by-example">Learning by example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hands-on.html#introducing-the-index-file">Introducing the index file</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hands-on.html#metadata">Metadata</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hands-on.html#updating-existing-packages">Updating existing packages</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Converting to IAMC format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced use</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#api-documentation">API documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/api.html">Datapackage tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/api.html#module-friendly_data.metatools">Metadata tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/api.html#module-friendly_data.registry">Registry API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/api.html#module-friendly_data.cli">Command Line Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/api.html#module-friendly_data.validate">Validation functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/api.html#data-analysis-interface">Data analysis interface</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/api.html#module-friendly_data.converters">Converters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/api.html#module-friendly_data.tseries">Time series API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/api.html#module-friendly_data.iamc">Conversion to IAMC</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/api.html#internal-interfaces">Internal interfaces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/api.html#module-friendly_data.io">File I/O</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/api.html#module-friendly_data.helpers">Helper utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#external-packages">External Packages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/external.html">Package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/external.html#id2">Resource</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="devnotes.html">Notes for developers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="devnotes.html#adding-dependencies">Adding dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devnotes.html#working-with-the-data-package-api">Working with the data package API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devnotes.html#working-with-the-index-file">Working with the index file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devnotes.html#working-with-the-registry-api">Working with the registry API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devnotes.html#converters-interfacing-with-the-python-ecosystem">Converters: interfacing with the Python ecosystem</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">friendly_data</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Converting to IAMC format</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/iamc-conversion.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="converting-to-iamc-format">
+<h1>Converting to IAMC format<a class="headerlink" href="#converting-to-iamc-format" title="Permalink to this heading"></a></h1>
+<p>The IAMC format from the IAM consortium is popular in the energy
+modelling community.  So Friendly data provides workflows to convert a
+data package to IAMC output with some configuration.</p>
+<p>The IAMC format allows the user to define their own hierarchy of
+variables.  So when using Friendly data, you can associate specific
+files to different branches of the hierarchy.  There are currently
+three ways of specifying this:
+1. use a fixed string,
+2. use a format string with one or more user defined index columns, and
+3. define a set of values that are combined and mapped to an IAMC variable.</p>
+<p>A format string is specified in the index file by adding an <code class="docutils literal notranslate"><span class="pre">iamc</span></code>
+key.  If the string contains a column name enclosed in braces, when
+creating the IAMC file, corresponding values from the index column
+will be substituted in that position.</p>
+<p>Let us consider the <a class="reference external" href="https://github.com/sentinel-energy/friendly_data_example">example data package</a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ tree
+.
+├── annual_cost_per_nameplate_capacity.csv
+├── carrier.csv
+├── conf.yaml
+├── datapackage.json
+├── emissions_per_flow_in.csv
+├── flow_out_sum.csv
+├── index.yaml
+├── LICENSE
+├── nameplate_capacity.csv
+├── README.md
+└── technology.csv
+</pre></div>
+</div>
+<p>If we consider the dataset <code class="docutils literal notranslate"><span class="pre">flow_out_sum.csv</span></code>, which looks like:</p>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Energy flow out</span><a class="headerlink" href="#id1" title="Permalink to this table"></a></caption>
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>scenario</p></th>
+<th class="head"><p>techs</p></th>
+<th class="head"><p>locs</p></th>
+<th class="head"><p>carriers</p></th>
+<th class="head"><p>unit</p></th>
+<th class="head"><p>year</p></th>
+<th class="head"><p>flow_out_sum</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>diag-npi</p></td>
+<td><p>wind_offshore</p></td>
+<td><p>DEU</p></td>
+<td><p>electricity</p></td>
+<td><p>twh</p></td>
+<td><p>2030</p></td>
+<td><p>0.0026985550026472</p></td>
+</tr>
+<tr class="row-odd"><td><p>diag-npi</p></td>
+<td><p>wind_offshore</p></td>
+<td><p>DNK</p></td>
+<td><p>electricity</p></td>
+<td><p>twh</p></td>
+<td><p>2030</p></td>
+<td><p>0.0014073819977408</p></td>
+</tr>
+<tr class="row-even"><td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>diag-npi</p></td>
+<td><p>wind_onshore</p></td>
+<td><p>CHE</p></td>
+<td><p>electricity</p></td>
+<td><p>twh</p></td>
+<td><p>2030</p></td>
+<td><p>0.0007493784045182</p></td>
+</tr>
+<tr class="row-even"><td><p>diag-npi</p></td>
+<td><p>wind_onshore</p></td>
+<td><p>DEU</p></td>
+<td><p>electricity</p></td>
+<td><p>twh</p></td>
+<td><p>2030</p></td>
+<td><p>0.0258391578821039</p></td>
+</tr>
+<tr class="row-odd"><td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>diag-npi</p></td>
+<td><p>nuclear</p></td>
+<td><p>CHE</p></td>
+<td><p>electricity</p></td>
+<td><p>twh</p></td>
+<td><p>2030</p></td>
+<td><p>62.78803794129926</p></td>
+</tr>
+<tr class="row-odd"><td><p>diag-npi</p></td>
+<td><p>nuclear</p></td>
+<td><p>DEU</p></td>
+<td><p>electricity</p></td>
+<td><p>twh</p></td>
+<td><p>2030</p></td>
+<td><p>224.96177256922013</p></td>
+</tr>
+</tbody>
+</table>
+<p>The IAMC format requires that the data have the columns: <code class="docutils literal notranslate"><span class="pre">model</span></code>,
+<code class="docutils literal notranslate"><span class="pre">scenario</span></code>, <code class="docutils literal notranslate"><span class="pre">region</span></code>, <code class="docutils literal notranslate"><span class="pre">variable</span></code>, <code class="docutils literal notranslate"><span class="pre">unit</span></code>, and <code class="docutils literal notranslate"><span class="pre">value</span></code>.  If
+the data is in “long format”, then it should also have a column
+<code class="docutils literal notranslate"><span class="pre">year</span></code>.  In the above dataset, <code class="docutils literal notranslate"><span class="pre">locs</span></code> is an alias for <code class="docutils literal notranslate"><span class="pre">region</span></code>,
+but there are no columns for <code class="docutils literal notranslate"><span class="pre">model</span></code>, <code class="docutils literal notranslate"><span class="pre">variable</span></code>, or <code class="docutils literal notranslate"><span class="pre">value</span></code>,
+and there is an additional column called <code class="docutils literal notranslate"><span class="pre">techs</span></code>.</p>
+<p>The corresponding entry in the index file looks something like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">agg</span><span class="p">:</span>
+    <span class="n">technology</span><span class="p">:</span>
+    <span class="o">-</span> <span class="n">values</span><span class="p">:</span>
+      <span class="o">-</span> <span class="n">wind_onshore</span>
+      <span class="o">-</span> <span class="n">wind_offshore</span>
+      <span class="n">variable</span><span class="p">:</span> <span class="n">Primary</span> <span class="n">Energy</span><span class="o">|</span><span class="n">Wind</span>
+  <span class="n">alias</span><span class="p">:</span>
+    <span class="n">locs</span><span class="p">:</span> <span class="n">region</span>
+    <span class="n">techs</span><span class="p">:</span> <span class="n">technology</span>
+    <span class="n">carriers</span><span class="p">:</span> <span class="n">carrier</span>
+  <span class="n">iamc</span><span class="p">:</span> <span class="n">Primary</span> <span class="n">Energy</span><span class="o">|</span><span class="p">{</span><span class="n">technology</span><span class="p">}</span>
+  <span class="n">idxcols</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">scenario</span>
+  <span class="o">-</span> <span class="n">carriers</span>
+  <span class="o">-</span> <span class="n">techs</span>
+  <span class="o">-</span> <span class="n">locs</span>
+  <span class="o">-</span> <span class="n">unit</span>
+  <span class="o">-</span> <span class="n">year</span>
+  <span class="n">path</span><span class="p">:</span> <span class="n">flow_out_sum</span><span class="o">.</span><span class="n">csv</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">alias</span></code> key declares that, <code class="docutils literal notranslate"><span class="pre">techs</span></code> is to be treated as
+<code class="docutils literal notranslate"><span class="pre">technology</span></code>, and <code class="docutils literal notranslate"><span class="pre">locs</span></code> as <code class="docutils literal notranslate"><span class="pre">region</span></code> - that satisfies one of the
+missing columns required by the IAMC specification.  You will also
+note, there is a <code class="docutils literal notranslate"><span class="pre">iamc</span></code> key.  This mentions <code class="docutils literal notranslate"><span class="pre">technology</span></code> in
+<code class="docutils literal notranslate"><span class="pre">{...}</span></code>.  This is a format string, which means all occurences of
+<code class="docutils literal notranslate"><span class="pre">technology</span></code> are to be replaced by the corresponding values in data.
+The <code class="docutils literal notranslate"><span class="pre">agg</span></code> key also specifies a rule that combines two technologies
+under a single name.  The dataset has <code class="docutils literal notranslate"><span class="pre">wind_onshore</span></code>,
+<code class="docutils literal notranslate"><span class="pre">wind_offshore</span></code>, and <code class="docutils literal notranslate"><span class="pre">nuclear</span></code>.  While <code class="docutils literal notranslate"><span class="pre">wind_*</span></code> technologies are
+summed together, <code class="docutils literal notranslate"><span class="pre">nuclear</span></code> is replaced in the format string to form
+the IAMC variable.  The resulting strings are then available under the
+<code class="docutils literal notranslate"><span class="pre">variable</span></code> column.  However you will note, the technology names are
+not particularly descriptive, so you probably want to replace them
+with something more commonly used in an IAMC dataset.  These alternate
+names can be specified in a separate CSV file, and provided in the
+configuration file.  If we refer to the <a class="reference external" href="https://github.com/sentinel-energy/friendly_data_example">example data package</a>, we
+will find a <code class="docutils literal notranslate"><span class="pre">conf.yaml</span></code> file, which has a section like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">indices</span><span class="p">:</span>
+  <span class="n">technology</span><span class="p">:</span> <span class="n">technology</span><span class="o">.</span><span class="n">csv</span>
+  <span class="n">carrier</span><span class="p">:</span> <span class="n">carrier</span><span class="o">.</span><span class="n">csv</span>
+  <span class="n">model</span><span class="p">:</span> <span class="n">calliope</span>
+</pre></div>
+</div>
+<p>The above configures technology names to be resolved as per
+<code class="docutils literal notranslate"><span class="pre">technology.csv</span></code>, which looks like this:</p>
+<table class="docutils align-default" id="id2">
+<caption><span class="caption-text">Technology definitions</span><a class="headerlink" href="#id2" title="Permalink to this table"></a></caption>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>name</p></th>
+<th class="head"><p>iamc</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>nuclear</p></td>
+<td><p>Nuclear</p></td>
+</tr>
+<tr class="row-odd"><td><p>wind_offshore</p></td>
+<td><p>Wind|Offshore</p></td>
+</tr>
+<tr class="row-even"><td><p>wind_onshore</p></td>
+<td><p>Wind|Onshore</p></td>
+</tr>
+</tbody>
+</table>
+<p>In the same configuration snippet, you can see there’s a key for
+<code class="docutils literal notranslate"><span class="pre">model</span></code>, but instead of pointing to a file like <code class="docutils literal notranslate"><span class="pre">technology</span></code>, it
+specifies a string.  If a <code class="docutils literal notranslate"><span class="pre">model</span></code> column does not exist in your
+dataset, this string will be taken as the default value for such a
+column.  This leaves only the <code class="docutils literal notranslate"><span class="pre">value</span></code> column, which is nothing but
+the data column, in our example that is <code class="docutils literal notranslate"><span class="pre">flow_out_sum</span></code>.  And we have
+our data in IAMC format!</p>
+<table class="docutils align-default" id="id3">
+<caption><span class="caption-text">Data in IAMC format</span><a class="headerlink" href="#id3" title="Permalink to this table"></a></caption>
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>model</p></th>
+<th class="head"><p>scenario</p></th>
+<th class="head"><p>region</p></th>
+<th class="head"><p>variable</p></th>
+<th class="head"><p>unit</p></th>
+<th class="head"><p>year</p></th>
+<th class="head"><p>value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>calliope</p></td>
+<td><p>diag-npi</p></td>
+<td><p>CHE</p></td>
+<td><p>Fixed Cost|Electricity|Wind</p></td>
+<td><p>billion_2015eur_per_tw_per_year</p></td>
+<td><p>2030</p></td>
+<td><p>47.7515</p></td>
+</tr>
+<tr class="row-odd"><td><p>calliope</p></td>
+<td><p>diag-npi</p></td>
+<td><p>DEU</p></td>
+<td><p>Fixed Cost|Electricity|Wind</p></td>
+<td><p>billion_2015eur_per_tw_per_year</p></td>
+<td><p>2030</p></td>
+<td><p>47.75149999999999</p></td>
+</tr>
+<tr class="row-even"><td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>calliope</p></td>
+<td><p>diag-npi</p></td>
+<td><p>CHE</p></td>
+<td><p>Fixed Cost|Electricity|Nuclear</p></td>
+<td><p>billion_2015eur_per_tw_per_year</p></td>
+<td><p>2030</p></td>
+<td><p>76.116</p></td>
+</tr>
+<tr class="row-even"><td><p>calliope</p></td>
+<td><p>diag-npi</p></td>
+<td><p>DEU</p></td>
+<td><p>Fixed Cost|Electricity|Nuclear</p></td>
+<td><p>billion_2015eur_per_tw_per_year</p></td>
+<td><p>2030</p></td>
+<td><p>76.116</p></td>
+</tr>
+</tbody>
+</table>
+<p>This kind of replacement
+from values in the dataset can de done with multiple columns, e.g. the
+index entry for <code class="docutils literal notranslate"><span class="pre">nameplate_capacity.csv</span></code> looks like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">agg</span><span class="p">:</span>
+    <span class="n">technology</span><span class="p">:</span>
+    <span class="o">-</span> <span class="n">values</span><span class="p">:</span>
+      <span class="o">-</span> <span class="n">wind_onshore</span>
+      <span class="o">-</span> <span class="n">wind_offshore</span>
+      <span class="n">variable</span><span class="p">:</span> <span class="n">Capacity</span><span class="o">|</span><span class="n">Electricity</span><span class="o">|</span><span class="n">Wind</span>
+  <span class="n">alias</span><span class="p">:</span>
+    <span class="n">locs</span><span class="p">:</span> <span class="n">region</span>
+    <span class="n">techs</span><span class="p">:</span> <span class="n">technology</span>
+    <span class="n">carriers</span><span class="p">:</span> <span class="n">carrier</span>
+  <span class="n">iamc</span><span class="p">:</span> <span class="n">Capacity</span><span class="o">|</span><span class="p">{</span><span class="n">carrier</span><span class="p">}</span><span class="o">|</span><span class="p">{</span><span class="n">technology</span><span class="p">}</span>
+  <span class="n">idxcols</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">scenario</span>
+  <span class="o">-</span> <span class="n">carriers</span>
+  <span class="o">-</span> <span class="n">techs</span>
+  <span class="o">-</span> <span class="n">locs</span>
+  <span class="o">-</span> <span class="n">unit</span>
+  <span class="o">-</span> <span class="n">year</span>
+  <span class="n">path</span><span class="p">:</span> <span class="n">nameplate_capacity</span><span class="o">.</span><span class="n">csv</span>
+</pre></div>
+</div>
+<p>Here, all possible combinations of <code class="docutils literal notranslate"><span class="pre">technology</span></code> and <code class="docutils literal notranslate"><span class="pre">carrier</span></code> will
+be tried, and only the ones present in the data will be included in
+the final output.  If you do not need replacement from data, you can
+always use a regular string (without any <code class="docutils literal notranslate"><span class="pre">{...}</span></code>) to denote what
+should be in the <code class="docutils literal notranslate"><span class="pre">variable</span></code> column (see the <a class="reference external" href="https://github.com/sentinel-energy/friendly_data_example">example data package</a>
+for other examples).</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hands-on.html" class="btn btn-neutral float-left" title="Hands-on tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="advanced.html" class="btn btn-neutral float-right" title="Advanced use" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Suvayu Ali and contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
